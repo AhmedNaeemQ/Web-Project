@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import adminLogo from "../admin.avif";
 
 const Sidebar = () => {
   const navLinks = [
@@ -12,7 +13,11 @@ const Sidebar = () => {
       childrens: [
         { path: "/foods", display: "Foods", icon: "ri-service-line" },
         { path: "/categories", display: "Categories", icon: "ri-list-check" },
-        { path: "/delivery-men", display: "Delivery Riders", icon: "ri-truck-line" },
+        {
+          path: "/delivery-men",
+          display: "Delivery Riders",
+          icon: "ri-truck-line",
+        },
       ],
     },
     { path: "/customers", display: "Customers", icon: "ri-user-line" },
@@ -79,11 +84,7 @@ const Sidebar = () => {
       {/* Logo Section */}
       <div className="p-6 flex items-center justify-center border-b border-gray-700">
         <a href="/" title="Go Home Page">
-          <img
-            src={"/default/logo.png"}
-            alt="Logo"
-            className="w-24 h-auto"
-          />
+          <img src={adminLogo} alt="Logo" className="w-24 h-auto rounded-full" />
         </a>
       </div>
 
