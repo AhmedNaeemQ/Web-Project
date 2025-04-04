@@ -12,9 +12,9 @@ const Card = ({ thumb, title, price, description, onClick, actions }) => {
         className="w-full h-40 object-cover rounded mb-4"
       />
       <h3 className="text-lg font-bold text-[#050A36]">{title}</h3>
-      <p className="text-sm text-gray-600 mb-2">{description.slice(0, 40)}...</p>
-      <p className="text-[#0D1552] font-semibold">Rs {price}</p>
-      <div className="flex justify-end gap-2 mt-4">{actions}</div>
+      {description && <p className="text-sm text-gray-600 mb-2">{description?.slice(0, 40)}...</p>}
+      {price && <p className="text-[#0D1552] font-semibold">Rs {price}</p>}
+      {actions && <div className="flex justify-end gap-2 mt-4">{actions}</div>}
     </div>
   );
 };

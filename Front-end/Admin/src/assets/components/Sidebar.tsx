@@ -14,7 +14,7 @@ const Sidebar = () => {
         { path: "/foods", display: "Foods", icon: "ri-service-line" },
         { path: "/categories", display: "Categories", icon: "ri-list-check" },
         {
-          path: "/delivery-men",
+          path: "/delivery-riders",
           display: "Delivery Riders",
           icon: "ri-truck-line",
         },
@@ -76,7 +76,7 @@ const Sidebar = () => {
 
   return (
     <motion.aside
-      className="w-64 h-screen bg-[#0D1552] text-white flex flex-col"
+      className="w-64 h-screen bg-[#0D1552] text-white flex flex-col fixed"
       initial={{ x: -300 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}

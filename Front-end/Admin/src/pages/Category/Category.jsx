@@ -3,52 +3,42 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Card from "../../assets/components/Card";
 
-const Food = () => {
-  const [selectedFood, setSelectedFood] = useState(null);
+const Category = () => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const foods = [
+  const categories = [
     {
-      thumb: "food1.jpg",
-      title: "Pizza",
-      price: 500,
-      description: "Delicious cheese pizza with fresh toppings.",
-      rating: 4.5,
-      totalReviews: 120,
-      category: "Fast Food",
+      thumb: "category1.jpg",
+      title: "Fast Food",
       featured: "on",
       active: "on",
       date: "2025-03-28T10:00:00Z",
     },
     {
-      thumb: "food2.jpg",
-      title: "Burger",
-      price: 300,
-      description: "Juicy beef burger with fresh lettuce and tomato.",
-      rating: 4.2,
-      totalReviews: 80,
-      category: "Fast Food",
+      thumb: "category2.jpg",
+      title: "Desserts",
       featured: "off",
       active: "on",
       date: "2025-03-28T12:00:00Z",
     },
   ];
 
-  const handleFoodClick = (food) => {
-    setSelectedFood(food);
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
   };
 
   const closePopup = () => {
-    setSelectedFood(null);
+    setSelectedCategory(null);
   };
 
   return (
     <div className="w-full h-full bg-[#E9F0F7] p-8 font-inter">
-      <h1 className="text-3xl font-bold text-[#050A36] mb-8">Foods</h1>
+      <h1 className="text-3xl font-bold text-[#050A36] mb-8">Categories</h1>
       <Link
-        to="/new-food"
+        to="/new-category"
         className="mb-4 inline-block px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
       >
-        Add Food
+        Add Category
       </Link>
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -56,18 +46,16 @@ const Food = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {foods.map((food, index) => (
+        {categories.map((category, index) => (
           <Card
             key={index}
-            thumb={food.thumb}
-            title={food.title}
-            price={food.price}
-            description={food.description}
-            onClick={() => handleFoodClick(food)}
+            thumb={category.thumb}
+            title={category.title}
+            onClick={() => handleCategoryClick(category)}
             actions={
               <>
                 <Link
-                  to={`/edit-food/${index}`}
+                  to={`/edit-category/${index}`}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   <i className="ri-edit-box-fill"></i>
@@ -81,45 +69,32 @@ const Food = () => {
         ))}
       </motion.div>
 
-      {/* Popup for Food Details */}
-      {selectedFood && (
-        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
+      {/* Popup for Category Details */}
+      {selectedCategory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-96">
             <h2 className="text-xl font-bold text-[#050A36] mb-4">
-              Food Details
+              Category Details
             </h2>
             <img
-              src={`/foods/${selectedFood.thumb}`}
-              alt={selectedFood.title}
+              src={`/categories/${selectedCategory.thumb}`}
+              alt={selectedCategory.title}
               className="w-full h-40 object-cover rounded mb-4"
             />
             <p>
-              <strong>Title:</strong> {selectedFood.title}
-            </p>
-            <p>
-              <strong>Price:</strong> Rs {selectedFood.price}
-            </p>
-            <p>
-              <strong>Description:</strong> {selectedFood.description}
-            </p>
-            <p>
-              <strong>Rating:</strong> {selectedFood.rating.toFixed(1)} (
-              {selectedFood.totalReviews} reviews)
-            </p>
-            <p>
-              <strong>Category:</strong> {selectedFood.category}
+              <strong>Title:</strong> {selectedCategory.title}
             </p>
             <p>
               <strong>Featured:</strong>{" "}
-              {selectedFood.featured === "on" ? "Yes" : "No"}
+              {selectedCategory.featured === "on" ? "Yes" : "No"}
             </p>
             <p>
               <strong>Active:</strong>{" "}
-              {selectedFood.active === "on" ? "Yes" : "No"}
+              {selectedCategory.active === "on" ? "Yes" : "No"}
             </p>
             <p>
               <strong>Date:</strong>{" "}
-              {new Date(selectedFood.date).toLocaleString()}
+              {new Date(selectedCategory.date).toLocaleString()}
             </p>
             <button
               className="mt-4 px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
@@ -134,4 +109,4 @@ const Food = () => {
   );
 };
 
-export default Food;
+export default Category;
