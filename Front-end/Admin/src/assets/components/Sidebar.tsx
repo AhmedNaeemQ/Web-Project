@@ -89,7 +89,7 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto">
+      <nav className="flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <ul className="space-y-2 p-4">
           {navLinks.map((item, index) => (
             <SidebarItem key={index} item={item} />
