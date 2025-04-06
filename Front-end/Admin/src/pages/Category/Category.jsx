@@ -54,12 +54,12 @@ const Category = () => {
             onClick={() => handleCategoryClick(category)}
             actions={
               <>
-                <Link
-                  to={`/edit-category/${index}`}
+                <button
+                  // to={`/edit-category/${index}`}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   <i className="ri-edit-box-fill"></i>
-                </Link>
+                </button>
                 <button className="text-red-500 hover:text-red-700">
                   <i className="ri-delete-bin-5-fill"></i>
                 </button>
@@ -69,7 +69,6 @@ const Category = () => {
         ))}
       </motion.div>
 
-      {/* Popup for Category Details */}
       {selectedCategory && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-96">

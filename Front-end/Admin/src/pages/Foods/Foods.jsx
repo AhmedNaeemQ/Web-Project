@@ -66,12 +66,12 @@ const Food = () => {
             onClick={() => handleFoodClick(food)}
             actions={
               <>
-                <Link
-                  to={`/edit-food/${index}`}
+                <button
+                  // to={`/edit-food/${index}`}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   <i className="ri-edit-box-fill"></i>
-                </Link>
+                </button>
                 <button className="text-red-500 hover:text-red-700">
                   <i className="ri-delete-bin-5-fill"></i>
                 </button>

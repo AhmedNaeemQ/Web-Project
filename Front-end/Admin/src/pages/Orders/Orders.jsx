@@ -136,12 +136,12 @@ const Orders = () => {
                     )}
                   </td>
                   <td className="p-4 flex gap-2">
-                    <Link
-                      to={`/orders/${item.orderID}`}
+                    <button
+                      // to={`/orders/${item.orderID}`}
                       className="text-blue-500 hover:text-blue-700"
                     >
                       <i className="ri-edit-box-fill"></i>
-                    </Link>
+                    </button>
                     <button className="text-red-500 hover:text-red-700">
                       <i className="ri-delete-bin-5-fill"></i>
                     </button>
@@ -153,7 +153,6 @@ const Orders = () => {
         </table>
       </motion.div>
 
-      {/* Popup for Order Details */}
       {selectedOrder && (
         <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-96">
