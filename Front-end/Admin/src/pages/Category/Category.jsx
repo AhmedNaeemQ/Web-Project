@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Card from "../../assets/components/Card";
+import ConfirmModal from "../../assets/components/ConfirmModal";
+import DetailsModal from "../../assets/components/DetailsModal";
 
 const Category = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const categories = [
     {
@@ -60,7 +63,13 @@ const Category = () => {
                 >
                   <i className="ri-edit-box-fill"></i>
                 </button>
-                <button className="text-red-500 hover:text-red-700">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmModal(true);
+                  }}
+                  className="text-red-500 hover:text-red-700"
+                >
                   <i className="ri-delete-bin-5-fill"></i>
                 </button>
               </>
@@ -70,40 +79,25 @@ const Category = () => {
       </motion.div>
 
       {selectedCategory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-bold text-[#050A36] mb-4">
-              Category Details
-            </h2>
-            <img
-              src={`/categories/${selectedCategory.thumb}`}
-              alt={selectedCategory.title}
-              className="w-full h-40 object-cover rounded mb-4"
-            />
-            <p>
-              <strong>Title:</strong> {selectedCategory.title}
-            </p>
-            <p>
-              <strong>Featured:</strong>{" "}
-              {selectedCategory.featured === "on" ? "Yes" : "No"}
-            </p>
-            <p>
-              <strong>Active:</strong>{" "}
-              {selectedCategory.active === "on" ? "Yes" : "No"}
-            </p>
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(selectedCategory.date).toLocaleString()}
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
-              onClick={closePopup}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <DetailsModal
+          isOpen={!!selectedCategory}
+          onClose={closePopup}
+          title="Category Details"
+          image={`/categories/${selectedCategory.thumb}`}
+          details={{
+            Title: selectedCategory.title,
+            Featured: selectedCategory.featured === "on" ? "Yes" : "No",
+            Active: selectedCategory.active === "on" ? "Yes" : "No",
+            Date: new Date(selectedCategory.date).toLocaleString(),
+          }}
+        />
       )}
+       <ConfirmModal
+        isOpen={confirmModal}
+        onConfirm={() => setConfirmModal(false)}
+        onCancel={() => setConfirmModal(false)}
+        message="Do you really want to delete customer?"
+      />
     </div>
   );
 };

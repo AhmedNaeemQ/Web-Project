@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Card from "../../assets/components/Card";
+import ConfirmModal from "../../assets/components/ConfirmModal";
+import DetailsModal from "../../assets/components/DetailsModal";
 
 const Customer = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const customers = [
     {
@@ -51,13 +54,19 @@ const Customer = () => {
             onClick={() => handleCustomerClick(customer)}
             actions={
               <>
-                <Link
-                  to={`/customers/${index}`}
+                <button
+                  // to={`/customers/${index}`}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   <i className="ri-eye-fill"></i>
-                </Link>
-                <button className="text-red-500 hover:text-red-700">
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmModal(true);
+                  }}
+                  className="text-red-500 hover:text-red-700"
+                >
                   <i className="ri-delete-bin-5-fill"></i>
                 </button>
               </>
@@ -66,43 +75,27 @@ const Customer = () => {
         ))}
       </motion.div>
 
-      {/* Popup for Customer Details */}
       {selectedCustomer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-bold text-[#050A36] mb-4">
-              Customer Details
-            </h2>
-            <img
-              src={`/customers/${selectedCustomer.thumb}`}
-              alt={selectedCustomer.name}
-              className="w-full h-40 object-cover rounded mb-4"
-            />
-            <p>
-              <strong>Name:</strong> {selectedCustomer.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedCustomer.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {selectedCustomer.phone}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedCustomer.address}
-            </p>
-            <p>
-              <strong>Joining Date:</strong>{" "}
-              {new Date(selectedCustomer.joiningDate).toLocaleString()}
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
-              onClick={closePopup}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <DetailsModal
+        isOpen={!!selectedCustomer}
+        onClose={closePopup}
+        title="Customer Details"
+        image={`/customers/${selectedCustomer.thumb}`}
+        details={{
+          Name: selectedCustomer.name,
+          Email: selectedCustomer.email,
+          Phone: selectedCustomer.phone,
+          Address: selectedCustomer.address,
+          "Joining Date": new Date(selectedCustomer.joiningDate).toLocaleString(),
+        }}
+      />
+    )}
+      <ConfirmModal
+        isOpen={confirmModal}
+        onConfirm={() => setConfirmModal(false)}
+        onCancel={() => setConfirmModal(false)}
+        message="Do you really want to delete customer?"
+      />
     </div>
   );
 };

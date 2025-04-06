@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useToast } from "../../assets/context/ToastContext";
 
 const Messages = () => {
   const [reply, setReply] = useState("");
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const {setToast} = useToast();
 
   const messages = [
     {
@@ -47,6 +49,10 @@ const Messages = () => {
   const handleReply = (id) => {
     console.log(`Reply to message ${id}: ${reply}`);
     setReply("");
+    setToast({
+      message: "Reply sent successfully!",
+      type: "success",
+    });
   };
 
   return (

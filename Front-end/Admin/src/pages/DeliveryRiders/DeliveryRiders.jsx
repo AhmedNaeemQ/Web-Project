@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Card from "../../assets/components/Card";
+import ConfirmModal from "../../assets/components/ConfirmModal";
+import DetailsModal from "../../assets/components/DetailsModal";
 
 const DeliveryRiders = () => {
   const [selectedRider, setSelectedRider] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const deliveryRiders = [
     {
@@ -71,7 +74,10 @@ const DeliveryRiders = () => {
                 >
                   <i className="ri-eye-fill"></i>
                 </Link>
-                <button className="text-red-500 hover:text-red-700">
+                <button onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmModal(true);
+                  }} className="text-red-500 hover:text-red-700">
                   <i className="ri-delete-bin-5-fill"></i>
                 </button>
               </>
@@ -80,53 +86,30 @@ const DeliveryRiders = () => {
         ))}
       </motion.div>
 
-      {/* Popup for Delivery Rider Details */}
       {selectedRider && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-bold text-[#050A36] mb-4">
-              Rider Details
-            </h2>
-            <img
-              src={`/delivery-riders/${selectedRider.thumb}`}
-              alt={selectedRider.name}
-              className="w-full h-40 object-cover rounded mb-4"
-            />
-            <p>
-              <strong>Name:</strong> {selectedRider.name}
-            </p>
-            <p>
-              <strong>Rating:</strong> {selectedRider.rating.toFixed(1)} (
-              {selectedRider.totalReviews} reviews)
-            </p>
-            <p>
-              <strong>Pending Orders:</strong> {selectedRider.pendingOrders}
-            </p>
-            <p>
-              <strong>Complete Orders:</strong> {selectedRider.completeOrders}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedRider.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {selectedRider.phone}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedRider.address}
-            </p>
-            <p>
-              <strong>Joining Date:</strong>{" "}
-              {new Date(selectedRider.joiningDate).toLocaleString()}
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
-              onClick={closePopup}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <DetailsModal
+          isOpen={!!selectedRider}
+          onClose={closePopup}
+          title="Rider Details"
+          image={`/delivery-riders/${selectedRider.thumb}`}
+          details={{
+            Name: selectedRider.name,
+            Rating: `${selectedRider.rating.toFixed(1)} (${selectedRider.totalReviews} reviews)`,
+            "Pending Orders": selectedRider.pendingOrders,
+            "Complete Orders": selectedRider.completeOrders,
+            Email: selectedRider.email,
+            Phone: selectedRider.phone,
+            Address: selectedRider.address,
+            "Joining Date": new Date(selectedRider.joiningDate).toLocaleString(),
+          }}
+        />
       )}
+       <ConfirmModal
+        isOpen={confirmModal}
+        onConfirm={() => setConfirmModal(false)}
+        onCancel={() => setConfirmModal(false)}
+        message="Do you really want to delete customer?"
+      />
     </div>
   );
 };

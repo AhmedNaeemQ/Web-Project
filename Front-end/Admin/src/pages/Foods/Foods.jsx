@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Card from "../../assets/components/Card";
+import ConfirmModal from "../../assets/components/ConfirmModal";
+import DetailsModal from "../../assets/components/DetailsModal";
 
 const Food = () => {
   const [selectedFood, setSelectedFood] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const foods = [
     {
@@ -72,7 +75,10 @@ const Food = () => {
                 >
                   <i className="ri-edit-box-fill"></i>
                 </button>
-                <button className="text-red-500 hover:text-red-700">
+                <button onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmModal(true);
+                  }} className="text-red-500 hover:text-red-700">
                   <i className="ri-delete-bin-5-fill"></i>
                 </button>
               </>
@@ -81,55 +87,30 @@ const Food = () => {
         ))}
       </motion.div>
 
-      {/* Popup for Food Details */}
       {selectedFood && (
-        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-bold text-[#050A36] mb-4">
-              Food Details
-            </h2>
-            <img
-              src={`/foods/${selectedFood.thumb}`}
-              alt={selectedFood.title}
-              className="w-full h-40 object-cover rounded mb-4"
-            />
-            <p>
-              <strong>Title:</strong> {selectedFood.title}
-            </p>
-            <p>
-              <strong>Price:</strong> Rs {selectedFood.price}
-            </p>
-            <p>
-              <strong>Description:</strong> {selectedFood.description}
-            </p>
-            <p>
-              <strong>Rating:</strong> {selectedFood.rating.toFixed(1)} (
-              {selectedFood.totalReviews} reviews)
-            </p>
-            <p>
-              <strong>Category:</strong> {selectedFood.category}
-            </p>
-            <p>
-              <strong>Featured:</strong>{" "}
-              {selectedFood.featured === "on" ? "Yes" : "No"}
-            </p>
-            <p>
-              <strong>Active:</strong>{" "}
-              {selectedFood.active === "on" ? "Yes" : "No"}
-            </p>
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(selectedFood.date).toLocaleString()}
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
-              onClick={closePopup}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <DetailsModal
+          isOpen={!!selectedFood}
+          onClose={closePopup}
+          title="Food Details"
+          image={`/foods/${selectedFood.thumb}`}
+          details={{
+            Title: selectedFood.title,
+            Price: `Rs ${selectedFood.price}`,
+            Description: selectedFood.description,
+            Rating: `${selectedFood.rating.toFixed(1)} (${selectedFood.totalReviews} reviews)`,
+            Category: selectedFood.category,
+            Featured: selectedFood.featured === "on" ? "Yes" : "No",
+            Active: selectedFood.active === "on" ? "Yes" : "No",
+            Date: new Date(selectedFood.date).toLocaleString(),
+          }}
+        />
       )}
+       <ConfirmModal
+              isOpen={confirmModal}
+              onConfirm={() => setConfirmModal(false)}
+              onCancel={() => setConfirmModal(false)}
+              message="Do you really want to delete customer?"
+            />
     </div>
   );
 };

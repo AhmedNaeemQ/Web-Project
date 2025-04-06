@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import ConfirmModal from "../../assets/components/ConfirmModal";
+import DetailsModal from "../../assets/components/DetailsModal";
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const orders = [
     {
@@ -40,7 +43,11 @@ const Orders = () => {
 
   const tableVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
 
   const handleOrderClick = (order) => {
@@ -142,7 +149,13 @@ const Orders = () => {
                     >
                       <i className="ri-edit-box-fill"></i>
                     </button>
-                    <button className="text-red-500 hover:text-red-700">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmModal(true);
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
                       <i className="ri-delete-bin-5-fill"></i>
                     </button>
                   </td>
@@ -154,46 +167,32 @@ const Orders = () => {
       </motion.div>
 
       {selectedOrder && (
-        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-bold text-[#050A36] mb-4">
-              Order Details
-            </h2>
-            <p>
-              <strong>Customer:</strong> {selectedOrder.customer_name}
-            </p>
-            <p>
-              <strong>Order ID:</strong> {selectedOrder.orderID}
-            </p>
-            <p>
-              <strong>Order Date:</strong>{" "}
-              {new Date(selectedOrder.order_date).toLocaleString()}
-            </p>
-            <p>
-              <strong>Accept Time:</strong>{" "}
-              {selectedOrder.accept_time
-                ? new Date(selectedOrder.accept_time).toLocaleString()
-                : "N/A"}
-            </p>
-            <p>
-              <strong>Exp Time:</strong>{" "}
-              {selectedOrder.exp_time === "NaN" ? "N/A" : selectedOrder.exp_time}
-            </p>
-            <p>
-              <strong>Delivery Man:</strong>{" "}
-              {selectedOrder.delivery_man_name === "NaN"
+        <DetailsModal
+          isOpen={!!selectedOrder}
+          onClose={closePopup}
+          title="Order Details"
+          details={{
+            Customer: selectedOrder.customer_name,
+            "Order ID": selectedOrder.orderID,
+            "Order Date": new Date(selectedOrder.order_date).toLocaleString(),
+            "Accept Time": selectedOrder.accept_time
+              ? new Date(selectedOrder.accept_time).toLocaleString()
+              : "N/A",
+            "Exp Time":
+              selectedOrder.exp_time === "NaN" ? "N/A" : selectedOrder.exp_time,
+            "Delivery Man":
+              selectedOrder.delivery_man_name === "NaN"
                 ? "N/A"
-                : selectedOrder.delivery_man_name}
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-[#0D1552] text-white rounded hover:bg-[#1A237E]"
-              onClick={closePopup}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+                : selectedOrder.delivery_man_name,
+          }}
+        />
       )}
+      <ConfirmModal
+        isOpen={confirmModal}
+        onConfirm={() => setConfirmModal(false)}
+        onCancel={() => setConfirmModal(false)}
+        message="Do you really want to delete customer?"
+      />
     </div>
   );
 };
