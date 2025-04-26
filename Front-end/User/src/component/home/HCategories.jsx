@@ -1,45 +1,24 @@
 import Title from "../common/header/title/Title";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
-const categories = [
-  {
-    "id": 1,
-    "title": "Fast Food",
-    "thumb": "fast-food.jpg",
-    "featured": "on"
-  },
-  {
-    "id": 2,
-    "title": "Healthy",
-    "thumb": "healthy.jpg",
-    "featured": "on"
-  },
-  {
-    "id": 3,
-    "title": "Desserts",
-    "thumb": "desserts.jpg",
-    "featured": "on"
-  },
-  {
-    "id": 4,
-    "title": "Beverages",
-    "thumb": "beverages.jpg",
-    "featured": "on"
-  },
-  {
-    "id": 5,
-    "title": "Seafood",
-    "thumb": "seafood.jpg",
-    "featured": "off"
-  },
-  {
-    "id": 6,
-    "title": "Vegan",
-    "thumb": "vegan.jpg",
-    "featured": "on"
-  }
-]
 const HCategories = () => {
+  // GET CATEGORIES
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get('http://localhost:1000/api/admin/categories'); 
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []); 
 
   return (
     <>
@@ -53,17 +32,17 @@ const HCategories = () => {
           ) : (
             categories.slice(0, 4).map((item, index) => (
               <div key={index} className="items shadow">
-                <Link to={"/category-food/" + item.title}>
-                  <div class="box-3 float-container">
+                <Link to={`/category-food/${item.title}`}>
+                  <div className="box-3 float-container">
                     <div className="category-thumb text-center">
                       <img
-                        src={"/categories/" + item.thumb}
+                        src={`/categories/${item.thumb}`}
                         alt={item.title}
-                        class="img-responsive img-curve"
+                        className="img-responsive img-curve"
                       />
                     </div>
                     <div className="category-title text-center">
-                      <h4 class="float-text text-white">{item.title}</h4>
+                      <h4 className="float-text text-white">{item.title}</h4>
                     </div>
                   </div>
                 </Link>

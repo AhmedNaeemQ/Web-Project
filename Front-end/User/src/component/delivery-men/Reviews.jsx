@@ -22,7 +22,7 @@ const Reviews = () => {
       setDeliveryManReviews(data.reviews);
     };
     fatchDeliveryMan();
-  }, [deliveryMan]);
+  }, []);
 
   // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);

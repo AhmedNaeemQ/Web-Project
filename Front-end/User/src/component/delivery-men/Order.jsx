@@ -21,7 +21,7 @@ const Order = () => {
       setitems(data.items);
     };
     fatchOrder();
-  }, [order]);
+  }, []);
 
   if (!Cookies.get("delivery-man")) {
     window.location.href = "/delivery-man";

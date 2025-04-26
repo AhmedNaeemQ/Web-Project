@@ -59,7 +59,7 @@ const Header = () => {
       setCustomer(data);
     };
     fatchCustomer();
-  }, [customer]);
+  }, []);
 
   // GET DELIVERY MAN DETAILS
   const deliveryMan_id = Cookies.get("delivery-man");
@@ -72,7 +72,7 @@ const Header = () => {
       setDeliveryMan(data);
     };
     fatchDeliveryMan();
-  }, [deliveryMan]);
+  }, []);
 
   // CUSTOMER LOGOUT
   const customerLogout = () => {

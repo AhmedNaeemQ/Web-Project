@@ -14,7 +14,7 @@ const Profile = () => {
       setCustomer(data);
     };
     fatchCustomer();
-  }, [customer]);
+  }, []);
 
   // CUSTOMER LOGOUT
   const customerLogout = () => {

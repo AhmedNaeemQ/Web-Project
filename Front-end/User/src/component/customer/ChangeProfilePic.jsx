@@ -19,7 +19,7 @@ const ProfilePicChange = () => {
       setThumb(data.thumb);
     };
     fatchCustomer();
-  }, [currentThumb]);
+  }, [id]);
 
   const submitHandler = (e) => {
     e.preventDefault();

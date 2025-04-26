@@ -25,7 +25,7 @@ const Order = () => {
       setDeliveryManID(data.delivery_man_id);
     };
     fatchOrder();
-  }, [order]);
+  }, []);
 
   // GET DELIVERY MAN DETAILS
   const [deliveryMan, setDeliveryMan] = useState({});

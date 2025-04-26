@@ -14,7 +14,7 @@ const CategoriesItem = () => {
       setCategories(data);
     };
     fatchCategories();
-  }, [categories]);
+  }, []);
 
   // Pagination
   const [itemOffset, setItemOffset] = useState(0);

@@ -15,7 +15,7 @@ const Profile = () => {
       setDeliveryMan(data);
     };
     fatchDeliveryMan();
-  }, [deliveryMan]);
+  }, []);
 
   // CUSTOMER LOGOUT
   const deliveryManLogout = () => {

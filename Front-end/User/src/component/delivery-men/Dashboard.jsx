@@ -23,7 +23,7 @@ const Dashboard = () => {
       setOrders(fatchDeliveryManOrders);
     };
     fatchOrders();
-  }, [orders]);
+  }, []);
 
   // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);
