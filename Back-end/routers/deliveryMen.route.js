@@ -5,7 +5,6 @@ const router = express.Router();
 import fs from "fs";
 import url from "url";
 import bcrypt from "bcrypt";
-// import Orders from "../models/order.model.js";
 const saltRounds = 10;
 
 // FILE UPLOAD

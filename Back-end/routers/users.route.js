@@ -7,7 +7,7 @@ import url from "url";
 import bcrypt from "bcrypt";
 const saltRounds = 10;
 
-// FILE UPLOAD
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/users/");
@@ -19,13 +19,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CREATE USER
+
 router.post("/", async (req, res) => {
   try {
     const email = req.body.email;
     const emailCheck = await Users.findOne({ email: email });
     if (emailCheck) {
-      res.json({ message: "Already registered." });
+      res.json({ message: "User already exists" });
     } else {
       const filePath = "uploads/default/avatar.png";
       const avatar = Date.now() + "-avatar.png";
@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
           address: req.body.address,
         });
         await newUser.save().then((data) => {
-          res.json({ message: "User added successfull." });
+          res.json({ message: "User created successfully." });
         });
       });
     }
@@ -57,47 +57,46 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ALL USER
+
 router.get("/", async (req, res) => {
   await Users.find()
     .sort({ _id: -1 })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No user found." });
+        res.status(404).send({ message: "No users found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find user." });
+      res.status(500).send({ message: "An error occured finding user." });
     });
 });
 
-// SINGLE USER
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   await Users.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No user found." });
+        res.status(404).send({ message: "User not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find user." });
+      res.status(500).send({ message: "An error occured finding user." });
     });
 });
 
-// UPDATE USER
+
 router.put("/:id", upload.single("thumb"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.body) {
-    return res.json({ Message: "Data to update can not be empty." });
+    return res.json({ Message: "Failed to update user" });
   }
 
-  // If no new thumbnail found.
   if (req.body.oldPassword) {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
@@ -117,23 +116,23 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
               )
                 .then((data) => {
                   if (!data) {
-                    res.json({ message: "Can not update." });
+                    res.json({ message: "Unable to update password." });
                   } else {
-                    res.json({ message: "Updated successfull." });
+                    res.json({ message: "Password updated successfully." });
                   }
                 })
                 .catch((err) => {
                   res
                     .status(500)
-                    .send({ message: "Error updatating customer." });
+                    .send({ message: "An error occured while updatating password." });
                 });
             });
           } else {
-            res.json({ message: "Old password doesn't match." });
+            res.json({ message: "The passwords do not match" });
           }
         });
       } else {
-        res.json({ message: "Something wrong." });
+        res.json({ message: "Something went wrong." });
       }
     });
   } else if (req.body.thumb) {
@@ -142,16 +141,16 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     })
       .then((data) => {
         if (!data) {
-          res.json({ message: "Can not update." });
+          res.json({ message: "Unable to update user." });
         } else {
-          res.json({ data, message: "User updated." });
+          res.json({ data, message: "User updated successfully." });
         }
       })
       .catch((err) => {
-        res.json({ message: "Error updatating user." });
+        res.json({ message: "An error occured while updatating user." });
       });
   } else if (req.file.filename) {
-    // Delete old thumbnail
+
     var url_parts = url.parse(req.url, true).query;
     var oldThumb = url_parts.cthumb;
     fs.unlinkSync(`uploads/users/${oldThumb}`);
@@ -165,46 +164,37 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     )
       .then((data) => {
         if (!data) {
-          res.json({ message: "Can not update." });
+          res.json({ message: "Unable to update user." });
         } else {
-          res.json({ message: "Update successfull." });
+          res.json({ message: "User updated successfully." });
         }
       })
       .catch((err) => {
-        res.json({ message: "Error updatating user." });
+        res.json({ message: "An error occured while updatating user." });
       });
   }
 });
 
-// DELETE USER
+
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
   var url_parts = url.parse(req.url, true).query;
   var thumb = url_parts.thumb;
 
-  // const filePath = `uploads/users/${thumb}`;
-  // const copy = `uploads/copy/${thumb}`;
-  // fs.copyFile(filePath, copy, (error) => {
-  //   if (error) {
-  //     throw error;
-  //   } else {
-  //     console.log("File has been moved to another folder.");
-  //   }
-  // });
 
   fs.unlinkSync(`uploads/users/${thumb}`);
 
   await Users.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "User not found." });
       } else {
-        res.status(200).send("User deleted.");
+        res.status(200).send("User deleted successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting user." });
+      res.status(500).send({ message: "An error occured deleting user." });
     });
 });
 
