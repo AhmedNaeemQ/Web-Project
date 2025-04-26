@@ -2,7 +2,7 @@ import express from "express";
 import Messages from "../models/message.model.js";
 const router = express.Router();
 
-// CREATE MESSAGE
+
 router.post("/", async (req, res) => {
   try {
     const newMessage = new Messages({
@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
       read: req.body.read,
     });
     await newMessage.save().then((data) => {
-      res.send("Message added.");
+      res.send("Feedback added successfully.");
     });
   } catch (error) {
     res.send({
@@ -23,39 +23,39 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ALL MESSAGE
+
 router.get("/", async (req, res) => {
   await Messages.find()
     .sort({ _id: -1 })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No message found." });
+        res.status(404).send({ message: "Feedbacks not found" });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find message." });
+      res.status(500).send({ message: "An error occurred fetching feedbacks." });
     });
 });
 
-// SINGLE MESSAGE
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   await Messages.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No message found." });
+        res.status(404).send({ message: "Feedback not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find message." });
+      res.status(500).send({ message: "An error occurred fetching the feedback." });
     });
 });
 
-// UPDATE READ STATUS
+
 router.put("/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -68,30 +68,30 @@ router.put("/:id", async (req, res) => {
   )
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not update." });
+        res.status(404).send({ message: "Feedback not found" });
       } else {
-        res.send("Message status updated.");
+        res.send("Feedback status updated successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error updatating message status." });
+      res.status(500).send({ message: "An error occurred updatating the feedback status." });
     });
 });
 
-// DELETE MESSAGE
+
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
   await Messages.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "Failed to delete the feedback." });
       } else {
-        res.status(200).send("Message deleted.");
+        res.status(200).send("Feedback deleted successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting message." });
+      res.status(500).send({ message: "An error occurred deleting the feedback." });
     });
 });
 

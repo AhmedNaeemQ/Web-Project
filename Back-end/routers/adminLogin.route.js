@@ -3,7 +3,7 @@ import Users from "../models/user.model.js";
 const router = express.Router();
 import bcrypt from "bcrypt";
 
-// ADMIN LOGIN
+
 router.post("/", async (req, res) => {
   try {
     const email = req.body.email;
@@ -12,13 +12,13 @@ router.post("/", async (req, res) => {
       if (admin) {
         bcrypt.compare(password, admin.password, (err, result) => {
           if (result === true) {
-            res.json({ admin, message: "Login success." });
+            res.json({ admin, message: "Login successfully." });
           } else {
-            res.json({ message: "Password doesn't match." });
+            res.json({ message: "Incorrect email or password." });
           }
         });
       } else {
-        res.json({ message: "Email doesn't exist." });
+        res.json({ message: "User does not exist." });
       }
     });
   } catch (error) {

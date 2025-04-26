@@ -7,7 +7,7 @@ import url from "url";
 import bcrypt from "bcrypt";
 const saltRounds = 10;
 
-// FILE UPLOAD
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/delivery-men/");
@@ -19,13 +19,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CREATE DELIVERY MEN
+
 router.post("/", async (req, res) => {
   try {
     const email = req.body.email;
     const emailCheck = await DeliveryMen.findOne({ email: email });
     if (emailCheck) {
-      res.json({ message: "Already registered." });
+      res.json({ message: "Delivery boy already exists." });
     } else {
       const filePath = "uploads/default/avatar.png";
       const avatar = Date.now() + "-avatar.png";
@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
           address: req.body.address,
         });
         await newDeliveryMen.save().then((data) => {
-          res.json({ message: "Registration successfull." });
+          res.json({ message: "Delivery boy registered successfully." });
         });
       });
     }
@@ -55,48 +55,48 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ALL DELIVERY MEN
+
 router.get("/", async (req, res) => {
   await DeliveryMen.find()
     .sort({ _id: -1 })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No delivery men found." });
+        res.status(404).send({ message: "No delivery boy found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find delivery men." });
+      res.status(500).send({ message: "An error occurred fetching delivery boys." });
     });
 });
 
-// SINGLE DELIVERY MEN
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   await DeliveryMen.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No delivery man found." });
+        res.status(404).send({ message: "Delivery boy not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find delivery man." });
+      res.status(500).send({ message: "An error occurred fetching delivery boy." });
     });
 });
 
-// UPDATE DELIVERY MEN
+
 router.put("/:id", upload.single("thumb"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Data to update can not be empty." });
+      .send({ Message: "Unable to update delivery boy." });
   }
-  // If no new thumbnail found.
+
   if (req.body.oldPassword) {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
@@ -116,21 +116,21 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
               )
                 .then((data) => {
                   if (!data) {
-                    res.json({ message: "Can not update." });
+                    res.json({ message: "Unable to update delivery boy." });
                   } else {
-                    res.json({ message: "Updated successful." });
+                    res.json({ message: "Delivery boy updated successfully." });
                   }
                 })
                 .catch((err) => {
-                  res.json({ message: "Error updatating customer." });
+                  res.json({ message: "An error occurred updatating delivery boy." });
                 });
             });
           } else {
-            res.json({ message: "Old password doesn't match." });
+            res.json({ message: "The password do not match" });
           }
         });
       } else {
-        res.json({ message: "Something wrong." });
+        res.json({ message: "Something went wrong." });
       }
     });
   } else if (req.body.thumb) {
@@ -139,16 +139,16 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     })
       .then((data) => {
         if (!data) {
-          res.json({ message: "Can not update." });
+          res.json({ message: "Unable to update delivery boy." });
         } else {
-          res.json({ data, message: "Delivery men updated." });
+          res.json({ data, message: "Delivery boy updated successfully." });
         }
       })
       .catch((err) => {
-        res.json({ message: "Error updatating delivery men." });
+        res.json({ message: "An error occurred updatating delivery boy." });
       });
   } else if (req.file.filename) {
-    // Delete old thumbnail
+
     var url_parts = url.parse(req.url, true).query;
     var oldThumb = url_parts.cthumb;
     fs.unlinkSync(`uploads/delivery-men/${oldThumb}`);
@@ -162,18 +162,18 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     )
       .then((data) => {
         if (!data) {
-          res.json({ message: "Can not update." });
+          res.json({ message: "Unable to update delivery boy." });
         } else {
-          res.json({ message: "Delivery men updated." });
+          res.json({ message: "Delivery boy updated successfully." });
         }
       })
       .catch((err) => {
-        res.json({ message: "Error updatating delivery men." });
+        res.json({ message: "An error occurred updatating delivery boy." });
       });
   }
 });
 
-// DELETE DELIVERY MEN
+
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -184,17 +184,17 @@ router.delete("/:id", async (req, res) => {
   await DeliveryMen.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "Unable to delete the delivery boy." });
       } else {
-        res.status(200).send("Delivery men deleted.");
+        res.status(200).send("Delivery boy deleted successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting delivery men." });
+      res.status(500).send({ message: "An error occurred deleting delivery boy." });
     });
 });
 
-// DELIVERY MAN REVIEW
+
 router.post("/:id/review", async (req, res) => {
   try {
     const { name, rating, comment, customer_id, deliveryManID } = req.body;
@@ -212,13 +212,13 @@ router.post("/:id/review", async (req, res) => {
         deliveryMan.reviews.reduce((acc, item) => item.rating + acc, 0) /
         deliveryMan.reviews.length;
       await deliveryMan.save().then((data) => {
-        res.json({ message: "Successfully reviewed." });
+        res.json({ message: "Delivery reviewed successfully." });
       });
     } else {
-      res.json({ message: "Delivery Man not found." });
+      res.json({ message: "Delivery not found." });
     }
   } catch (error) {
-    res.json({ message: "Something wrong." });
+    res.json({ message: "Something went wrong." });
   }
 });
 

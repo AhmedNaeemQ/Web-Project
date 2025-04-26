@@ -5,7 +5,7 @@ const router = express.Router();
 import fs from "fs";
 import url from "url";
 
-// FILE UPLOAD
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/categories/");
@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CREATE CATEGORY
+
 router.post("/", upload.single("thumb"), async (req, res) => {
   try {
     const newCategory = new Categories({
@@ -27,7 +27,7 @@ router.post("/", upload.single("thumb"), async (req, res) => {
       active: req.body.active,
     });
     await newCategory.save().then((data) => {
-      res.send("Category added.");
+      res.send("Category added successfully.");
     });
   } catch (error) {
     res.send({
@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find category." });
+      res.status(500).send({ message: "An error occurred fetching categories." });
     });
 });
 
@@ -58,13 +58,13 @@ router.get("/:id", async (req, res) => {
   await Categories.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No category found." });
+        res.status(404).send({ message: "Category not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find category." });
+      res.status(500).send({ message: "An error occurred fetching the category." });
     });
 });
 
@@ -75,7 +75,7 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Data to update can not be empty." });
+      .send({ Message: "Unable to update the category" });
   }
   // If no new thumbnail found.
   if (req.body.thumb) {
@@ -84,13 +84,13 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     })
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Can not update." });
+          res.status(404).send({ message: "Unable to update the category" });
         } else {
-          res.send("Category updated.");
+          res.send("Category updated successfully.");
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error updatating category." });
+        res.status(500).send({ message: "An error occurred updatating the category." });
       });
   } else if (req.file.filename) {
     // Delete old thumbnail
@@ -107,13 +107,13 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     )
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Can not update." });
+          res.status(404).send({ message: "Unable to update the category" });
         } else {
-          res.send("Category updated.");
+          res.send("Category updated successfully.");
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error updatating category." });
+        res.status(500).send({ message: "An error occurred updatating the category." });
       });
   }
 });
@@ -129,13 +129,13 @@ router.delete("/:id", async (req, res) => {
   await Categories.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "Unable to delete the category." });
       } else {
-        res.status(200).send("Category deleted.");
+        res.status(200).send("Category deleted successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting category." });
+      res.status(500).send({ message: "An error occurred deleting the category." });
     });
 });
 

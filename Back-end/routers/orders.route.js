@@ -3,7 +3,7 @@ import multer from "multer";
 import Orders from "../models/order.model.js";
 const router = express.Router();
 
-// FILE UPLOAD
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/ordres/");
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CREATE ORDER
+
 router.post("/", upload.single("thumb"), async (req, res) => {
   try {
     const newOrder = new Orders({
@@ -34,7 +34,7 @@ router.post("/", upload.single("thumb"), async (req, res) => {
       payment: req.body.payment,
     });
     await newOrder.save().then((data) => {
-      res.send("Successfully ordered.");
+      res.send("Order placed successfully.");
     });
   } catch (error) {
     res.send({
@@ -43,80 +43,80 @@ router.post("/", upload.single("thumb"), async (req, res) => {
   }
 });
 
-// ALL ORDER
+
 router.get("/", async (req, res) => {
   await Orders.find()
     .sort({ _id: -1 })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No order found." });
+        res.status(404).send({ message: "Orders not found" });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find order." });
+      res.status(500).send({ message: "An error occurred finding orders." });
     });
 });
 
-// SINGLE ORDER
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   await Orders.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No order found." });
+        res.status(404).send({ message: "Order not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find order." });
+      res.status(500).send({ message: "An error occurred finding the order." });
     });
 });
 
-// UPDATE ORDER
+
 router.put("/:id", upload.single("thumb"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Data to update can not be empty." });
+      .send({ Message: "Failed to update the order." });
   }
   await Orders.findByIdAndUpdate(id, req.body, {
     useFindAndModify: false,
   })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not update." });
+        res.status(404).send({ message: "Order not found." });
       } else {
-        res.send("Order updated.");
+        res.send("Order updated successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error updatating order." });
+      res.status(500).send({ message: "An error occurred updating order." });
     });
 });
 
-// DELETE ORDER
+
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
   await Orders.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "Unable to delete the order." });
       } else {
-        res.status(200).send("Order deleted.");
+        res.status(200).send("Order deleted successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting order." });
+      res.status(500).send({ message: "An error occurred deleting the order." });
     });
 });
 
-// UPDATE REVIEW STATUS AFTER FOOD REVIEW
+
 router.put("/:id/review", async (req, res) => {
   const id = req.params.id;
   try {
@@ -135,7 +135,7 @@ router.put("/:id/review", async (req, res) => {
       res.json({ message: "Order not found." });
     }
   } catch (error) {
-    res.json({ message: "Something wrong." });
+    res.json({ message: "Something went wrong." });
   }
 });
 

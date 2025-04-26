@@ -69,7 +69,7 @@ router.get("/", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "An error occured finding user." });
+      res.status(500).send({ message: "An error occurred finding user." });
     });
 });
 
@@ -85,7 +85,7 @@ router.get("/:id", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "An error occured finding user." });
+      res.status(500).send({ message: "An error occurred finding user." });
     });
 });
 
@@ -124,7 +124,7 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
                 .catch((err) => {
                   res
                     .status(500)
-                    .send({ message: "An error occured while updatating password." });
+                    .send({ message: "An error occurred while updatating password." });
                 });
             });
           } else {
@@ -147,7 +147,7 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
         }
       })
       .catch((err) => {
-        res.json({ message: "An error occured while updatating user." });
+        res.json({ message: "An error occurred while updatating user." });
       });
   } else if (req.file.filename) {
 
@@ -170,7 +170,7 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
         }
       })
       .catch((err) => {
-        res.json({ message: "An error occured while updatating user." });
+        res.json({ message: "An error occurred while updatating user." });
       });
   }
 });
@@ -194,7 +194,7 @@ router.delete("/:id", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "An error occured deleting user." });
+      res.status(500).send({ message: "An error occurred deleting user." });
     });
 });
 

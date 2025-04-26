@@ -27,7 +27,7 @@ router.post("/", upload.single("thumb"), async (req, res) => {
       description: req.body.description,
     });
     await newBlog.save().then((data) => {
-      res.send("Blog added.");
+      res.send("Blog added successfully.");
     });
   } catch (error) {
     res.send({
@@ -42,13 +42,13 @@ router.get("/", async (req, res) => {
     .sort({ _id: -1 })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No blog found." });
+        res.status(404).send({ message: "Blogs not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find blog." });
+      res.status(500).send({ message: "An error occurred fetching blogs." });
     });
 });
 
@@ -58,13 +58,13 @@ router.get("/:id", async (req, res) => {
   await Blogs.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No blog found." });
+        res.status(404).send({ message: "Blog not found." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find blog." });
+      res.status(500).send({ message: "An error occurred fetching the blog." });
     });
 });
 
@@ -75,7 +75,7 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Data to update can not be empty." });
+      .send({ Message: "Unable to update the blog" });
   }
   // If no new thumbnail found.
   if (req.body.thumb) {
@@ -84,13 +84,13 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     })
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Can not update." });
+          res.status(404).send({ message: "Unable to update the blog" });
         } else {
-          res.send("Blog updated.");
+          res.send("Blog updated succesfully.");
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error updatating blog." });
+        res.status(500).send({ message: "An error occurred updatating the blog." });
       });
   } else if (req.file.filename) {
     // Delete old thumbnail
@@ -107,13 +107,13 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     )
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Can not update." });
+          res.status(404).send({ message: "Unable to update the blog" });
         } else {
           res.send("Blog updated.");
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error updatating blog." });
+        res.status(500).send({ message: "An error occurred updatating the blog." });
       });
   }
 });
@@ -129,13 +129,13 @@ router.delete("/:id", async (req, res) => {
   await Blogs.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "Unable to delete the blog" });
       } else {
-        res.status(200).send("Blog deleted.");
+        res.status(200).send("Blog deleted successully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting blog." });
+      res.status(500).send({ message: "An error occurred deleting the blog." });
     });
 });
 

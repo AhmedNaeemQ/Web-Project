@@ -5,7 +5,7 @@ const router = express.Router();
 import fs from "fs";
 import url from "url";
 
-// FILE UPLOAD
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/foods/");
@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CREATE FOOD
+
 router.post("/", upload.single("thumb"), async (req, res) => {
   try {
     const newFood = new Foods({
@@ -30,7 +30,7 @@ router.post("/", upload.single("thumb"), async (req, res) => {
       description: req.body.description,
     });
     await newFood.save().then((data) => {
-      res.send("Food added successfull.");
+      res.send("Food item added successfully.");
     });
   } catch (error) {
     res.send({
@@ -39,7 +39,7 @@ router.post("/", upload.single("thumb"), async (req, res) => {
   }
 });
 
-// ALL FOODS
+
 router.get("/", async (req, res) => {
   const { q } = req.query;
   if (q) {
@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
       .sort({ _id: -1 })
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "No food found." });
+          res.status(404).send({ message: "Food items not found." });
         } else {
           const keys = ["title"];
           const search = (data) => {
@@ -59,82 +59,82 @@ router.get("/", async (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error to find food." });
+        res.status(500).send({ message: "An error occurred fetching food items." });
       });
   } else {
     await Foods.find()
       .sort({ _id: -1 })
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "No food found." });
+          res.status(404).send({ message: "Food items not found." });
         } else {
           res.status(200).send(data);
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error to find food." });
+        res.status(500).send({ message: "An error occurred fetching food items." });
       });
   }
 });
 
-// RECOMMENDED FOODS
+
 router.get("/recommended", async (req, res) => {
   await Foods.find()
     .sort({ rating: -1, totalReviews: -1 })
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No food found." });
+        res.status(404).send({ message: "Unable to fetch food recommendations." });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find food." });
+      res.status(500).send({ message: "Unable to fetch food recommendations." });
     });
 });
 
-// SINGLE FOOD
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   await Foods.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "No food found." });
+        res.status(404).send({ message: "Food item not found" });
       } else {
         res.status(200).send(data);
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error to find food." });
+      res.status(500).send({ message: "An error occurred fetching food item" });
     });
 });
 
-// UPDATE FOOD
+
 router.put("/:id", upload.single("thumb"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Data to update can not be empty." });
+      .send({ Message: "Unable to update foot item." });
   }
-  // If no new thumbnail found.
+
   if (req.body.thumb) {
     await Foods.findByIdAndUpdate(id, req.body, {
       useFindAndModify: false,
     })
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Can not update." });
+          res.status(404).send({ message: "Unable to update food item." });
         } else {
-          res.send("Food updated.");
+          res.send("Food item updated successfully.");
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error updatating food." });
+        res.status(500).send({ message: "An error occurred updatating food item." });
       });
   } else if (req.file.filename) {
-    // Delete old thumbnail
+
     var url_parts = url.parse(req.url, true).query;
     var oldThumb = url_parts.cthumb;
     fs.unlinkSync(`uploads/foods/${oldThumb}`);
@@ -148,18 +148,18 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
     )
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Can not update." });
+          res.status(404).send({ message: "Unable to update food item." });
         } else {
-          res.send("Food updated.");
+          res.send("Food item updated successfully.");
         }
       })
       .catch((err) => {
-        res.status(500).send({ message: "Error updatating food." });
+        res.status(500).send({ message: "An error occurred updatating food item." });
       });
   }
 });
 
-// DELETE FOOD
+
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -170,17 +170,17 @@ router.delete("/:id", async (req, res) => {
   await Foods.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
-        res.status(404).send({ message: "Can not delete." });
+        res.status(404).send({ message: "Unable to delete the food item." });
       } else {
-        res.status(200).send("Food deleted.");
+        res.status(200).send("Food item deleted successfully.");
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error deleting food." });
+      res.status(500).send({ message: "An error occurred while deleting food item." });
     });
 });
 
-// FOOD REVIEW
+
 router.post("/:id/review", async (req, res) => {
   const id = req.params.id;
   try {
@@ -199,13 +199,13 @@ router.post("/:id/review", async (req, res) => {
         food.reviews.reduce((acc, item) => item.rating + acc, 0) /
         food.reviews.length;
       await food.save().then((data) => {
-        res.json({ message: "Successfully reviewed." });
+        res.json({ message: "Review added succesfully." });
       });
     } else {
-      res.json({ message: "Food not found." });
+      res.json({ message: "Food item not found." });
     }
   } catch (error) {
-    res.json({ message: "Something wrong." });
+    res.json({ message: "Something went wrong." });
   }
 });
 
