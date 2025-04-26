@@ -6,7 +6,12 @@ import categoryRoute from "./routers/categories.route.js";
 import blogRoute from "./routers/blogs.route.js";
 import userRoute from "./routers/users.route.js";
 import customerRoute from "./routers/customers.route.js";
-
+import orderRoute from "./routers/orders.route.js";
+import revenueRoute from "./routers/revenue.route.js";
+import customerLogin from "./routers/customerLogin.route.js";
+import adminLogin from "./routers/adminLogin.route.js";
+import manLogin from "./routers/manLogin.route.js";
+import deliveryMenRoute from "./routers/deliveryMen.route.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 dotenv.config();
@@ -41,6 +46,35 @@ app.use("/api/admin/users/:id", userRoute);
 app.use("/api/admin/customers", customerRoute);
 app.use("/api/admin/customers/:id", customerRoute);
 
+// DELIVERY MEN API
+app.use("/api/admin/delivery-men", deliveryMenRoute);
+app.use("/api/admin/delivery-men/:id", deliveryMenRoute);
+
+// ORDER API
+app.use("/api/admin/orders", orderRoute);
+app.use("/api/admin/orders/:id", orderRoute);
+
+// REVENUE API
+app.use("/api/admin/revenue", revenueRoute);
+
+// CUSTOMER LOGIN API
+app.use("/api/admin/customerlogin", customerLogin);
+
+// DELIVERY MAN LOGIN API
+app.use("/api/admin/manlogin", manLogin);
+
+// ADMIN LOGIN API
+app.use("/api/admin/adminlogin", adminLogin);
+
+// EXPORT IMAGES
+app.use("/default", express.static("uploads/default"));
+app.use("/foods", express.static("uploads/foods"));
+app.use("/categories", express.static("uploads/categories"));
+app.use("/orders", express.static("uploads/orders"));
+app.use("/blogs", express.static("uploads/blogs"));
+app.use("/users", express.static("uploads/users"));
+app.use("/customers", express.static("uploads/customers"));
+app.use("/delivery-men", express.static("uploads/delivery-men"));
 
 app.get("/", (req, res) => {
   res.send("<h1>App is running...</h1>");
