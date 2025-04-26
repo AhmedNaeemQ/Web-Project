@@ -48,7 +48,7 @@ const FoodItem = ({ foods }) => {
               <div className="img">
                 <Link to={"/foods/" + item._id}>
                   <img
-                    src={"img/food/p2.jpg"}
+                    src={"/foods/" + item.thumb}
                     alt="Pizza"
                     className="img-responsive img-curve"
                   />
@@ -63,7 +63,7 @@ const FoodItem = ({ foods }) => {
                   <span>({item.totalReviews})</span>
                 </h5>
                 <p>{item.description.slice(0, 50)}...</p>
-                <h5>Rs {item.price}</h5>
+                <h5>৳ {item.price}</h5>
                 <div className="flexSB">
                   <Link to={"/foods/" + item._id} className="btn-primary">
                     <i className="fas fa-eye"></i> View Detail

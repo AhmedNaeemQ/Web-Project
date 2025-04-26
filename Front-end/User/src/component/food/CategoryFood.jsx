@@ -14,7 +14,7 @@ const CategoryFood = () => {
   const [foods, setFoods] = useState([]);
   useEffect(() => {
     const fatchFoods = async () => {
-      const { data } = await axios.get(`/api/admin/foods`);
+      const { data } = await axios.get(`http://localhost:1000/api/admin/foods`);
       const categoryFoods = data.filter((curData) => {
         return curData.category.toLowerCase() === title.toLowerCase();
       });
@@ -81,7 +81,7 @@ const CategoryFood = () => {
                       <span>({item.totalReviews})</span>
                     </h5>
                     <p>{item.description.slice(0, 50)}...</p>
-                    <h5>Rs {item.price}</h5>
+                    <h5>৳ {item.price}</h5>
                     <div class="flexSB">
                       <Link to={"/foods/" + item._id} class="btn-primary">
                         <i class="fas fa-eye"></i> View Detail

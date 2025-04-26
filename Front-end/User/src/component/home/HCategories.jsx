@@ -1,42 +1,46 @@
-import React from "react";
 import Title from "../common/header/title/Title";
 import { Link } from "react-router-dom";
-
 
 const categories = [
   {
     "id": 1,
     "title": "Fast Food",
     "thumb": "fast-food.jpg",
+    "featured": "on"
   },
   {
     "id": 2,
     "title": "Healthy",
     "thumb": "healthy.jpg",
+    "featured": "on"
   },
   {
     "id": 3,
     "title": "Desserts",
     "thumb": "desserts.jpg",
+    "featured": "on"
   },
   {
     "id": 4,
     "title": "Beverages",
     "thumb": "beverages.jpg",
+    "featured": "on"
   },
   {
     "id": 5,
     "title": "Seafood",
     "thumb": "seafood.jpg",
+    "featured": "off"
   },
   {
     "id": 6,
     "title": "Vegan",
     "thumb": "vegan.jpg",
+    "featured": "on"
   }
 ]
-
 const HCategories = () => {
+
   return (
     <>
       <section className="categories padding">
@@ -53,7 +57,7 @@ const HCategories = () => {
                   <div class="box-3 float-container">
                     <div className="category-thumb text-center">
                       <img
-                        src={"/img/category/burger.jpg"}
+                        src={"/categories/" + item.thumb}
                         alt={item.title}
                         class="img-responsive img-curve"
                       />

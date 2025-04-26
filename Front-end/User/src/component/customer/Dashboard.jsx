@@ -1,78 +1,34 @@
+import Cookies from "js-cookie";
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PageHeader from "../common/header/title/PageHeader";
 import "./customer.css";
+import axios from "axios";
 import moment from "moment";
+import Swal from "sweetalert2";
 import Profile from "./Profile";
 import ReactPaginate from "react-paginate";
 
-
-const orders = [
-  {
-    _id: "1",
-    orderID: "ORD-1001",
-    total_foods: "Biryani, Chicken Karahi",
-    total_quantity: 3,
-    total_price: 1200,
-    payment: "Paid",
-    status: "Ordered",
-    order_date: "2025-03-20T12:00:00Z",
-    accept_time: "2025-03-20T12:30:00Z",
-    exp_time: "2025-03-20T13:00:00Z",
-    customer_id: "cust_001",
-    delivery_man_id: "dm_001",
-  },
-  {
-    _id: "2",
-    orderID: "ORD-1002",
-    total_foods: "Pizza, Fries",
-    total_quantity: 2,
-    total_price: 1500,
-    payment: "Pending",
-    status: "OnDelivery",
-    order_date: "2025-03-21T14:00:00Z",
-    accept_time: "2025-03-21T14:30:00Z",
-    exp_time: "2025-03-21T15:00:00Z",
-    customer_id: "cust_002",
-    delivery_man_id: "dm_002",
-  },
-  {
-    _id: "3",
-    orderID: "ORD-1003",
-    total_foods: "Burger, Soft Drink",
-    total_quantity: 1,
-    total_price: 500,
-    payment: "Paid",
-    status: "Delivered",
-    order_date: "2025-03-19T10:00:00Z",
-    accept_time: "2025-03-19T10:20:00Z",
-    exp_time: "2025-03-19T10:45:00Z",
-    customer_id: "cust_003",
-    delivery_man_id: "dm_003",
-  },
-  {
-    _id: "4",
-    orderID: "ORD-1004",
-    total_foods: "Pasta, Garlic Bread",
-    total_quantity: 2,
-    total_price: 900,
-    payment: "Paid",
-    status: "Cancelled",
-    order_date: "2025-03-18T16:00:00Z",
-    accept_time: null,
-    exp_time: "0",
-    customer_id: "cust_004",
-    delivery_man_id: "dm_004",
-  },
-];
-
-
 const Dashboard = () => {
+  // GET ORDERS
+  const [orders, setOrders] = useState([]);
+  const customer_id = Cookies.get("customer");
+  useEffect(() => {
+    const fatchOrders = async () => {
+      const { data } = await axios.get(`/api/admin/orders`);
+      const fatchCustomerOrders = data.filter((curData) => {
+        return curData.customer_id === customer_id;
+      });
+      setOrders(fatchCustomerOrders);
+    };
+    fatchOrders();
+  }, [orders]);
 
-
+  // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 2;
+  const itemsPerPage = 15;
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = orders.slice(itemOffset, endOffset);
@@ -88,8 +44,147 @@ const Dashboard = () => {
     });
   };
 
+  // CANCEL ORDER
+  const deleteHandler = (id) => {
+    Swal.fire({
+      text: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:1000/api/admin/orders/${id}`).catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Order deleted field!",
+          });
+        });
+      }
+    });
+  };
 
+  // ACCEPT ORDER
+  // const [deliveryMan, setDeliveryMan] = useState({});
+  // const [pendingOrders, setPendingOrders] = useState("");
+  // const [completeOrders, setCompleteOrders] = useState("");
+  // const [currentThumb, setCurrentThumb] = useState("");
 
+  //const updateDeliveryManDetails = (deliveryManID) => {
+  // GET DELIVERY MAN DETAILS
+  // const fatchDeliveryMan = async () => {
+  //   const { data } = await axios.get(
+  //     process.env.REACT_APP_SERVER +
+  //       `/api/admin/delivery-men/${deliveryManID}`
+  //   );
+  //   setDeliveryMan(data);
+  //   setPendingOrders(data.pendingOrders);
+  //   setCompleteOrders(data.completeOrders);
+  //   setCurrentThumb(data.thumb);
+  // };
+  // fatchDeliveryMan();
+  // Update delivery man details
+  // let updateManData = {
+  //   pendingOrders: deliveryMan.pendingOrders - 1,
+  //   completeOrders: deliveryMan.completeOrders + 1,
+  //   thumb: deliveryMan.thumb,
+  // };
+  // Swal.fire({
+  //   icon: "error",
+  //   title: "Oops...",
+  //   text: `${deliveryMan.pendingOrders}`,
+  //   text: pendingOrders + "/" + completeOrders + "/" + currentThumb,
+  //   text: deliveryManID,
+  // });
+  // axios
+  //   .put(
+  //     process.env.REACT_APP_SERVER +
+  //       `/api/admin/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
+  //     updateManData,
+  //     {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     }
+  //   )
+  //   .catch((error) => {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Oops...",
+  //       text: "Delivery man update failed.",
+  //     });
+  //   });
+  //};
+
+  const acceptHandler = (id, deliveryManID) => {
+    Swal.fire({
+      text: "Are you sure?",
+      // text: deliveryMan.completeOrders,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Accept",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let updateData = {
+          status: "Delivered",
+        };
+        axios
+          .put(`http://localhost:1000/api/admin/orders/${id}`, updateData, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            // updateDeliveryManDetails(deliveryManID);
+            // Update delivery man details
+            // let updateManData = {
+            //   pendingOrders: deliveryMan.pendingOrders - 1,
+            //   completeOrders: deliveryMan.completeOrders + 1,
+            //   thumb: deliveryMan.thumb,
+            // };
+            // Swal.fire({
+            //   icon: "error",
+            //   title: "Oops...",
+            //   text: pendingOrders + "/" + completeOrders + "/" + currentThumb,
+            // });
+            // axios
+            //   .put(
+            //     process.env.REACT_APP_SERVER +
+            //       `/api/admin/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
+            //     updateManData,
+            //     {
+            //       headers: {
+            //         "Content-Type": "multipart/form-data",
+            //       },
+            //     }
+            //   )
+            //   .catch((error) => {
+            //     Swal.fire({
+            //       icon: "error",
+            //       title: "Oops...",
+            //       text: "Delivery man update failed.",
+            //     });
+            //   });
+            window.location.href = "/customer/dashboard/" + id;
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Order update field!",
+            });
+          });
+      }
+    });
+  };
+
+  if (!Cookies.get("customer")) {
+    window.location.href = "/login";
+  } else {
     return (
       <>
         <PageHeader title="Dashboard" />
@@ -128,7 +223,7 @@ const Dashboard = () => {
                           </td>
                           <td>{item.total_foods}</td>
                           <td>{item.total_quantity}</td>
-                          <td>Rs {item.total_price}</td>
+                          <td>৳ {item.total_price}</td>
                           <td>{item.payment}</td>
                           <td>
                             <span
@@ -171,6 +266,7 @@ const Dashboard = () => {
                             )}
                             {item.status === "Ordered" && (
                               <Link
+                                onClick={() => deleteHandler(item._id)}
                                 className="danger-btn"
                               >
                                 CANCEL
@@ -181,7 +277,7 @@ const Dashboard = () => {
                       ))
                     )}
                   </table>
-                  {orders.length >= 2 && (
+                  {orders.length >= 16 && (
                     <ReactPaginate
                       breakLabel="..."
                       nextLabel=">>"
@@ -200,7 +296,7 @@ const Dashboard = () => {
         </section>
       </>
     );
-  
+  }
 };
 
 export default Dashboard;

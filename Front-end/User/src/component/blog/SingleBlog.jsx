@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../common/header/title/PageHeader";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import moment from "moment";
 
-const blog = {
-  "title": "The Perfect Spaghetti Carbonara Recipe",
-  "post_by": "Chef Antonio Rossi",
-  "date": "2025-03-30T15:30:00Z",
-  "thumb": "spaghetti-carbonara.jpg",
-  "description": "Spaghetti Carbonara is a classic Italian pasta dish that combines eggs, cheese, pancetta, and pepper for a rich and creamy flavor.To make the perfect carbonara, use fresh ingredients and avoid adding cream—authentic carbonara gets its creamy texture from eggs and cheese. Follow our step-by-step guide and impress your guests with this delicious homemade recipe! Cook spaghetti until al dente. Sauté pancetta until crispy. Mix eggs and cheese, then combine everything off the heat. Season with black pepper and enjoy!"
-}
-
 const SingleBlog = () => {
+  const { id } = useParams();
+  const [blog, setBlog] = useState({});
+  useEffect(() => {
+    const fatchBlog = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/blogs/${id}`);
+      setBlog(data);
+    };
+    fatchBlog();
+  }, [id]);
 
   return (
     <>
@@ -31,9 +34,9 @@ const SingleBlog = () => {
                 </span>
               </div>
             </div>
-            <div className="blog-text" style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-              <img src={"/img/blog/b1.jpg"} alt="" style={{ width: "100%", maxWidth: "600px", height: "300px" }} />
-              <p style={{ textAlign: "justify", marginTop: "10px" }}>{blog.description}</p>
+            <div className="blog-text">
+              <img src={"/blogs/" + blog.thumb} alt="" />
+              {blog.description}
             </div>
           </div>
         </div>

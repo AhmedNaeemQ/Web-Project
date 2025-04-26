@@ -22,7 +22,7 @@ footer ul li {
 }
 footer .link li::before {
   content: "⇒";
-  color: #0000D1;
+  color: #44bd32;
   margin-right: 5px;
 }
 footer .footer-item {
@@ -55,7 +55,7 @@ footer .last ul li {
 }
 footer .last i {
   font-size: 20px;
-  color: #0000D1;
+  color: #44bd32;
   margin-right: 20px;
 }
 .footer-item.flexSB {
@@ -75,7 +75,7 @@ footer .last i {
   color: #6c5ce7;
 }
 .copyright i {
-  color: #0000D1;
+  color: #44bd32;
 }
 @media screen and (max-width: 768px) {
   footer .container {

@@ -17,7 +17,7 @@ const DeliveryMan = () => {
       password,
     };
     axios
-      .post(`/api/admin/manlogin`, data, {
+      .post(`http://localhost:1000/api/admin/manlogin`, data, {
         headers: {
           "Content-Type": "application/json",
         },

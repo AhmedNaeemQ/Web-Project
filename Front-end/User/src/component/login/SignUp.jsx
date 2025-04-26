@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import PageHeader from "../common/header/title/PageHeader";
 import "./login.css";
+import axios from "axios";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -12,15 +14,56 @@ const SignUp = () => {
   const [address, setAddress] = useState("");
 
   const submitHandler = (e) => {
-    e.preventDefault(); 
-    Swal.fire({
-      icon: "success",
-      text: "Registration successful!",
-      showConfirmButton: false,
-      timer: 1500,
-    }).then(() => {
-      window.location.href = "/customer/dashboard"; 
-    });
+    e.preventDefault();
+    if (password === conPassword) {
+      let data = {
+        name,
+        email,
+        password,
+        phone,
+        address,
+      };
+      axios
+        .post(`http://localhost:1000/api/admin/customers`, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.data.message === "Registration successfull.") {
+            // Set Cookies
+            Cookies.set("customer", response.data.data._id, { expires: 30 });
+            Cookies.set("customerName", response.data.data.name, {
+              expires: 30,
+            });
+            Swal.fire({
+              icon: "success",
+              text: response.data.message,
+              showConfirmButton: false,
+              timer: 500,
+            });
+            window.location.href = "/customer/dashboard";
+          } else if (response.data.message === "Already registered.") {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: response.data.message,
+            });
+          }
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something wrong.",
+          });
+        });
+    } else {
+      Swal.fire({
+        icon: "error",
+        text: "Confirm password doesn't match.",
+      });
+    }
   };
 
   return (
@@ -30,7 +73,7 @@ const SignUp = () => {
         <div className="container">
           <div className="login-form text-center">
             <form onSubmit={submitHandler}>
-              <img src={"/img/avatar.png"} alt="" />
+              <img src={"/default/avatar.png"} alt="" />
               <input
                 type="text"
                 name="name"

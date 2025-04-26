@@ -1,7 +1,7 @@
-import React, {useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../common/header/title/PageHeader";
 import "./food.css";
-import { Link} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "react-use-cart";
 import Swal from "sweetalert2";
@@ -9,47 +9,26 @@ import Rating from "../common/rating/Rating";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 
-const food = {
-  _id: "1",
-  title: "Margherita Pizza",
-  description: "A classic Italian pizza with fresh basil, mozzarella, and tomato sauce.",
-  price: 1200,
-  category: "Pizza",
-  rating: 4.5,
-  totalReviews: 32,
-  thumb: "margherita-pizza.jpg",
-  active: "on",
-};
-
-// HARDCODED REVIEWS
-const reviews = [
-  { name: "Ali Khan", rating: 5, date: "2025-03-25T10:00:00Z", comment: "Delicious and fresh!" },
-  { name: "Sara Ahmed", rating: 4, date: "2025-03-27T15:30:00Z", comment: "Good but salty." },
-  { name: "Hamza Raza", rating: 3, date: "2025-03-28T08:20:00Z", comment: "Average quality." },
-  { name: "Sara Ahmed", rating: 4, date: "2025-03-27T15:30:00Z", comment: "Good but salty." },
-  { name: "Hamza Raza", rating: 3, date: "2025-03-28T08:20:00Z", comment: "Average quality." },
-  { name: "Sara Ahmed", rating: 4, date: "2025-03-27T15:30:00Z", comment: "Good but salty." },
-  { name: "Hamza Raza", rating: 3, date: "2025-03-28T08:20:00Z", comment: "Average quality." }
-];
-
-// HARDCODED RECOMMENDED FOODS
-const recomFoods = [
-  { _id: "2", title: "Pepperoni Pizza", price: 1400, rating: 4.7, totalReviews: 28, thumb: "pepperoni-pizza.jpg", active: "on",description: "A classic Italian pizza with fresh basil, mozzarella, and tomato sauce." },
-  { _id: "3", title: "BBQ Chicken Pizza", price: 1500, rating: 4.6, totalReviews: 40, thumb: "bbq-chicken-pizza.jpg", active: "on",description: "A classic Italian pizza with fresh basil, mozzarella, and tomato sauce." },
-  { _id: "4", title: "Vegetable Supreme", price: 1100, rating: 4.3, totalReviews: 25, thumb: "vegetable-supreme.jpg", active: "off", description: "A classic Italian pizza with fresh basil, mozzarella, and tomato sauce." },
-  { _id: "5", title: "Cheese Burst Pizza", price: 1600, rating: 4.8, totalReviews: 35, thumb: "cheese-burst-pizza.jpg", active: "on", description: "A classic Italian pizza with fresh basil, mozzarella, and tomato sauce." }
-];
-
-
 const SingleFood = () => {
-
+  // GET SINGLE FOOD
+  const { id } = useParams();
+  const [food, setFood] = useState({});
+  const [reviews, setReviews] = useState([]);
+  useEffect(() => {
+    const fatchFood = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/foods/${id}`);
+      setFood(data);
+      setReviews(data.reviews.reverse());
+    };
+    fatchFood();
+  }, [food]);
 
   // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 4;
+  const itemsPerPage = 12;
 
   const endOffset = itemOffset + itemsPerPage;
-  const currentItems = reviews?.slice(itemOffset, endOffset);
+  const currentItems = reviews.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(reviews.length / itemsPerPage);
 
   const handlePageClick = (event) => {
@@ -62,7 +41,15 @@ const SingleFood = () => {
     });
   };
 
-
+  // GET RECOMMENDED FOODS
+  const [recomFoods, setRecomFoods] = useState([]);
+  useEffect(() => {
+    const fatchRecomFood = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/foods/recommended`);
+      setRecomFoods(data);
+    };
+    fatchRecomFood();
+  }, [recomFoods]);
 
   // ADD-TO-CART
   const { addItem } = useCart();
@@ -84,7 +71,7 @@ const SingleFood = () => {
         <div className="container">
           <div className="single-food-item grid-2">
             <div className="left">
-              <img src={"/img/food/p1.jpg"} alt={food.title} />
+              <img src={"/foods/" + food.thumb} alt={food.title} />
             </div>
             <div className="right">
               <h3>{food.title}</h3>
@@ -93,7 +80,7 @@ const SingleFood = () => {
                 <ul>
                   <li>
                     <span>Price</span>
-                    <h4>Rs {food.price}</h4>
+                    <h4>৳ {food.price}</h4>
                   </li>
                   <li>
                     <span>Category</span>
@@ -163,12 +150,12 @@ const SingleFood = () => {
                   ))
                 )}
               </div>
-              {reviews.length >= 4 && (
+              {reviews.length >= 13 && (
                 <ReactPaginate
                   breakLabel="..."
                   nextLabel=">>"
                   onPageChange={handlePageClick}
-                  pageRangeDisplayed={4}
+                  pageRangeDisplayed={3}
                   pageCount={pageCount}
                   previousLabel="<<"
                   renderOnZeroPageCount={null}
@@ -183,11 +170,11 @@ const SingleFood = () => {
             RECOMMENDED FOODS
           </h3>
           <div className="grid-4">
-            {recomFoods?.slice(0, 4).map((item, index) => (
+            {recomFoods.slice(0, 4).map((item, index) => (
               <div key={index} className="items shadow">
                 <div className="img">
                   <img
-                    src={"/img/food/s1.jpg" }
+                    src={"/foods/" + item.thumb}
                     alt="Pizza"
                     className="img-responsive img-curve"
                   />
@@ -200,8 +187,8 @@ const SingleFood = () => {
                     <Rating rating={item.rating} />
                     <span>({item.totalReviews})</span>
                   </h5>
-                  <p>{item.description?.slice(0, 50)}...</p>
-                  <h5>Rs {item.price}</h5>
+                  <p>{item.description.slice(0, 50)}...</p>
+                  <h5>৳ {item.price}</h5>
                   <div className="flexSB">
                     <Link to={"/foods/" + item._id} className="btn-primary">
                       <i className="fas fa-eye"></i> View Detail

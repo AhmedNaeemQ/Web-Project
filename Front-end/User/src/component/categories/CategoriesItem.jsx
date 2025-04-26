@@ -1,92 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { useState } from "react";
+import { useEffect } from "react";
 import ReactPaginate from "react-paginate";
 
-const categories = [
-  {
-    "id": 1,
-    "title": "Fast Food",
-    "thumb": "fast-food.jpg"
-  },
-  {
-    "id": 2,
-    "title": "Healthy",
-    "thumb": "healthy.jpg"
-  },
-  {
-    "id": 3,
-    "title": "Desserts",
-    "thumb": "desserts.jpg"
-  },
-  {
-    "id": 4,
-    "title": "Beverages",
-    "thumb": "beverages.jpg"
-  },
-  {
-    "id": 5,
-    "title": "Seafood",
-    "thumb": "seafood.jpg"
-  },
-  {
-    "id": 6,
-    "title": "Vegan",
-    "thumb": "vegan.jpg"
-  },
-  {
-    "id": 7,
-    "title": "BBQ",
-    "thumb": "bbq.jpg"
-  },
-  {
-    "id": 8,
-    "title": "Bakery",
-    "thumb": "bakery.jpg"
-  },
-  {
-    "id": 9,
-    "title": "Pasta",
-    "thumb": "pasta.jpg"
-  },
-  {
-    "id": 10,
-    "title": "Sushi",
-    "thumb": "sushi.jpg"
-  },
-  {
-    "id": 11,
-    "title": "Mexican",
-    "thumb": "mexican.jpg"
-  },
-  {
-    "id": 12,
-    "title": "Italian",
-    "thumb": "italian.jpg"
-  },
-  {
-    "id": 13,
-    "title": "Indian",
-    "thumb": "indian.jpg"
-  },
-  {
-    "id": 14,
-    "title": "Chinese",
-    "thumb": "chinese.jpg"
-  },
-  {
-    "id": 15,
-    "title": "Thai",
-    "thumb": "thai.jpg"
-  }
-]
-
 const CategoriesItem = () => {
-
+  // GET CATEGORIES
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fatchCategories = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/categories`);
+      setCategories(data);
+    };
+    fatchCategories();
+  }, [categories]);
 
   // Pagination
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 12;
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = categories.slice(itemOffset, endOffset);
@@ -114,7 +46,7 @@ const CategoriesItem = () => {
                 <div class="box-3 float-container">
                   <div className="category-thumb text-center">
                     <img
-                      src={"img/category/sandwich.jpg"}
+                      src={"/categories/" + item.thumb}
                       alt={item.title}
                       class="img-responsive img-curve"
                     />

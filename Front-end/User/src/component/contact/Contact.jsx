@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import Swal from "sweetalert2";
 import PageHeader from "../common/header/title/PageHeader";
 import "./contact.css";
@@ -13,10 +14,40 @@ const Contact = () => {
   const [message, setMessage] = useState("");
 
   const submitHandler = (e) => {
-    Swal.fire({
-      icon: "success",
-      text: "Message sent successfully.",
-    });
+    e.preventDefault();
+    let data = {
+      name,
+      email,
+      subject,
+      phone,
+      message,
+    };
+    axios
+      .post(`http://localhost:1000/api/admin/messages`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        Swal.fire({
+          icon: "success",
+          text: "Message send successfull.",
+          showConfirmButton: false,
+          timer: 1000,
+        });
+        setName("");
+        setEmail("");
+        setSubject("");
+        setPhone("");
+        setMessage("");
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Message send faield!",
+        });
+      });
   };
 
   return (
@@ -26,7 +57,7 @@ const Contact = () => {
         <div className="container flexSB">
           <div className="left row">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d116713.31198824033!2d74.32409896008613!3d31.468003645486775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1743065322089!5m2!1sen!2s"
+              src="https://maps.google.com/maps?q=Chittagogn,%20Bangladesh&t=&z=13&ie=UTF8&iwloc=&output=embed"
               title="Map"
             ></iframe>
           </div>
@@ -35,15 +66,15 @@ const Contact = () => {
             <div className="items grid-3">
               <div className="box">
                 <h4>ADDRESS:</h4>
-                <p>Gulberg III, Lahore</p>
+                <p>Bahaddarhat, CTG, Bangladesh</p>
               </div>
               <div className="box">
                 <h4>EMAIL:</h4>
-                <p>restaurant@gmail.com</p>
+                <p>contact@gmail.com</p>
               </div>
               <div className="box">
                 <h4>PHONE:</h4>
-                <p>+92 300 339 8822</p>
+                <p>+123 456 7894</p>
               </div>
             </div>
             <form onSubmit={submitHandler}>

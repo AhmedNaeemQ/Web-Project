@@ -2,7 +2,7 @@
   padding: 5% 0;
 } */
 .blog {
-  background: url(../../../public/img/food-bg-3.jpg);
+  background: url(../../../public/img/food-bg-3.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top right;
@@ -32,11 +32,11 @@
 .blog span {
   text-transform: uppercase;
   font-weight: 500;
-  color: #0000D1;
+  color: #44bd32;
 }
 .blog span label {
   margin-left: 10px;
-  color: #0000D1;
+  color: #44bd32;
   font-size: 13px;
 }
 
@@ -60,13 +60,13 @@
 .singleBlog span {
   text-transform: uppercase;
   font-weight: 500;
-  color: #0000D1;
+  color: #44bd32;
   margin: 15px 0px;
   margin-right: 15px;
 }
 .singleBlog span label {
   margin-left: 10px;
-  color: #0000D1;
+  color: #44bd32;
   font-size: 13px;
 }
 .singleBlog .blog-text img {

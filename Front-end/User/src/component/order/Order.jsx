@@ -36,6 +36,9 @@ function Order() {
   };
 
   // PLACE ORDER
+  const orderID = uuid().slice(0, 8);
+  const customer_id = Cookies.get("customer");
+  const customer_name = Cookies.get("customerName");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
@@ -46,23 +49,66 @@ function Order() {
 
   if (city === "") {
     deliveryCost = 0;
-  } else if (city === "Gulberg") {
+  } else if (city === "Chittagong") {
     deliveryCost = 80;
   } else {
     deliveryCost = 100;
   }
 
-
+  // GET CUSTOMER DETAILS
+  const id = Cookies.get("customer");
+  useEffect(() => {
+    const fatchCustomer = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
+      setPhone(data.phone);
+      setEmail(data.email);
+      setAddress(data.address);
+    };
+    fatchCustomer();
+  }, [id]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (!isEmpty) {
-      if (true) {
-        Swal.fire({
-          icon: "success",
-          text: "Order placed successfully.",
-        });
-
+      if (customer_id) {
+        let data = {
+          orderID,
+          customer_id,
+          customer_name,
+          items,
+          email,
+          phone,
+          city,
+          address,
+          payment,
+          total_foods: totalUniqueItems,
+          total_quantity: totalItems,
+          deliveryCost: deliveryCost,
+          total_price: cartTotal + deliveryCost,
+        };
+        axios
+          .post(`/api/admin/orders`, data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            Swal.fire({
+              icon: "success",
+              text: response.data.message,
+              showConfirmButton: false,
+              timer: 500,
+            });
+            emptyCart();
+            window.location.href = "/customer/dashboard";
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something wrong.",
+            });
+          });
       } else {
         window.location.href = "/login";
       }
@@ -103,13 +149,13 @@ function Order() {
                   <tr>
                     <td>
                       <Link to={"/foods/" + item._id}>
-                        <img src={"img/food/p2.jpg"} alt="" />
+                        <img src={"/foods/" + item.thumb} alt="" />
                       </Link>
                     </td>
                     <td>
                       <Link to={"/foods/" + item._id}>{item.title}</Link>
                     </td>
-                    <td>Rs {item.price}</td>
+                    <td>৳ {item.price}</td>
                     <td>
                       <button
                         className="btn-primary"
@@ -129,7 +175,7 @@ function Order() {
                         +
                       </button>
                     </td>
-                    <td>Rs {item.itemTotal}</td>
+                    <td>৳ {item.itemTotal}</td>
                     <td>
                       <Link
                         onClick={() => removeItem(item.id)}
@@ -148,7 +194,7 @@ function Order() {
                     <td></td>
                     <td>Sub-Total</td>
                     <td>{totalItems}</td>
-                    <td>Rs {cartTotal}</td>
+                    <td>৳ {cartTotal}</td>
                     <td>
                       <Link className="btn-danger" onClick={() => claerCart()}>
                         Clear All
@@ -157,9 +203,9 @@ function Order() {
                   </tr>
                   <tr className="bold">
                     <td colSpan="2">Delivery Cost</td>
-                    <td>Rs{deliveryCost}</td>
+                    <td>৳{deliveryCost}</td>
                     <td>Total Cost</td>
-                    <td>Rs {cartTotal && cartTotal + deliveryCost}</td>
+                    <td>৳ {cartTotal && cartTotal + deliveryCost}</td>
                     <td></td>
                   </tr>
                 </>
@@ -167,7 +213,8 @@ function Order() {
               <tr>
                 <td colSpan="6">
                   <span className="nb">
-                    (Delivery only available within Lahore )
+                    (Delivery cost ৳80 for inside of chittagong and ৳100 for
+                    outside of chittagong )
                   </span>
                 </td>
               </tr>
@@ -205,15 +252,14 @@ function Order() {
                   <option value="" selected>
                     Select
                   </option>
-                  <option value="Gulberg">Gulberg</option>
-                  <option value="DHA">DHA</option>
-                  <option value="Johar Town">Johar Town</option>
-                  <option value="Model Town">Model Town</option>
-                  <option value="Bahria Town">Bahria Town</option>
-                  <option value="Iqbal Town">Iqbal Town</option>
-                  <option value="Garden Town">Garden Town</option>
-                  <option value="Wapda Town">Wapda Town</option>
-                  <option value="Valencia">Valencia Town</option>
+                  <option value="Chittagong">Chittagong</option>
+                  <option value="Dhaka">Dhaka</option>
+                  <option value="Rajshahi">Rajshahi</option>
+                  <option value="Sylhet">Sylhet</option>
+                  <option value="Khulna">Khulna</option>
+                  <option value="Barishal">Barishal</option>
+                  <option value="Rangpur">Rangpur</option>
+                  <option value="Mymensingh ">Mymensingh </option>
                 </select>
                 <div class="order-label">Address</div>
                 <input
@@ -248,6 +294,32 @@ function Order() {
                   required
                 />{" "}
                 Cash On Delivery <br />
+                <input
+                  type="radio"
+                  name="payment"
+                  value="Bkash"
+                  onChange={(e) => setPayment(e.target.value)}
+                  required
+                />{" "}
+                <img
+                  className="payment-logo"
+                  src={"/default/bkash.png"}
+                  alt=""
+                />
+                <br />
+                <input
+                  type="radio"
+                  name="payment"
+                  value="Nagad"
+                  onChange={(e) => setPayment(e.target.value)}
+                  required
+                />{" "}
+                <img
+                  className="payment-logo"
+                  src={"/default/nagad.png"}
+                  alt=""
+                />
+                <br />
                 <input
                   type="submit"
                   name="submit"

@@ -1,60 +1,272 @@
+import Cookies from "js-cookie";
 import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import PageHeader from "../common/header/title/PageHeader";
 import "./customer.css";
+import axios from "axios";
 import moment from "moment";
+import Swal from "sweetalert2";
 import Profile from "./Profile";
 import Rating from "../common/rating/Rating";
 
-const order = {
-  orderID: "123456",
-  status: "Delivered",
-  payment: "Paid",
-  order_date: new Date().toISOString(),
-  accept_time: new Date().toISOString(),
-  exp_time: "30 mins",
-  total_foods: 3,
-  total_quantity: 5,
-  total_price: 1500,
-  deliveryCost: 50,
-  delivery_man_id: "1",
-  deliveryManReview: "No",
-};
-
-const items = [
-  {
-    _id: "1",
-    title: "Burger",
-    price: 500,
-    quantity: 2,
-    itemTotal: 1000,
-    thumb: "burger.jpg",
-    review: "No",
-  },
-  {
-    _id: "2",
-    title: "Pizza",
-    price: 500,
-    quantity: 1,
-    itemTotal: 500,
-    thumb: "pizza.jpg",
-    review: "Yes",
-  },
-];
-
-const deliveryMan = {
-  name: "John Doe",
-  thumb: "john.jpg",
-  rating: 4.5,
-  totalReviews: 120,
-  completeOrders: 300,
-  phone: "1234567890",
-  email: "john@example.com",
-};
-
 const Order = () => {
+  const { id } = useParams();
+  // GET SINGLE ORDER
+  const [order, setOrder] = useState({});
+  const [items, setitems] = useState([]);
+  const [deliveryManID, setDeliveryManID] = useState("");
+  useEffect(() => {
+    const fatchOrder = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/orders/${id}`);
+      setOrder(data);
+      setitems(data.items);
+      setDeliveryManID(data.delivery_man_id);
+    };
+    fatchOrder();
+  }, [order]);
 
+  // GET DELIVERY MAN DETAILS
+  const [deliveryMan, setDeliveryMan] = useState({});
+  useEffect(() => {
+    const fatchDeliveryMan = async () => {
+      const { data } = await axios.get(
+        `http://localhost:1000/api/admin/delivery-men/${deliveryManID}`
+      );
+      setDeliveryMan(data);
+    };
+    fatchDeliveryMan();
+  }, [order]);
 
+  // CANCEL ORDER
+  const deleteHandler = () => {
+    Swal.fire({
+      text: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:1000/api/admin/orders/${id}`)
+          .then((response) => {
+            Swal.fire({
+              icon: "success",
+              text: "Order Celceled.",
+              showConfirmButton: false,
+              timer: 500,
+            });
+            window.location.href = "/customer/dashboard";
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Order deleted field!",
+            });
+          });
+      }
+    });
+  };
+
+  // Delivery Man Review Submition
+  const [deliveryManRating, setDeliveryManRating] = useState("");
+  const [deliveryManComment, setDeliveryManComment] = useState("");
+  const customer_id = Cookies.get("customer");
+  const name = Cookies.get("customerName");
+  const deliveryManReview = (e) => {
+    e.preventDefault();
+    let data = {
+      name,
+      rating: deliveryManRating,
+      comment: deliveryManComment,
+      customer_id,
+      deliveryManID,
+    };
+    axios
+      .post(`http://localhost:1000/api/admin/delivery-men/${id}/review`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response.data.message === "Successfully reviewed.") {
+          Swal.fire({
+            icon: "success",
+            text: response.data.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+          let updateData = {
+            deliveryManReview: "Yes",
+          };
+          axios
+            .put(`http://localhost:1000/api/admin/orders/${id}`, updateData, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .catch((error) => {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Order update field!",
+              });
+            });
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "Oops...",
+            text: response.data.message,
+          });
+        }
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something Broken.",
+        });
+      });
+  };
+
+  // Food Review Submition
+  const foodReviewHandler = (foodID) => {
+    (async () => {
+      const { value: formValues } = await Swal.fire({
+        html:
+          '<select id="foodRating" class="swal2-select" ><option value="">Rating...</option><option value="1">1 - Poor</option> <option value="2">2 - Fair</option><option value="3">3 - Good</option><option value="4">4 - Very Good</option><option value="5">5 - Excellent</option></select>' +
+          '<textarea id="foodComment" class="swal2-textarea" rows="2" placeholder="Write a comment..." required ></textarea> ',
+        focusConfirm: false,
+        preConfirm: () => {
+          return [
+            document.getElementById("foodRating").value,
+            document.getElementById("foodComment").value,
+          ];
+        },
+      });
+
+      if (formValues) {
+        if (formValues[0].length !== 0) {
+          let data = {
+            name,
+            rating: formValues[0],
+            comment: formValues[1],
+            customer_id,
+          };
+          axios
+            .post(`http://localhost:1000/api/admin/foods/${foodID}/review`, data, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => {
+              if (response.data.message === "Successfully reviewed.") {
+                Swal.fire({
+                  icon: "success",
+                  text: response.data.message,
+                  showConfirmButton: false,
+                  timer: 1000,
+                });
+                let foodData = {
+                  food_id: foodID,
+                };
+                axios.put(`http://localhost:1000/api/admin/orders/${id}/review/`, foodData, {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+              } else {
+                Swal.fire({
+                  icon: "warning",
+                  title: "Oops...",
+                  text: response.data.message,
+                });
+              }
+            })
+            .catch((error) => {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something wrong.",
+              });
+            });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Rating required!",
+          });
+        }
+      }
+    })();
+  };
+
+  // ACCEPT ORDER
+  const acceptHandler = () => {
+    Swal.fire({
+      text: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Accept",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let updateData = {
+          status: "Delivered",
+        };
+        axios
+          .put(`http://localhost:1000/api/admin/orders/${id}`, updateData, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            let updateManData = {
+              pendingOrders: deliveryMan.pendingOrders - 1,
+              completeOrders: deliveryMan.completeOrders + 1,
+              thumb: deliveryMan.thumb,
+            };
+            axios
+              .put(
+                `http://localhost:1000/api/admin/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
+                updateManData,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
+                }
+              )
+              .catch((error) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Delivery man update failed.",
+                });
+              });
+            Swal.fire({
+              icon: "warning",
+              text: "Plese, Give a review for Delivery Man and Foods!",
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Order update failed!",
+            });
+          });
+      }
+    });
+  };
+
+  if (!Cookies.get("customer")) {
+    window.location.href = "/login";
+  } else {
     return (
       <>
         <PageHeader title="Dashboard" />
@@ -94,7 +306,7 @@ const Order = () => {
                           <td>
                             <Link to={"/foods/" + val._id}>{val.title}</Link>
                           </td>
-                          <td>Rs {val.price}</td>
+                          <td>৳ {val.price}</td>
                           <td>{val.quantity}</td>
                           <td>{val.itemTotal}</td>
                         </tr>
@@ -104,12 +316,12 @@ const Order = () => {
                       <td colSpan="2">Total Items: {order.total_foods}</td>
                       <td colSpan="2">Total Qty: {order.total_quantity}</td>
                       <td>
-                        Sub-Total: Rs {order.total_price - order.deliveryCost}
+                        Sub-Total: ৳ {order.total_price - order.deliveryCost}
                       </td>
                     </tr>
                     <tr>
-                      <th colSpan="3">Delviery Cost: Rs {order.deliveryCost}</th>
-                      <th colSpan="2">Total Cost: Rs {order.total_price}</th>
+                      <th colSpan="3">Delviery Cost: ৳ {order.deliveryCost}</th>
+                      <th colSpan="2">Total Cost: ৳ {order.total_price}</th>
                     </tr>
                   </table>
                   <div className="grid-3">
@@ -316,6 +528,7 @@ const Order = () => {
         </section>
       </>
     );
+  }
 };
 
 export default Order;

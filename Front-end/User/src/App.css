@@ -15,7 +15,7 @@ h6 {
   color: #2f3542;
 }
 a {
-  color: #0000D1;
+  color: #44bd32;
   text-decoration: none;
   transition: 0.5s;
 }
@@ -149,7 +149,7 @@ fieldset {
 #heading h3 {
   font-weight: 800;
   letter-spacing: 1px;
-  color: #0000D1;
+  color: #44bd32;
   text-transform: uppercase;
   font-size: 18px !important;
 }
@@ -163,7 +163,7 @@ fieldset {
 .heading-border {
   height: 3px;
   width: 120px;
-  background: #0000D1;
+  background: #44bd32;
   margin: auto;
   margin-top: 15px;
 }
@@ -171,7 +171,7 @@ fieldset {
 
 /* Buttons */
 .btn-primary {
-  background-color: #0000D1;
+  background-color: #44bd32;
   color: #fff;
   cursor: pointer;
   padding: 5px 10px;
@@ -184,7 +184,7 @@ fieldset {
   background-color: #6c5ce7;
 }
 .btn-secondary {
-  background: #0000D1;
+  background: #44bd32;
   transition: 0.5s;
   display: inline-block;
   padding: 1% 4%;
@@ -238,7 +238,7 @@ fieldset {
   color: #fff;
   font-size: 13px;
   text-align: center;
-  background-color: #0000D1;
+  background-color: #44bd32;
 }
 .btn-on-delv {
   padding: 1px 5px;
@@ -259,8 +259,8 @@ fieldset {
 .disableLink {
   /* pointer-events: none; */
   background: #ddd !important;
-  border: 1px solid #0000D1 !important;
-  color: #0000D1 !important;
+  border: 1px solid #44bd32 !important;
+  color: #44bd32 !important;
   cursor: no-drop;
 }
 /* Buttons End */
@@ -319,13 +319,13 @@ fieldset {
   width: 100%;
 }
 .page-header-box span {
-  color: #0000D1;
+  color: #44bd32;
   font-weight: bold;
 }
 .pageHeader h1 {
   font-size: 40px;
   font-weight: 600;
-  color: #0000D1;
+  color: #44bd32;
   text-transform: uppercase;
 }
 .pageHeader h2 {
@@ -379,8 +379,8 @@ fieldset {
   min-width: 19px;
   height: 18px;
   border-radius: 9px;
-  background-color: #0000D1;
-  border: 1px solid #0000D1;
+  background-color: #44bd32;
+  border: 1px solid #44bd32;
   color: #fff !important;
   font-size: 12px;
   text-align: center;
@@ -412,7 +412,7 @@ fieldset {
 }
 .pagination li a {
   display: inline-block;
-  background: #0000D1;
+  background: #44bd32;
   color: #fff;
   margin: 3px;
   padding: 5px 10px;

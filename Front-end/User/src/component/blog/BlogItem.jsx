@@ -4,79 +4,20 @@ import axios from "axios";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 
-const blogs = [
-  {
-    "_id": "1",
-    "title": "The Art of Biryani: Secrets from Lahore’s Streets",
-    "thumb": "biryani.jpg",
-    "post_by": "Foodie Pakistan",
-    "date": "2025-03-25T12:00:00Z",
-    "description": "Explore the rich flavors of biryani from Karachi to Lahore, with secret tips to make the perfect plate at home."
-  },
-  {
-    "_id": "2",
-    "title": "Top 10 Street Foods You Must Try in Pakistan",
-    "thumb": "street-food.jpg",
-    "post_by": "Pakistani Bites",
-    "date": "2025-03-20T14:30:00Z",
-    "description": "From Gol Gappay to Bun Kabab, here are the must-try street foods of Pakistan that you shouldn't miss!"
-  },
-  {
-    "_id": "3",
-    "title": "Desi Breakfast Delights: Halwa Puri & More",
-    "thumb": "halwa-puri.jpg",
-    "post_by": "Lahori Food Vibes",
-    "date": "2025-03-18T10:15:00Z",
-    "description": "A guide to Pakistan's favorite breakfast dishes, featuring Halwa Puri, Nihari, and Chana Chaat."
-  },
-  {
-    "_id": "4",
-    "title": "The Rise of Pakistani Fine Dining",
-    "thumb": "fine-dining.jpg",
-    "post_by": "Gourmet Pakistan",
-    "date": "2025-03-10T16:45:00Z",
-    "description": "Pakistani cuisine is making waves in the fine dining world. Here’s how top chefs are redefining traditional dishes."
-  },
-  {
-    "_id": "5",
-    "title": "How to Make Authentic Pakistani Karahi at Home",
-    "thumb": "karahi.jpg",
-    "post_by": "Desi Food Lovers",
-    "date": "2025-03-08T18:00:00Z",
-    "description": "Step-by-step guide to making restaurant-style Chicken and Mutton Karahi with rich flavors and perfect spices."
-  },
-  {
-    "_id": "6",
-    "title": "Desi Breakfast Delights: Halwa Puri & More",
-    "thumb": "halwa-puri.jpg",
-    "post_by": "Lahori Food Vibes",
-    "date": "2025-03-18T10:15:00Z",
-    "description": "A guide to Pakistan's favorite breakfast dishes, featuring Halwa Puri, Nihari, and Chana Chaat."
-  },
-  {
-    "_id": "7",
-    "title": "The Rise of Pakistani Fine Dining",
-    "thumb": "fine-dining.jpg",
-    "post_by": "Gourmet Pakistan",
-    "date": "2025-03-10T16:45:00Z",
-    "description": "Pakistani cuisine is making waves in the fine dining world. Here’s how top chefs are redefining traditional dishes."
-  },
-  {
-    "_id": "8",
-    "title": "How to Make Authentic Pakistani Karahi at Home",
-    "thumb": "karahi.jpg",
-    "post_by": "Desi Food Lovers",
-    "date": "2025-03-08T18:00:00Z",
-    "description": "Step-by-step guide to making restaurant-style Chicken and Mutton Karahi with rich flavors and perfect spices."
-  }
-]
-
-
 const BlogItem = () => {
+  // GET BLOGS
+  const [blogs, setBlogs] = useState([]);
+  useEffect(() => {
+    const fatchBlogs = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/blogs`);
+      setBlogs(data);
+    };
+    fatchBlogs();
+  }, []);
 
   // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 3;
+  const itemsPerPage = 12;
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = blogs.slice(itemOffset, endOffset);
@@ -101,7 +42,7 @@ const BlogItem = () => {
           currentItems.map((item) => (
             <div className="items shadow">
               <div className="img">
-                <img src={"img/blog/b1.jpg"} alt="" />
+                <img src={"/blogs/" + item.thumb} alt="" />
               </div>
               <div className="text">
                 <div className="admin flexSB">
@@ -128,7 +69,7 @@ const BlogItem = () => {
           ))
         )}
       </div>
-      {blogs.length >= 3 && (
+      {blogs.length >= 13 && (
         <ReactPaginate
           breakLabel="..."
           nextLabel=">>"
