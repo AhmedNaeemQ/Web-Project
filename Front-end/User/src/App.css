@@ -301,7 +301,7 @@ fieldset {
 
 /* Page Header */
 .pageHeader {
-  background-image: url("../public/img/page-header-bg.jpg");
+  background-image: url("../public/restaurant-banner.png");
   background-size: cover;
   background-attachment: fixed;
   position: relative;

@@ -49,7 +49,7 @@ function Order() {
 
   if (city === "") {
     deliveryCost = 0;
-  } else if (city === "Chittagong") {
+  } else if (city === "Gulberg") {
     deliveryCost = 80;
   } else {
     deliveryCost = 100;
@@ -58,13 +58,15 @@ function Order() {
   // GET CUSTOMER DETAILS
   const id = Cookies.get("customer");
   useEffect(() => {
-    const fatchCustomer = async () => {
+    const fetchCustomer = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
       setPhone(data.phone);
       setEmail(data.email);
       setAddress(data.address);
     };
-    fatchCustomer();
+    if(customer_id){
+      fetchCustomer();
+    }
   }, [id]);
 
   const submitHandler = (e) => {
@@ -106,7 +108,7 @@ function Order() {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Something wrong.",
+              text: "Something went wrong.",
             });
           });
       } else {
@@ -115,7 +117,7 @@ function Order() {
     } else {
       Swal.fire({
         icon: "error",
-        text: "Please, select any food.",
+        text: "Please, select any food item.",
       });
     }
   };
@@ -155,7 +157,7 @@ function Order() {
                     <td>
                       <Link to={"/foods/" + item._id}>{item.title}</Link>
                     </td>
-                    <td>৳ {item.price}</td>
+                    <td>Rs. {item.price}</td>
                     <td>
                       <button
                         className="btn-primary"
@@ -175,7 +177,7 @@ function Order() {
                         +
                       </button>
                     </td>
-                    <td>৳ {item.itemTotal}</td>
+                    <td>Rs. {item.itemTotal}</td>
                     <td>
                       <Link
                         onClick={() => removeItem(item.id)}
@@ -194,7 +196,7 @@ function Order() {
                     <td></td>
                     <td>Sub-Total</td>
                     <td>{totalItems}</td>
-                    <td>৳ {cartTotal}</td>
+                    <td>Rs. {cartTotal}</td>
                     <td>
                       <Link className="btn-danger" onClick={() => claerCart()}>
                         Clear All
@@ -203,9 +205,9 @@ function Order() {
                   </tr>
                   <tr className="bold">
                     <td colSpan="2">Delivery Cost</td>
-                    <td>৳{deliveryCost}</td>
+                    <td>Rs.{deliveryCost}</td>
                     <td>Total Cost</td>
-                    <td>৳ {cartTotal && cartTotal + deliveryCost}</td>
+                    <td>Rs. {cartTotal && cartTotal + deliveryCost}</td>
                     <td></td>
                   </tr>
                 </>
@@ -213,8 +215,8 @@ function Order() {
               <tr>
                 <td colSpan="6">
                   <span className="nb">
-                    (Delivery cost Rs 80 for inside of Johar Town and Rs 100 for
-                    outside of Johar Town )
+                    (Delivery cost Rs 80 for inside of Gulberg and Rs 100 for
+                    outside of Gulberg )
                   </span>
                 </td>
               </tr>
@@ -252,14 +254,14 @@ function Order() {
                   <option value="" selected>
                     Select
                   </option>
-                  <option value="Chittagong">Chittagong</option>
-                  <option value="Dhaka">Dhaka</option>
-                  <option value="Rajshahi">Rajshahi</option>
-                  <option value="Sylhet">Sylhet</option>
-                  <option value="Khulna">Khulna</option>
-                  <option value="Barishal">Barishal</option>
-                  <option value="Rangpur">Rangpur</option>
-                  <option value="Mymensingh ">Mymensingh </option>
+                  <option value="Gulberg">Gulberg</option>
+                  <option value="Johar Town">Johar Town</option>
+                  <option value="Defence">Defence</option>
+                  <option value="Valencia Town">Valencia Town</option>
+                  <option value="Bahria Town">Bahria Town</option>
+                  <option value="Lake City">Lake City</option>
+                  <option value="Walton">Walton</option>
+                  <option value="Township  ">Township </option>
                 </select>
                 <div class="order-label">Address</div>
                 <input

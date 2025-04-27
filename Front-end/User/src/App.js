@@ -22,14 +22,6 @@ import ChangeDetails from "./component/customer/ChangeDetails";
 import InvalidPage from "./component/error-page/InvalidPage";
 import SingleFood from "./component/food/SingleFood";
 import { CartProvider } from "react-use-cart";
-import DeliveryMan from "./component/login/delivery-man";
-// Delivery Profile
-import ManDashboard from "./component/delivery-men/Dashboard";
-import DeliveryManReviews from "./component/delivery-men/Reviews";
-import DeliveryManOrder from "./component/delivery-men/Order";
-import ManProfilePicChange from "./component/delivery-men/ChangeProfilePic";
-import ManChangePassword from "./component/delivery-men/ChangePassword";
-import ManChangeDetails from "./component/delivery-men/ChangeDetails";
 import ScrollToTop from "./component/common/scroll-to-top/ScrollToTop";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -55,7 +47,6 @@ const App = () => {
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/registration" element={<SignUp />} />
-          <Route exact path="/delivery-man" element={<DeliveryMan />} />
           {/* Customer Profile */}
           <Route exact path="/customer/dashboard" element={<Dashboard />} />
           <Route
@@ -77,37 +68,6 @@ const App = () => {
             exact
             path="/customer/change-password"
             element={<ChangePassword />}
-          />
-          {/* Deliver Man Profile */}
-          <Route
-            exact
-            path="/delivery-man/dashboard"
-            element={<ManDashboard />}
-          />
-          <Route
-            exact
-            path="/delivery-man/reviews"
-            element={<DeliveryManReviews />}
-          />
-          <Route
-            exact
-            path="/delivery-man/dashboard/:id"
-            element={<DeliveryManOrder />}
-          />
-          <Route
-            exact
-            path="/delivery-man/change-details"
-            element={<ManChangeDetails />}
-          />
-          <Route
-            exact
-            path="/delivery-man/change-profile-picture"
-            element={<ManProfilePicChange />}
-          />
-          <Route
-            exact
-            path="/delivery-man/change-password"
-            element={<ManChangePassword />}
           />
           <Route exact path="*" element={<InvalidPage />} />
         </Routes>
