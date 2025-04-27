@@ -1,438 +1,176 @@
-import "./header.css";
-import { Link } from "react-router-dom";
-import ShoppingCart from "./ShoppingCart";
-import { useCart } from "react-use-cart";
-import Cookies from "js-cookie";
-import { useRef, useState } from "react";
-import { useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import ShoppingCart from './ShoppingCart';
+import { useCart } from 'react-use-cart';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
-  // NAVIGATION ANIMATE
-  const [siteTopNav, setSiteTopNav] = useState(false);
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY < 50) {
-        setSiteTopNav(false);
-      } else {
-        setSiteTopNav(true);
-      }
-    });
-  }, []);
-
+  const { totalUniqueItems } = useCart();
+  const [scrolled, setScrolled] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
+  const cartRef = useRef();
+  const profileRef = useRef();
+  const [customer, setCustomer] = useState(null);
+  const customerId = Cookies.get('customer');
 
-  // CART DROPDOWN
-  let cartRef = useRef();
+  // Background toggle on scroll
   useEffect(() => {
-    let handler = (e) => {
-      if (!cartRef.current.contains(e.target)) {
-        setOpenCart(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    };
-  });
-
-  // PROFILE DROPDOWN
-  let menuRef = useRef();
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setOpenProfile(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-  });
-
-  const { totalUniqueItems } = useCart();
-
-  // GET CUSTOMER DETAILS
-  const customer_id = Cookies.get("customer");
-  const [customer, setCustomer] = useState({});
-  useEffect(() => {
-    const fatchCustomer = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${customer_id}`);
-      setCustomer(data);
-    };
-    fatchCustomer();
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // GET DELIVERY MAN DETAILS
-  const deliveryMan_id = Cookies.get("delivery-man");
-  const [deliveryMan, setDeliveryMan] = useState({});
+  // Close dropdowns on outside click
   useEffect(() => {
-    const fatchDeliveryMan = async () => {
-      const { data } = await axios.get(
-        `http://localhost:1000/api/admin/delivery-men/${deliveryMan_id}`
-      );
-      setDeliveryMan(data);
+    const handleClickOutside = e => {
+      if (cartRef.current && !cartRef.current.contains(e.target)) setOpenCart(false);
+      if (profileRef.current && !profileRef.current.contains(e.target)) setOpenProfile(false);
     };
-    fatchDeliveryMan();
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // CUSTOMER LOGOUT
-  const customerLogout = () => {
-    Cookies.remove("customer");
-    Cookies.remove("customerName");
-    window.location.href = "/";
+  // Fetch customer data
+  useEffect(() => {
+    if (customerId) {
+      axios
+        .get(`/api/admin/customers/${customerId}`)
+        .then(({ data }) => setCustomer(data))
+        .catch(console.error);
+    }
+  }, [customerId]);
+
+  const logout = () => {
+    Cookies.remove('customer');
+    Cookies.remove('customerName');
+    window.location.href = '/';
   };
 
-  // DELIVERY MAN LOGOUT
-  const deliveryManLogout = () => {
-    Cookies.remove("delivery-man");
-    window.location.href = "/";
-  };
+  const linkColor = scrolled ? 'text-dark' : 'text-white';
+  const iconFilter = scrolled ? 'invert(0)' : 'invert(1)';
 
   return (
-    <>
-      <header className="navbar">
-        <nav
-          id="site-top-nav"
-          className={`navbar-menu navbar-fixed-top ${
-            siteTopNav && "site-top-nav"
-          }`}
+    <nav
+      className={`navbar navbar-expand-lg fixed-top ${
+        scrolled ? 'bg-white shadow-sm' : 'bg-transparent'
+      }`}
+      style={{ transition: 'background-color 0.3s' }}
+    >
+      <div className="container">
+        <Link className="navbar-brand" to="/">
+          <img src="/logo.png" height="40" alt="Logo" />
+        </Link>
+        <button
+          className="navbar-toggler bg-white"
+          type="button"
+          aria-expanded={navOpen}
+          aria-label="Toggle navigation"
+          onClick={() => setNavOpen(prev => !prev)}
         >
-          <div className="container">
-            <div className="logo">
-              <Link to="/" title="Logo">
-                <img
-                  src={"/default/logo.png"}
-                  alt="Restaurant Logo"
-                  className="img-responsive"
-                />
-              </Link>
-            </div>
-            <div id="menu" className="menu text-right">
-              <ul>
-                <li>
-                  <Link className="hvr-underline-from-center" to="/">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hvr-underline-from-center" to="/categories">
-                    Categories
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hvr-underline-from-center" to="/foods">
-                    Food
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hvr-underline-from-center" to="/orders">
-                    Order
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hvr-underline-from-center" to="/blogs">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hvr-underline-from-center" to="/contact">
-                    Contact
-                  </Link>
-                </li>
-                {!Cookies.get("customer") && (
-                  <li>
-                    <Link className="hvr-underline-from-center" to="/login">
-                      Login
-                    </Link>
-                  </li>
-                )}
+          <span
+            className="navbar-toggler-icon"
+            style={{ filter: iconFilter }}
+          />
+        </button>
 
-                <li ref={cartRef}>
-                  <Link
-                    onClick={() => {
-                      setOpenCart(!openCart);
-                    }}
-                    className="shopping-cart"
-                  >
-                    <i className="fa fa-cart-arrow-down" aria-hidden="true"></i>{" "}
-                    <span className="notify">{totalUniqueItems}</span>
-                  </Link>
-                  <div
-                    className={`cart-content ${
-                      openCart ? "active" : "inactive"
-                    }`}
-                  >
-                    <h3 className="text-center">Shopping Cart</h3>
-                    <ShoppingCart />
-                  </div>
-                </li>
-                {Cookies.get("customer") && (
-                  <li>
-                    <Link
-                      className="customer-profile-pic"
-                      ref={menuRef}
-                      onClick={() => {
-                        setOpenProfile(!openProfile);
-                      }}
-                    >
-                      <div className="img">
-                        <Link>
-                          {!customer.thumb ? (
-                            <img src={"/default/avatar.png"} alt="avatar" />
-                          ) : (
-                            <img
-                              src={"/customers/" + customer.thumb}
-                              alt="avatar"
-                            />
-                          )}
-                        </Link>
-                      </div>
+        <div
+          className={`collapse navbar-collapse ${navOpen ? 'show' : ''}`}
+          id="navbarNav"
+        >
+          <ul className="navbar-nav me-auto">
+            {['/', '/categories', '/foods', '/orders', '/blogs', '/contact'].map(
+              (path, idx) => {
+                const labels = ['Home', 'Categories', 'Food', 'Order', 'Blog', 'Contact'];
+                return (
+                  <li className="nav-item" key={idx}>
+                    <Link className={`nav-link ${linkColor}`} to={path}>
+                      {labels[idx]}
                     </Link>
-                    <div
-                      className={`customer-profile-content ${
-                        openProfile ? "active" : "inactive"
-                      }`}
-                    >
-                      <ul>
-                        <li>
-                          <Link to="/customer/dashboard">
-                            <i
-                              className="fa-solid fa-gauge"
-                              aria-hidden="true"
-                            ></i>{" "}
-                            Dashboard
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            onClick={() => {
-                              customerLogout();
-                            }}
-                          >
-                            <i className="fa-solid fa-right-from-bracket"></i>{" "}
-                            Logout
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
                   </li>
+                );
+              }
+            )}
+          </ul>
+
+          <ul className="navbar-nav align-items-center">
+            <li className="nav-item me-3 position-relative" ref={cartRef}>
+              <button
+                className="btn position-relative"
+                onClick={() => setOpenCart(o => !o)}
+              >
+                <i
+                  className="fa fa-shopping-cart fa-lg"
+                  style={{ filter: iconFilter }}
+                ></i>
+                {totalUniqueItems > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {totalUniqueItems}
+                  </span>
                 )}
-                {Cookies.get("delivery-man") && (
-                  <li>
-                    <Link
-                      ref={menuRef}
-                      onClick={() => {
-                        setOpenProfile(!openProfile);
-                      }}
-                      className="customer-profile-pic"
-                    >
-                      <div className="img">
-                        <Link>
-                          {!deliveryMan.thumb ? (
-                            <img src={"/default/avatar.png"} alt="avatar" />
-                          ) : (
-                            <img
-                              src={"/delivery-men/" + deliveryMan.thumb}
-                              alt="avatar"
-                            />
-                          )}
+              </button>
+              {openCart && (
+                <div
+                  className="card p-3 dropdown-menu-end position-absolute"
+                  style={{ top: '100%', right: 0, minWidth: '300px', zIndex: 1000 }}
+                >
+                  <h6 className="mb-3">Shopping Cart</h6>
+                  <ShoppingCart />
+                </div>
+              )}
+            </li>
+
+            <li className="nav-item position-relative" ref={profileRef}>
+              <button className="btn" onClick={() => setOpenProfile(p => !p)}>
+                {customer?.thumb ? (
+                  <img
+                    src={`/customers/${customer.thumb}`}
+                    height="30"
+                    className="rounded-circle"
+                    alt="avatar"
+                  />
+                ) : (
+                  <i
+                    className="fa fa-user-circle fa-2x"
+                    style={{ filter: iconFilter }}
+                  ></i>
+                )}
+              </button>
+              {openProfile && (
+                <ul
+                  className="list-unstyled card p-2 position-absolute"
+                  style={{ top: '100%', right: 0, zIndex: 1000 }}
+                >
+                  {customer ? (
+                    <>
+                      <li>
+                        <Link className="dropdown-item" to="/customer/dashboard">
+                          Dashboard
                         </Link>
-                      </div>
-                    </Link>
-                    <div
-                      className={`customer-profile-content ${
-                        openProfile ? "active" : "inactive"
-                      }`}
-                    >
-                      <ul>
-                        <li>
-                          <Link to="/delivery-man/dashboard">
-                            <i
-                              className="fa-solid fa-gauge"
-                              aria-hidden="true"
-                            ></i>{" "}
-                            Dashboard
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            onClick={() => {
-                              deliveryManLogout();
-                            }}
-                          >
-                            <i className="fa-solid fa-right-from-bracket"></i>{" "}
-                            Logout
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                )}
-              </ul>
-            </div>
-            <div className="mobile-menu">
-              <span id="mobile-menu-bar" className="mobile-menu-bar">
-                &#9776;
-              </span>
-              <div id="mobileNav" className="mobileNav menu">
-                <ul>
-                  <li>
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link to="/categories">Categories</Link>
-                  </li>
-                  <li>
-                    <Link to="/foods">Food</Link>
-                  </li>
-                  <li>
-                    <Link to="/orders">Order</Link>
-                  </li>
-                  <li>
-                    <Link to="/blogs">Blog</Link>
-                  </li>
-                  <li>
-                    <Link to="/contact">Contact</Link>
-                  </li>
-                  {!Cookies.get("customer") && (
+                      </li>
+                      <li>
+                        <button className="dropdown-item" onClick={logout}>
+                          Logout
+                        </button>
+                      </li>
+                    </>
+                  ) : (
                     <li>
-                      <Link className="hvr-underline-from-center" to="/login">
+                      <Link className="dropdown-item" to="/login">
                         Login
                       </Link>
                     </li>
                   )}
-                  <li ref={cartRef}>
-                    <Link
-                      onClick={() => {
-                        setOpenCart(!openCart);
-                      }}
-                      id="shopping-cart-mobile"
-                      className="shopping-cart"
-                    >
-                      <i
-                        className="fa fa-cart-arrow-down"
-                        aria-hidden="true"
-                      ></i>{" "}
-                      <span className="notify">(1)</span>
-                    </Link>
-                    <div
-                      className={`cart-content ${
-                        openCart ? "active" : "inactive"
-                      }`}
-                    >
-                      <h3 className="text-center">Shopping Cart</h3>
-                      <ShoppingCart />
-                    </div>
-                  </li>
-                  {Cookies.get("customer") && (
-                    <li>
-                      <Link
-                        className="customer-profile-pic"
-                        ref={menuRef}
-                        onClick={() => {
-                          setOpenProfile(!openProfile);
-                        }}
-                      >
-                        <div className="img">
-                          <Link>
-                            {!customer.thumb ? (
-                              <img src={"/default/avatar.png"} alt="avatar" />
-                            ) : (
-                              <img
-                                src={"/customers/" + customer.thumb}
-                                alt="avatar"
-                              />
-                            )}
-                          </Link>
-                        </div>
-                      </Link>
-                      <div
-                        className={`customer-profile-content ${
-                          openProfile ? "active" : "inactive"
-                        }`}
-                      >
-                        <ul>
-                          <li>
-                            <Link to="/customer/dashboard">
-                              <i
-                                className="fa-solid fa-gauge"
-                                aria-hidden="true"
-                              ></i>{" "}
-                              Dashboard
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              onClick={() => {
-                                customerLogout();
-                              }}
-                            >
-                              <i className="fa-solid fa-right-from-bracket"></i>{" "}
-                              Logout
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                    </li>
-                  )}
-                  {Cookies.get("delivery-man") && (
-                    <li>
-                      <Link
-                        ref={menuRef}
-                        onClick={() => {
-                          setOpenProfile(!openProfile);
-                        }}
-                        className="customer-profile-pic"
-                      >
-                        <div className="img">
-                          <Link>
-                            {!deliveryMan.thumb ? (
-                              <img src={"/default/avatar.png"} alt="avatar" />
-                            ) : (
-                              <img
-                                src={"/delivery-men/" + deliveryMan.thumb}
-                                alt="avatar"
-                              />
-                            )}
-                          </Link>
-                        </div>
-                      </Link>
-                      <div
-                        className={`customer-profile-content ${
-                          openProfile ? "active" : "inactive"
-                        }`}
-                      >
-                        <ul>
-                          <li>
-                            <Link to="/delivery-man/dashboard">
-                              <i
-                                className="fa-solid fa-gauge"
-                                aria-hidden="true"
-                              ></i>{" "}
-                              Dashboard
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              onClick={() => {
-                                deliveryManLogout();
-                              }}
-                            >
-                              <i className="fa-solid fa-right-from-bracket"></i>{" "}
-                              Logout
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                    </li>
-                  )}
                 </ul>
-              </div>
-            </div>
-            <div className="clearfix"></div>
-          </div>
-        </nav>
-      </header>
-    </>
+              )}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
   );
 };
 

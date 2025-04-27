@@ -1,5 +1,5 @@
 {
-  "name": "food",
+  "name": "user",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:1000",
@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.1",
+    "framer-motion": "^12.9.2",
     "js-cookie": "^3.0.1",
     "moment": "^2.29.4",
     "react": "^18.2.0",
@@ -15,7 +16,9 @@
     "react-paginate": "^8.1.4",
     "react-router-dom": "^6.6.1",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.30.3",
     "react-use-cart": "^1.13.0",
+    "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.6.16",
     "uuidv4": "^6.2.13",
     "web-vitals": "^2.1.4"
