@@ -1,151 +1,104 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./footer.css";
-import axios from "axios";
-import moment from "moment";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Footer = () => {
-  // Show/Hide Back-To-Top Button
-  const [bactToTop, setBactToTop] = useState(false);
+  const [showTopBtn, setShowTopBtn] = useState(false);
+
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY < 50) {
-        setBactToTop(false);
-      } else {
-        setBactToTop(true);
-      }
-    });
+    const onScroll = () => setShowTopBtn(window.scrollY > 200);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // GET BLOGS
-  const [blogs, setBlogs] = useState([]);
-  useEffect(() => {
-    const fatchBlogs = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/blogs`);
-      setBlogs(data);
-    };
-    fatchBlogs();
-  }, []);
-
-  // BACK TO TOP
-  const bactToTopButton = () => {
-    document.documentElement.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
-  };
+  const scrollToTop = () =>
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <>
-      <footer>
-        <div className="container padding grid-4">
-          <div className="box footer-logo">
-            <img src={"/default/logo.png"} alt="Logo" />
-            <p>
-              A small river named Duden flows by their place and supplies it
-              with the necessary regelialia.
-            </p>
-            <div className="social">
-              <Link to="#">
-                <i className="fab fa-facebook-f icon facebook"></i>
-              </Link>
-              <Link to="#">
-                <i className="fab fa-instagram icon instagram"></i>
-              </Link>
-              <Link to="#">
-                <i className="fab fa-twitter icon twitter"></i>
-              </Link>
-              <Link to="#">
-                <i className="fab fa-linkedin-in icon linkedin"></i>
-              </Link>
+      <footer className="bg-dark text-light py-5">
+        <div className="container">
+          <div className="d-flex flex-column flex-md-row justify-content-between">
+            {/* About */}
+            <div className="d-flex flex-column flex-fill mb-4 mb-md-0 me-md-4">
+              <img
+                src="/logo.png"
+                alt="Bistro Noir"
+                style={{ width: 80, height: 80, objectFit: "contain" }}
+                className="mb-3"
+              />
+              <p className="small mb-0">
+                Nestled in the heart of Lahore, Bistro Noir delivers an intimate,
+                fine-dining experience inspired by classic French bistros.
+              </p>
+              <div className="mt-3">
+                {["facebook-f", "instagram", "twitter", "linkedin-in"].map(icon => (
+                  <Link 
+                    key={icon} 
+                    to="#" 
+                    className="text-light fs-5 me-3"
+                  >
+                    <i className={`fab fa-${icon}`}></i>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="box link">
-            <h3>Explore</h3>
-            <ul>
-              <li>
-                <Link to="/categories">Categories</Link>
-              </li>
-              <li>
-                <Link to="/foods">Food</Link>
-              </li>
-              <li>
-                <Link to="/blogs">Blog</Link>
-              </li>
-              <li>
-                <Link to="/contact">Contact</Link>
-              </li>
-              <li>
-                <a href="http://localhost:2000/">Admin</a>
-              </li>
-              <li>
-                <Link to="/delivery-man">Delivery Man</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="box">
-            <h3>Recent Post</h3>
-            {blogs.length === 0 ? (
-              <p className="text-center">No items found!</p>
-            ) : (
-              blogs.slice(0, 3).map((item, index) => (
-                <div key={index} className="footer-item flexSB">
-                  <div className="img">
-                    <Link to="blog">
-                      <img src={"/blogs/" + item.thumb} alt="" />
-                    </Link>
-                  </div>
-                  <div className="text">
-                    <span>
-                      <i className="fa fa-calendar-alt"></i>
-                      <label htmlFor="">{moment(item.date).format("ll")}</label>
-                    </span>
-                    <span>
-                      <i className="fa fa-user"></i>
-                      <label htmlFor="">{item.post_by}</label>
-                    </span>
-                    <h4>
-                      <Link to={"/blogs/" + item._id}>
-                        {item.title.slice(0, 20)}...
-                      </Link>
-                    </h4>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-          <div className="box last">
-            <h3>Have a Questions?</h3>
-            <ul>
-              <li>
-                <i className="fa fa-location-dot"></i>
-                Bahaddarhat, Chittagong, Bangladesh
-              </li>
-              <li>
-                <i className="fa fa-phone-alt"></i>
-                +2 392 3929 210
-              </li>
-              <li>
-                <i className="fa fa-paper-plane"></i>
-                contact@gmail.com
-              </li>
-            </ul>
+
+            {/* Explore */}
+            <div className="d-flex flex-column flex-fill mb-4 mb-md-0 me-md-4">
+              <h5 className="text-warning mb-3">Explore</h5>
+              {[
+                { to: "/", label: "Home" },
+                { to: "/categories", label: "Categories" },
+                { to: "/foods", label: "Food" },
+                { to: "/orders", label: "Order" },
+                { to: "/blogs", label: "Blog" },
+                { to: "/contact", label: "Contact" },
+              ].map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="small text-light text-decoration-none mb-2 d-block"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Contact Us */}
+            <div className="d-flex flex-column flex-fill">
+              <h5 className="text-warning mb-3">Contact Us</h5>
+              <div className="small mb-2">
+                <i className="fa fa-map-marker-alt me-2"></i>
+                Gulberg III, Lahore, Pakistan
+              </div>
+              <div className="small mb-2">
+                <i className="fa fa-phone-alt me-2"></i>
+                +92 42 1234 5678
+              </div>
+              <div className="small">
+                <i className="fa fa-envelope me-2"></i>
+                info@bistronoir.com
+              </div>
+            </div>
           </div>
         </div>
       </footer>
-      <div className="copyright">
-        <p>
-          &copy; Copyright 2023 All Right Reserve. By <span>Md. Ismail</span>
-        </p>
-        <Link
-          id="back-to-top"
-          className={`btn-primary smooth-scroll ${bactToTop ? "show" : "hide"}`}
-          onClick={() => bactToTopButton()}
-        >
-          <i className="fa fa-angle-double-up"></i>
-        </Link>
+
+      <div className="bg-secondary text-center text-light py-3 small">
+        &copy; {new Date().getFullYear()} Bistro Noir — All Rights Reserved
       </div>
+
+      {showTopBtn && (
+        <button
+          onClick={scrollToTop}
+          className="btn btn-warning position-fixed"
+          style={{ bottom: 20, right: 20 }}
+          aria-label="Scroll to top"
+        >
+          <i className="fa fa-chevron-up"></i>
+        </button>
+      )}
     </>
   );
 };
