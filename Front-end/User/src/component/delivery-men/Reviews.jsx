@@ -16,12 +16,12 @@ const Reviews = () => {
   const [deliveryMan, setDeliveryMan] = useState({});
   const [deliveryManReviews, setDeliveryManReviews] = useState([]);
   useEffect(() => {
-    const fatchDeliveryMan = async () => {
+    const fetchDeliveryMan = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/delivery-men/${id}`);
       setDeliveryMan(data);
       setDeliveryManReviews(data.reviews);
     };
-    fatchDeliveryMan();
+    fetchDeliveryMan();
   }, []);
 
   // PAGINATION

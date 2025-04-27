@@ -66,12 +66,12 @@ const Order = () => {
                       <td colSpan="2">Total Items: {order.total_foods}</td>
                       <td colSpan="2">Total Qty: {order.total_quantity}</td>
                       <td>
-                        Sub-Total: ৳ {order.total_price - order.deliveryCost}
+                        Sub-Total:Rs {order.total_price - order.deliveryCost}
                       </td>
                     </tr>
                     <tr>
-                      <th colSpan="3">Delivery Cost: ৳ {order.deliveryCost}</th>
-                      <th colSpan="2">Total Cost: ৳ {order.total_price}</th>
+                      <th colSpan="3">Delivery Cost: Rs {order.deliveryCost}</th>
+                      <th colSpan="2">Total Cost: Rs {order.total_price}</th>
                     </tr>
                   </table>
                   <div className="grid-2">

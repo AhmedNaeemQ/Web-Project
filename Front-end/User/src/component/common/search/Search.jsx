@@ -9,11 +9,11 @@ const Search = () => {
   // GET FOODS
   const [foods, setFoods] = useState([]);
   useEffect(() => {
-    const fatchFoods = async () => {
+    const fetchFoods = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/foods?q=${query}`);
       setFoods(data);
     };
-    fatchFoods();
+    fetchFoods();
   }, [query]);
 
   return (

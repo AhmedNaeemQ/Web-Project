@@ -213,8 +213,8 @@ function Order() {
               <tr>
                 <td colSpan="6">
                   <span className="nb">
-                    (Delivery cost ৳80 for inside of chittagong and ৳100 for
-                    outside of chittagong )
+                    (Delivery cost Rs 80 for inside of Johar Town and Rs 100 for
+                    outside of Johar Town )
                   </span>
                 </td>
               </tr>
