@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import PageHeader from "../common/header/title/PageHeader";
 import "./contact.css";
+import Banner from "../common/banner/Banner";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -52,7 +53,8 @@ const Contact = () => {
 
   return (
     <>
-      <PageHeader title="Contact Us" />
+      <Banner title="Contact" subtitle="Contact Us"/>
+
       <section className="contacts">
         <div className="container flexSB">
           <div className="left row">

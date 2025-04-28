@@ -80,7 +80,7 @@ const SingleFood = () => {
                 <ul>
                   <li>
                     <span>Price</span>
-                    <h4>৳ {food.price}</h4>
+                    <h4>Rs {food.price}</h4>
                   </li>
                   <li>
                     <span>Category</span>
@@ -188,7 +188,7 @@ const SingleFood = () => {
                     <span>({item.totalReviews})</span>
                   </h5>
                   <p>{item.description.slice(0, 50)}...</p>
-                  <h5>৳ {item.price}</h5>
+                  <h5>Rs {item.price}</h5>
                   <div className="flexSB">
                     <Link to={"/foods/" + item._id} className="btn-primary">
                       <i className="fas fa-eye"></i> View Detail

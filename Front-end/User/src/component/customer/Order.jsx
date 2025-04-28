@@ -30,13 +30,13 @@ const Order = () => {
   // GET DELIVERY MAN DETAILS
   const [deliveryMan, setDeliveryMan] = useState({});
   useEffect(() => {
-    const fatchDeliveryMan = async () => {
+    const fetchDeliveryMan = async () => {
       const { data } = await axios.get(
         `http://localhost:1000/api/admin/delivery-men/${deliveryManID}`
       );
       setDeliveryMan(data);
     };
-    fatchDeliveryMan();
+    fetchDeliveryMan();
   }, [order]);
 
   // CANCEL ORDER
@@ -306,7 +306,7 @@ const Order = () => {
                           <td>
                             <Link to={"/foods/" + val._id}>{val.title}</Link>
                           </td>
-                          <td>৳ {val.price}</td>
+                          <td>Rs {val.price}</td>
                           <td>{val.quantity}</td>
                           <td>{val.itemTotal}</td>
                         </tr>

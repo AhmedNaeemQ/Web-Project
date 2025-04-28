@@ -63,7 +63,7 @@ const ShoppingCart = () => {
                     {item.title.slice(0, 5)}...
                   </Link>
                 </td>
-                <td>৳ {item.price}</td>
+                <td>Rs {item.price}</td>
                 <td>
                   <button
                     onClick={() =>
@@ -81,7 +81,7 @@ const ShoppingCart = () => {
                     +
                   </button>
                 </td>
-                <td>৳ {item.itemTotal}</td>
+                <td>Rs {item.itemTotal}</td>
                 <td>
                   <Link
                     onClick={() => removeItem(item.id)}
@@ -101,7 +101,7 @@ const ShoppingCart = () => {
             <th></th>
             <th></th>
             <th>{totalItems}</th>
-            <th>৳ {cartTotal}</th>
+            <th>Rs {cartTotal}</th>
             <th></th>
           </tr>
         </thead>

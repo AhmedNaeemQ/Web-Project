@@ -81,7 +81,7 @@ const CategoryFood = () => {
                       <span>({item.totalReviews})</span>
                     </h5>
                     <p>{item.description.slice(0, 50)}...</p>
-                    <h5>৳ {item.price}</h5>
+                    <h5>Rs {item.price}</h5>
                     <div class="flexSB">
                       <Link to={"/foods/" + item._id} class="btn-primary">
                         <i class="fas fa-eye"></i> View Detail

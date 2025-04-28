@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
+import Banner from "../common/banner/Banner";
 
 function Order() {
   // ADD TO CART
@@ -124,7 +125,8 @@ function Order() {
 
   return (
     <>
-      <PageHeader title="Order" />
+      {/* <PageHeader title="Order" /> */}
+      <Banner title="Order" subtitle="Place Order"/>
       <section className="order">
         <div className="container">
           <div className="order-items">
@@ -142,7 +144,7 @@ function Order() {
                   <td colSpan="6">
                     Your Cart is Empty.{" "}
                     <Link to="/foods/" className="btn-primary danger-btn">
-                      Brows Foods
+                      Browse Cuisines
                     </Link>
                   </td>
                 </tr>
@@ -223,7 +225,7 @@ function Order() {
             </table>
           </div>
           <div className="">
-            <form className="order-form" onSubmit={submitHandler}>
+            <form className="order-form px-5 py-2" onSubmit={submitHandler}>
               <fieldset>
                 <legend>Delivery Details</legend>
                 <div className="order-label">Phone Number</div>
@@ -296,32 +298,6 @@ function Order() {
                   required
                 />{" "}
                 Cash On Delivery <br />
-                <input
-                  type="radio"
-                  name="payment"
-                  value="Bkash"
-                  onChange={(e) => setPayment(e.target.value)}
-                  required
-                />{" "}
-                <img
-                  className="payment-logo"
-                  src={"/default/bkash.png"}
-                  alt=""
-                />
-                <br />
-                <input
-                  type="radio"
-                  name="payment"
-                  value="Nagad"
-                  onChange={(e) => setPayment(e.target.value)}
-                  required
-                />{" "}
-                <img
-                  className="payment-logo"
-                  src={"/default/nagad.png"}
-                  alt=""
-                />
-                <br />
                 <input
                   type="submit"
                   name="submit"

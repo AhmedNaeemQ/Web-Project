@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Banner from '../common/banner/Banner';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -39,34 +40,8 @@ const Categories = () => {
   return (
     <>
 
-      <section
-        className="position-relative text-center text-white"
-        style={{
-          backgroundImage: 'url("/restaurant-banner.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          paddingTop: '150px', 
-          paddingBottom: '3rem',
-        }}
-      >
-        <div
-          className="position-absolute top-0 start-0 w-100 h-100"
-          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-        />
-        <motion.div
-          className="position-relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        >
-          <p className="text-uppercase text-warning small mb-2">Our Menu</p>
-          <h1 className="display-4 fw-bold">Explore Categories</h1>
-          <hr
-            className="border-warning mx-auto"
-            style={{ width: '80px', borderTopWidth: '3px' }}
-          />
-        </motion.div>
-      </section>
+
+      <Banner title="Our Menu" subtitle="Explore Categories"/>
 
       <section className="py-5 bg-white text-light">
   <div className="container">

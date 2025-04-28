@@ -5,18 +5,17 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
-  // GET CUSTOMER DETAILS
   const id = Cookies.get("customer");
   const [customer, setCustomer] = useState({});
   useEffect(() => {
-    const fatchCustomer = async () => {
+    const fetchCustomer = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
       setCustomer(data);
     };
-    fatchCustomer();
+    fetchCustomer();
   }, []);
 
-  // CUSTOMER LOGOUT
+
   const customerLogout = () => {
     Cookies.remove("customer");
     Cookies.remove("customerName");

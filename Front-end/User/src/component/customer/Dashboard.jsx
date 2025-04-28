@@ -10,9 +10,10 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import Profile from "./Profile";
 import ReactPaginate from "react-paginate";
+import Banner from "../common/banner/Banner";
 
 const Dashboard = () => {
-  // GET ORDERS
+
   const [orders, setOrders] = useState([]);
   const customer_id = Cookies.get("customer");
   useEffect(() => {
@@ -26,7 +27,7 @@ const Dashboard = () => {
     fatchOrders();
   }, []);
 
-  // PAGINATION
+
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 15;
 
@@ -44,7 +45,7 @@ const Dashboard = () => {
     });
   };
 
-  // CANCEL ORDER
+
   const deleteHandler = (id) => {
     Swal.fire({
       text: "Are you sure?",
@@ -66,62 +67,10 @@ const Dashboard = () => {
     });
   };
 
-  // ACCEPT ORDER
-  // const [deliveryMan, setDeliveryMan] = useState({});
-  // const [pendingOrders, setPendingOrders] = useState("");
-  // const [completeOrders, setCompleteOrders] = useState("");
-  // const [currentThumb, setCurrentThumb] = useState("");
-
-  //const updateDeliveryManDetails = (deliveryManID) => {
-  // GET DELIVERY MAN DETAILS
-  // const fatchDeliveryMan = async () => {
-  //   const { data } = await axios.get(
-  //     process.env.REACT_APP_SERVER +
-  //       `/api/admin/delivery-men/${deliveryManID}`
-  //   );
-  //   setDeliveryMan(data);
-  //   setPendingOrders(data.pendingOrders);
-  //   setCompleteOrders(data.completeOrders);
-  //   setCurrentThumb(data.thumb);
-  // };
-  // fatchDeliveryMan();
-  // Update delivery man details
-  // let updateManData = {
-  //   pendingOrders: deliveryMan.pendingOrders - 1,
-  //   completeOrders: deliveryMan.completeOrders + 1,
-  //   thumb: deliveryMan.thumb,
-  // };
-  // Swal.fire({
-  //   icon: "error",
-  //   title: "Oops...",
-  //   text: `${deliveryMan.pendingOrders}`,
-  //   text: pendingOrders + "/" + completeOrders + "/" + currentThumb,
-  //   text: deliveryManID,
-  // });
-  // axios
-  //   .put(
-  //     process.env.REACT_APP_SERVER +
-  //       `/api/admin/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
-  //     updateManData,
-  //     {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     }
-  //   )
-  //   .catch((error) => {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Oops...",
-  //       text: "Delivery man update failed.",
-  //     });
-  //   });
-  //};
 
   const acceptHandler = (id, deliveryManID) => {
     Swal.fire({
       text: "Are you sure?",
-      // text: deliveryMan.completeOrders,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -139,43 +88,13 @@ const Dashboard = () => {
             },
           })
           .then((response) => {
-            // updateDeliveryManDetails(deliveryManID);
-            // Update delivery man details
-            // let updateManData = {
-            //   pendingOrders: deliveryMan.pendingOrders - 1,
-            //   completeOrders: deliveryMan.completeOrders + 1,
-            //   thumb: deliveryMan.thumb,
-            // };
-            // Swal.fire({
-            //   icon: "error",
-            //   title: "Oops...",
-            //   text: pendingOrders + "/" + completeOrders + "/" + currentThumb,
-            // });
-            // axios
-            //   .put(
-            //     process.env.REACT_APP_SERVER +
-            //       `/api/admin/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
-            //     updateManData,
-            //     {
-            //       headers: {
-            //         "Content-Type": "multipart/form-data",
-            //       },
-            //     }
-            //   )
-            //   .catch((error) => {
-            //     Swal.fire({
-            //       icon: "error",
-            //       title: "Oops...",
-            //       text: "Delivery man update failed.",
-            //     });
-            //   });
             window.location.href = "/customer/dashboard/" + id;
           })
           .catch((error) => {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Order update field!",
+              text: "Order update failed!",
             });
           });
       }
@@ -187,7 +106,7 @@ const Dashboard = () => {
   } else {
     return (
       <>
-        <PageHeader title="Dashboard" />
+      <Banner title="Dashboard" subtitle="Customer Portal"/>
         <section className="dashboard main-dashboard">
           <div className="container padding">
             <Profile />
@@ -223,7 +142,7 @@ const Dashboard = () => {
                           </td>
                           <td>{item.total_foods}</td>
                           <td>{item.total_quantity}</td>
-                          <td>৳ {item.total_price}</td>
+                          <td>Rs {item.total_price}</td>
                           <td>{item.payment}</td>
                           <td>
                             <span
