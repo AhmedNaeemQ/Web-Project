@@ -3,7 +3,6 @@ import HBlog from "./HBlog";
 import HCategories from "./HCategories";
 import HFood from "./HFood";
 import HeroBanner from "./HeroBanner";
-import Reservation from "../reservations/Reservation";
 
 export const Home = () => {
   return (
@@ -12,7 +11,6 @@ export const Home = () => {
       <HCategories />
       <HFood />
       <HBlog />
-      <Reservation/>
     </>
   );
 };
