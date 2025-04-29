@@ -7,6 +7,7 @@ import "./customer.css";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Profile from "./Profile";
+import Banner from "../common/banner/Banner";
 
 const ChangeDetails = () => {
   const [name, setName] = useState("");
@@ -14,17 +15,17 @@ const ChangeDetails = () => {
   const [address, setAddress] = useState("");
   const [currentThumb, setThumb] = useState("");
 
-  // GET CUSTOMER DETAILS
+
   const id = Cookies.get("customer");
   useEffect(() => {
-    const fatchCustomer = async () => {
+    const fetchCustomer = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
       setName(data.name);
       setPhone(data.phone);
       setAddress(data.address);
       setThumb(data.thumb);
     };
-    fatchCustomer();
+    fetchCustomer();
   }, [id]);
 
   const submitHandler = (e) => {
@@ -64,7 +65,7 @@ const ChangeDetails = () => {
   } else {
     return (
       <>
-        <PageHeader title="Change Details" />
+        <Banner title="Dashboard" subtitle="Update Information"/>
         <section className="dashboard">
           <div className="container padding">
             <Profile />

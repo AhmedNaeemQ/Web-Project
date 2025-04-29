@@ -5,6 +5,7 @@ import "./login.css";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Banner from "../common/banner/Banner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -60,7 +61,7 @@ const Login = () => {
   };
   return (
     <>
-      <PageHeader title="Login" />
+      <Banner title="Login" subtitle="Login"/>
       <section className="login">
         <div className="container">
           <div className="login-form text-center">

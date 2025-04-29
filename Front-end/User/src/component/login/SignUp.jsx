@@ -4,6 +4,7 @@ import "./login.css";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
+import Banner from "../common/banner/Banner";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -68,7 +69,7 @@ const SignUp = () => {
 
   return (
     <>
-      <PageHeader title="Registration" />
+      <Banner title="Register" subtitle="Register"/>
       <section className="login">
         <div className="container">
           <div className="login-form text-center">

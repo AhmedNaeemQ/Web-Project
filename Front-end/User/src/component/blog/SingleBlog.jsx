@@ -9,11 +9,11 @@ const SingleBlog = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState({});
   useEffect(() => {
-    const fatchBlog = async () => {
+    const fetchBlog = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/blogs/${id}`);
       setBlog(data);
     };
-    fatchBlog();
+    fetchBlog();
   }, [id]);
 
   return (

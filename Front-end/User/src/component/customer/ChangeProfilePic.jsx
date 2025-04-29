@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { useEffect } from "react";
 import { useState } from "react";
 import Profile from "./Profile";
+import Banner from "../common/banner/Banner";
 
 const ProfilePicChange = () => {
   const [currentThumb, setThumb] = useState("");
@@ -61,7 +62,7 @@ const ProfilePicChange = () => {
   } else {
     return (
       <>
-        <PageHeader title="Change Profile Picture" />
+        <Banner title="Dashboard" subtitle="Update Profile Picture"/>
         <section className="dashboard">
           <div className="container padding">
             <Profile />

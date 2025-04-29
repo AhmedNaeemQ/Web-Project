@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useEffect } from "react";
 import Profile from "./Profile";
+import Banner from "../common/banner/Banner";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -85,7 +86,7 @@ const ChangePassword = () => {
   } else {
     return (
       <>
-        <PageHeader title="Change Password" />
+        <Banner title="Dashboard" subtitle="Update Password"/>
         <section className="dashboard">
           <div className="container padding">
             <Profile />

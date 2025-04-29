@@ -16,12 +16,12 @@ const SingleFood = () => {
   const [food, setFood] = useState({});
   const [reviews, setReviews] = useState([]);
   useEffect(() => {
-    const fatchFood = async () => {
+    const fetchFood = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/foods/${id}`);
       setFood(data);
       setReviews(data.reviews.reverse());
     };
-    fatchFood();
+    fetchFood();
   }, [food]);
 
   // PAGINATION

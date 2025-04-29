@@ -143,7 +143,7 @@ const Reservations = () => {
         </div>
 
         <div className="d-flex justify-content-center">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-warning">
             Book Reservation
           </button>
         </div>
