@@ -24,6 +24,7 @@ import SingleFood from "./component/food/SingleFood";
 import { CartProvider } from "react-use-cart";
 import ScrollToTop from "./component/common/scroll-to-top/ScrollToTop";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Reservations from "./component/reservations/Reservation";
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
             element={<CategoryFood />}
           />
           <Route exact path="/orders" element={<Order />} />
+          <Route exact path="/reservations" element={<Reservations/>} />
           <Route exact path="/blogs" element={<Blog />} />
           <Route exact path="/blogs/:id" element={<SingleBlog />} />
           <Route exact path="/contact" element={<Contact />} />

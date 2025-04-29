@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import Rating from "../common/rating/Rating";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import Banner from "../common/banner/Banner";
 
 const SingleFood = () => {
   // GET SINGLE FOOD
@@ -44,11 +45,11 @@ const SingleFood = () => {
   // GET RECOMMENDED FOODS
   const [recomFoods, setRecomFoods] = useState([]);
   useEffect(() => {
-    const fatchRecomFood = async () => {
+    const fetchRecomFood = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/foods/recommended`);
       setRecomFoods(data);
     };
-    fatchRecomFood();
+    fetchRecomFood();
   }, [recomFoods]);
 
   // ADD-TO-CART
@@ -66,7 +67,7 @@ const SingleFood = () => {
 
   return (
     <>
-      <PageHeader title={food.title} />
+      <Banner title={food.category} subtitle={food.title}/>
       <section className="food single-food">
         <div className="container">
           <div className="single-food-item grid-2">

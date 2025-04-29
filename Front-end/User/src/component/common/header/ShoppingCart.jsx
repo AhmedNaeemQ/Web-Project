@@ -4,7 +4,6 @@ import { useCart } from "react-use-cart";
 import Swal from "sweetalert2";
 
 const ShoppingCart = () => {
-  // ADD TO CART
   const {
     isEmpty,
     cartTotal,
@@ -15,8 +14,7 @@ const ShoppingCart = () => {
     emptyCart,
   } = useCart();
 
-  // CLEAR CART
-  const claerCart = () => {
+  const clearCart = () => {
     Swal.fire({
       text: "Are you sure?",
       icon: "warning",
@@ -30,95 +28,82 @@ const ShoppingCart = () => {
       }
     });
   };
+
   return (
-    <>
-      <table className="cart-table" border="0">
-        <thead>
-          <tr>
-            <th>Food</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>total</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {isEmpty ? (
-            <tr className="empty-cart-row">
-              <td className="text-center" colSpan="6">
-                Your Cart is Empty.
-              </td>
-            </tr>
-          ) : (
-            items.map((item, index) => (
-              <tr key={index}>
-                <td>
-                  <Link to={"/foods/" + item._id}>
-                    <img src={"/foods/" + item.thumb} alt="" />
-                  </Link>
-                </td>
-                <td>
-                  <Link to={"/foods/" + item._id}>
-                    {item.title.slice(0, 5)}...
-                  </Link>
-                </td>
-                <td>Rs {item.price}</td>
-                <td>
-                  <button
-                    onClick={() =>
-                      updateItemQuantity(item.id, item.quantity - 1)
-                    }
-                  >
-                    -
-                  </button>{" "}
-                  {item.quantity}{" "}
-                  <button
-                    onClick={() =>
-                      updateItemQuantity(item.id, item.quantity + 1)
-                    }
-                  >
-                    +
-                  </button>
-                </td>
-                <td>Rs {item.itemTotal}</td>
-                <td>
-                  <Link
-                    onClick={() => removeItem(item.id)}
-                    className="danger-btn"
-                  >
-                    &times;
-                  </Link>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-        <thead>
-          <tr>
-            <th></th>
-            <th colSpan="3">Total</th>
-            <th></th>
-            <th></th>
-            <th>{totalItems}</th>
-            <th>Rs {cartTotal}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <thead className="confirm-order-thead">
-          <tr>
-            <th colSpan="5">
-              <Link to="/orders" className="btn-primary">
-                Confirm Order
-              </Link>{" "}
-              <Link className="btn-danger" onClick={() => claerCart()}>
-                Clear Cart
+    <div className="container my-4">
+      {isEmpty ? (
+        <div className="text-center py-5 border rounded">
+          <p className="mb-0">Your Cart is Empty.</p>
+        </div>
+      ) : (
+        <div className="d-flex flex-column gap-3" style={{ maxHeight: "400px", overflowY: "auto" }}>
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="d-flex align-items-center justify-content-between p-3 border rounded"
+            >
+              <Link to={`/foods/${item._id}`}>
+                <img
+                  src={`/foods/${item.thumb}`}
+                  alt={item.title}
+                  style={{ width: "60px", height: "60px", objectFit: "cover", marginRight : "20px" }}
+                  className="img-fluid rounded"
+                />
               </Link>
-            </th>
-          </tr>
-        </thead>
-      </table>
-    </>
+
+              <div className=" w-100 d-flex flex-column gap-2">
+              <div className=" d-flex align-items-center justify-content-between mb-2 mb-md-0">
+                  <Link to={`/foods/${item._id}`} className="fw-semibold text-decoration-none">
+                    {item.title.slice(0, 30)}{item.title.length>30 ? "..." : ""}
+                  </Link>
+                  <span>Rs {item.price}</span>
+              </div>
+            
+              <div className="d-flex justify-content-between">
+                  <div className="d-flex align-items-center gap-2">
+                    <button
+                      className="btn btn-sm btn-outline-secondary"
+                      onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
+                    >
+                      -
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      className="btn btn-sm btn-outline-secondary"
+                      onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="fw-semibold">
+                    Total: Rs {item.itemTotal}
+                  </span>
+                </div>
+
+              </div>
+             </div>
+          ))}
+
+          <div className="d-flex justify-content-between mt-4 border-top pt-3">
+            <div>
+              <strong>Total Items:</strong> {totalItems}
+            </div>
+            <div>
+              <strong>Total:</strong> Rs {cartTotal}
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-between mt-3">
+            <Link to="/orders" className="btn btn-warning">
+              Confirm Order
+            </Link>
+            <button className="btn btn-danger" onClick={clearCart}>
+              Clear Cart
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

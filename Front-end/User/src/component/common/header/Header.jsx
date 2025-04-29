@@ -82,9 +82,9 @@ const Header = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav me-auto">
-            {['/', '/categories', '/foods', '/orders', '/blogs', '/contact'].map(
+            {[ '/categories', '/foods', '/orders','/reservations', '/blogs', '/contact'].map(
               (path, idx) => {
-                const labels = ['Home', 'Categories', 'Food', 'Order', 'Blog', 'Contact'];
+                const labels = ['Categories', 'Food', 'Order','Book', 'Blogs', 'Contact'];
                 return (
                   <li className="nav-item" key={idx}>
                     <Link className={`nav-link ${linkColor}`} to={path}>
@@ -115,7 +115,7 @@ const Header = () => {
               {openCart && (
                 <div
                   className="card p-3 dropdown-menu-end position-absolute"
-                  style={{ top: '100%', right: 0, minWidth: '300px', zIndex: 1000 }}
+                  style={{ top: '100%', right: 0, minWidth: '600px', zIndex: 1000 }}
                 >
                   <h6 className="mb-3">Shopping Cart</h6>
                   <ShoppingCart />

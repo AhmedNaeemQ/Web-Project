@@ -59,7 +59,7 @@ const HeroBanner = () => {
         </motion.p>
         <motion.button
           className="btn btn-outline-light btn-lg px-4 py-2"
-          onClick={() => (window.location.href = '/reserve')}
+          onClick={() => (window.location.href = '/reservations')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           custom={0.6}
