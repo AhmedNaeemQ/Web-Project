@@ -3,7 +3,7 @@ import React from "react";
 const Card = ({ thumb, title, price, description, onClick, actions }) => {
   return (
     <div
-      className="bg-white shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-shadow"
+      className="bg-white shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-shadow w-80"
       onClick={onClick}
     >
       <img

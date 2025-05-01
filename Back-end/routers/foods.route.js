@@ -65,14 +65,14 @@ router.get("/", async (req, res) => {
     await Foods.find()
       .sort({ _id: -1 })
       .then((data) => {
-        if (!data) {
-          res.status(404).send({ message: "Food items not found." });
-        } else {
-          res.status(200).send(data);
-        }
+      if (!data) {
+        res.status(404).send({ message: "Food items not found." });
+      } else {
+        res.status(200).send(data);
+      }
       })
       .catch((err) => {
-        res.status(500).send({ message: "An error occurred fetching food items." });
+      res.status(500).send({ message: "An error occurred fetching food items." });
       });
   }
 });
