@@ -35,7 +35,7 @@ router.get("/dashboard-stats", async (req, res) => {
     
     const revenueData = await Orders.aggregate([
       {
-        $match: { status: "Delivered" }
+        $match: { status: { $in: ["Delivered", "Completed"] } }
       },
       {
         $group: {

@@ -116,46 +116,67 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Unable to update foot item." });
+      .send({ Message: "Unable to update food item." });
   }
 
-  if (req.body.thumb) {
-    await Foods.findByIdAndUpdate(id, req.body, {
-      useFindAndModify: false,
-    })
-      .then((data) => {
-        if (!data) {
-          res.status(404).send({ message: "Unable to update food item." });
-        } else {
-          res.send("Food item updated successfully.");
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({ message: "An error occurred updatating food item." });
-      });
-  } else if (req.file.filename) {
-
-    var url_parts = url.parse(req.url, true).query;
-    var oldThumb = url_parts.cthumb;
-    fs.unlinkSync(`uploads/foods/${oldThumb}`);
-
-    await Foods.findByIdAndUpdate(
-      id,
-      { ...req.body, thumb: req.file.filename },
-      {
+  try {
+    // Case 1: No new image, just updating text fields
+    if (!req.file) {
+      await Foods.findByIdAndUpdate(id, req.body, {
         useFindAndModify: false,
-      }
-    )
-      .then((data) => {
-        if (!data) {
-          res.status(404).send({ message: "Unable to update food item." });
-        } else {
-          res.send("Food item updated successfully.");
-        }
+        new: true // Return updated document
       })
-      .catch((err) => {
-        res.status(500).send({ message: "An error occurred updatating food item." });
-      });
+        .then((data) => {
+          if (!data) {
+            res.status(404).send({ message: "Unable to update food item." });
+          } else {
+            res.status(200).send({
+              message: "Food item updated successfully.",
+              data
+            });
+          }
+        });
+    } 
+    // Case 2: New image uploaded
+    else {
+      // If we have an old thumb parameter, delete the old image
+      var url_parts = url.parse(req.url, true).query;
+      var oldThumb = url_parts.cthumb;
+      
+      if (oldThumb) {
+        try {
+          fs.unlinkSync(`uploads/foods/${oldThumb}`);
+        } catch (fileError) {
+          console.log("Error deleting old image:", fileError);
+          // Continue even if delete fails
+        }
+      }
+
+      // Update with new image
+      await Foods.findByIdAndUpdate(
+        id,
+        { ...req.body, thumb: req.file.filename },
+        {
+          useFindAndModify: false,
+          new: true // Return updated document
+        }
+      )
+        .then((data) => {
+          if (!data) {
+            res.status(404).send({ message: "Unable to update food item." });
+          } else {
+            res.status(200).send({
+              message: "Food item updated successfully.",
+              data
+            });
+          }
+        });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      message: "An error occurred updating food item.",
+      error: error.message
+    });
   }
 });
 
