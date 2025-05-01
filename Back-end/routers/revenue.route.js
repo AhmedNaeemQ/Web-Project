@@ -9,25 +9,25 @@ import Users from "../models/user.model.js";
 import Messages from "../models/message.model.js";
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const revenue = await Orders.aggregate([
-      {
-        $match: { status: "Delivered" }
-      },
-      {
-        $group: {
-          _id: null,
-          totalRevenue: { $sum: "$total_price" }
-        }
-      }
-    ]);
+// router.get("/", async (req, res) => {
+//   try {
+//     const revenue = await Orders.aggregate([
+//       {
+//         $match: { status: "Delivered" }
+//       },
+//       {
+//         $group: {
+//           _id: null,
+//           totalRevenue: { $sum: "$total_price" }
+//         }
+//       }
+//     ]);
     
-    res.send(revenue);
-  } catch (error) {
-    res.status(500).send({ message: "Error calculating revenue", error: error.message });
-  }
-});
+//     res.send(revenue);
+//   } catch (error) {
+//     res.status(500).send({ message: "Error calculating revenue", error: error.message });
+//   }
+// });
 
 router.get("/dashboard-stats", async (req, res) => {
   try {
