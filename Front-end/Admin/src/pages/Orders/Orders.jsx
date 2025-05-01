@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import axiosInstance from "../../../config/axios";
 import ConfirmModal from "../../assets/components/ConfirmModal";
 import DetailsModal from "../../assets/components/DetailsModal";
+import EditOrderModal from "./components/EditOrderModal";
 import Loader from "../../assets/components/Loader";
 import { useToast } from "../../assets/context/ToastContext";
 
@@ -94,6 +95,14 @@ const Orders = () => {
     e.stopPropagation();
     setCurrentOrder(order);
     setEditModalOpen(true);
+    console.log(order);
+  };
+
+  const handleOrderUpdate = (updatedOrder) => {
+    // Update the orders list with the updated order
+    setOrders(orders.map(order => 
+      order._id === updatedOrder._id ? updatedOrder : order
+    ));
   };
 
   const isOrderEditable = (status) => {
@@ -117,15 +126,15 @@ const Orders = () => {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#0D1552] text-white">
-                <th className="p-4 text-left">Customer</th>
-                <th className="p-4 text-left">ID</th>
-                <th className="p-4 text-left">Items</th>
-                <th className="p-4 text-left">Qty</th>
-                <th className="p-4 text-left">Total Price</th>
-                <th className="p-4 text-left">Payment</th>
-                <th className="p-4 text-left">Status</th>
-                <th className="p-4 text-left">Delivery Man</th>
-                <th className="p-4 text-left">Action</th>
+                <th className="p-4 text-center">Customer</th>
+                <th className="p-4 text-center">ID</th>
+                <th className="p-4 text-center">Items</th>
+                <th className="p-4 text-center">Qty</th>
+                <th className="p-4 text-center">Total Price</th>
+                <th className="p-4 text-center">Payment</th>
+                <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-center">Delivery Man</th>
+                <th className="p-4 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -139,26 +148,22 @@ const Orders = () => {
                 orders.map((item) => (
                   <tr
                     key={item._id}
-                    className="hover:bg-[#F5F5F5] transition-colors cursor-pointer"
+                    className="hover:bg-[#F5F5F5] transition-colors cursor-pointer text-center"
                     onClick={() => handleOrderClick(item)}
                   >
                     <td className="p-4">
-                      <Link
-                        to={`/customers/${item.customer_id}`}
+                      <p
                         className="text-[#0D1552] hover:underline"
-                        onClick={(e) => e.stopPropagation()}
                       >
                         {item.customer_name}
-                      </Link>
+                      </p>
                     </td>
                     <td className="p-4">
-                      <Link
-                        to={`/orders/${item._id}`}
+                      <p
                         className="text-[#0D1552] hover:underline"
-                        onClick={(e) => e.stopPropagation()}
                       >
                         {item.orderID}
-                      </Link>
+                      </p>
                     </td>
                     <td className="p-4">{item.total_foods}</td>
                     <td className="p-4">{item.total_quantity}</td>
@@ -194,44 +199,25 @@ const Orders = () => {
                         </Link>
                       )}
                     </td>
-                    <td className="p-4 flex gap-2">
-                      {isOrderEditable(item.status) && (
-                        <>
-                          <button
-                            onClick={(e) => handleEdit(e, item)}
-                            className="text-blue-500 hover:text-blue-700"
-                          >
-                            <i className="ri-edit-box-fill"></i>
-                          </button>
-                          <button
-                            onClick={(e) => confirmDelete(e, item)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <i className="ri-delete-bin-5-fill"></i>
-                          </button>
-                        </>
-                      )}
-                      {/* Status update dropdown */}
-                      {isOrderEditable(item.status) && (
-                        <div className="relative ml-2">
-                          <select
-                            className="bg-[#E9F0F7] text-sm rounded p-1 border border-gray-300"
-                            value={item.status}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              updateOrderStatus(item._id, e.target.value);
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <option value="Ordered">Ordered</option>
-                            <option value="Processing">Processing</option>
-                            <option value="OnDelivery">On Delivery</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </div>
-                      )}
+                    <td className="p-4">
+                      <div className="flex items-center justify-center gap-2">
+                        {isOrderEditable(item.status) && (
+                          <>
+                            <button
+                              onClick={(e) => handleEdit(e, item)}
+                              className="text-blue-500 hover:text-blue-700"
+                            >
+                              <i className="ri-edit-box-fill"></i>
+                            </button>
+                            <button
+                              onClick={(e) => confirmDelete(e, item)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <i className="ri-delete-bin-5-fill"></i>
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -241,6 +227,7 @@ const Orders = () => {
         </motion.div>
       )}
 
+      {/* Details Modal */}
       {selectedOrder && (
         <DetailsModal
           isOpen={!!selectedOrder}
@@ -265,6 +252,7 @@ const Orders = () => {
         />
       )}
       
+      {/* Confirm Delete Modal */}
       <ConfirmModal
         isOpen={confirmModal}
         onConfirm={handleDelete}
@@ -274,6 +262,12 @@ const Orders = () => {
         }}
         message="Do you really want to delete this order?"
       />
+
+      {editModalOpen && <EditOrderModal
+        onClose={() => setEditModalOpen(false)}
+        order={currentOrder}
+        onUpdate={handleOrderUpdate}
+      />}
     </div>
   );
 };
