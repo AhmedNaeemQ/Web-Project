@@ -75,46 +75,65 @@ router.put("/:id", upload.single("thumb"), async (req, res) => {
   if (!req.body) {
     return res
       .status(400)
-      .send({ Message: "Unable to update the category" });
+      .send({ message: "Unable to update the category" });
   }
-  // If no new thumbnail found.
-  if (req.body.thumb) {
-    await Categories.findByIdAndUpdate(id, req.body, {
-      useFindAndModify: false,
-    })
-      .then((data) => {
-        if (!data) {
-          res.status(404).send({ message: "Unable to update the category" });
-        } else {
-          res.send("Category updated successfully.");
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({ message: "An error occurred updatating the category." });
-      });
-  } else if (req.file.filename) {
-    // Delete old thumbnail
-    var url_parts = url.parse(req.url, true).query;
-    var oldThumb = url_parts.cthumb;
-    fs.unlinkSync(`uploads/categories/${oldThumb}`);
 
-    await Categories.findByIdAndUpdate(
-      id,
-      { ...req.body, thumb: req.file.filename },
-      {
-        useFindAndModify: false,
-      }
-    )
-      .then((data) => {
-        if (!data) {
-          res.status(404).send({ message: "Unable to update the category" });
-        } else {
-          res.send("Category updated successfully.");
+  try {
+    // Case 1: No new thumbnail uploaded
+    if (!req.file) {
+      await Categories.findByIdAndUpdate(
+        id, 
+        req.body, 
+        { useFindAndModify: false, new: true }
+      )
+        .then((data) => {
+          if (!data) {
+            res.status(404).send({ message: "Unable to update the category" });
+          } else {
+            res.status(200).send({
+              message: "Category updated successfully.",
+              data
+            });
+          }
+        });
+    } 
+    // Case 2: New thumbnail uploaded
+    else {
+      // Try to delete old thumbnail if it exists
+      var url_parts = url.parse(req.url, true).query;
+      var oldThumb = url_parts.cthumb;
+      
+      if (oldThumb) {
+        try {
+          fs.unlinkSync(`uploads/categories/${oldThumb}`);
+        } catch (fileError) {
+          console.log("Error deleting old image:", fileError);
+          // Continue even if delete fails
         }
-      })
-      .catch((err) => {
-        res.status(500).send({ message: "An error occurred updatating the category." });
-      });
+      }
+
+      await Categories.findByIdAndUpdate(
+        id,
+        { ...req.body, thumb: req.file.filename },
+        { useFindAndModify: false, new: true }
+      )
+        .then((data) => {
+          if (!data) {
+            res.status(404).send({ message: "Unable to update the category" });
+          } else {
+            res.status(200).send({
+              message: "Category updated successfully.",
+              thumb: req.file.filename, // Include the new filename
+              data
+            });
+          }
+        });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      message: "An error occurred updating the category.", 
+      error: error.message 
+    });
   }
 });
 
