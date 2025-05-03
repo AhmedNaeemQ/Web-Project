@@ -24,6 +24,10 @@ const LoginForm = () => {
           type: "success",
         });
 
+        localStorage.setItem("isLogin", true);
+        localStorage.setItem("id", response.data.admin._id);
+        localStorage.setItem("username", response.data.admin.username);
+
         navigate("/dashboard");
       } else {
         setToast({

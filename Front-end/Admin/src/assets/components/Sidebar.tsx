@@ -84,7 +84,11 @@ const Sidebar = () => {
       {/* Logo Section */}
       <div className="p-6 flex items-center justify-center border-b border-gray-700">
         <a href="/" title="Go Home Page">
-          <img src={adminLogo} alt="Logo" className="w-24 h-auto rounded-full" />
+          <img
+            src={adminLogo}
+            alt="Logo"
+            className="w-24 h-auto rounded-full"
+          />
         </a>
       </div>
 
@@ -101,6 +105,9 @@ const Sidebar = () => {
       <div className="p-4 border-t border-gray-700">
         <NavLink
           to="/"
+          onClick={() => {
+            localStorage.clear();
+          }}
           className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
         >
           <i className="ri-logout-circle-r-line text-xl"></i>
