@@ -7,7 +7,6 @@ import url from "url";
 import bcrypt from "bcrypt";
 const saltRounds = 10;
 
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/customers/");
@@ -18,7 +17,6 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-
 
 router.post("/", async (req, res) => {
   try {
@@ -55,7 +53,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-
 router.get("/", async (req, res) => {
   await Customers.find()
     .sort({ _id: -1 })
@@ -67,10 +64,11 @@ router.get("/", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "An error occurred fetching customers." });
+      res
+        .status(500)
+        .send({ message: "An error occurred fetching customers." });
     });
 });
-
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
@@ -83,115 +81,158 @@ router.get("/:id", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "An error occurred fetching the customer." });
+      res
+        .status(500)
+        .send({ message: "An error occurred fetching the customer." });
     });
 });
-
 
 router.put("/:id", upload.single("thumb"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.body) {
-    return res.json({ Message: "Unable to update the customer." });
+    return res.status(400).json({ message: "Unable to update the customer." });
   }
 
-  if (req.body.oldPassword) {
-    const oldPassword = req.body.oldPassword;
-    const newPassword = req.body.newPassword;
-    const email = req.body.email;
+  try {
+    if (req.body.oldPassword) {
+      const oldPassword = req.body.oldPassword;
+      const newPassword = req.body.newPassword;
+      const email = req.body.email;
 
-    await Customers.findOne({ email: email }).then((customer) => {
-      if (customer) {
-        bcrypt.compare(oldPassword, customer.password, (err, result) => {
-          if (result === true) {
-            bcrypt.hash(newPassword, saltRounds, async (err, hash) => {
-              await Customers.findByIdAndUpdate(
-                id,
-                { password: hash },
-                {
-                  useFindAndModify: false,
-                }
-              )
-                .then((data) => {
-                  if (!data) {
-                    res.json({ message: "Unable to update the customer." });
-                  } else {
-                    res.json({ message: "User updated successfully." });
-                  }
-                })
-                .catch((err) => {
-                  res
-                    .status(500)
-                    .send({ message: "Error updatating customer." });
-                });
-            });
-          } else {
-            res.json({ message: "Passwords do not match." });
+      const customer = await Customers.findOne({ email: email });
+      if (!customer) {
+        return res.status(404).json({ message: "Customer not found." });
+      }
+
+      const passwordMatch = await bcrypt.compare(
+        oldPassword,
+        customer.password
+      );
+      if (!passwordMatch) {
+        return res.status(400).json({ message: "Passwords do not match." });
+      }
+
+      const hash = await bcrypt.hash(newPassword, saltRounds);
+      const updatedCustomer = await Customers.findByIdAndUpdate(
+        id,
+        { password: hash },
+        { new: true, select: "-password" }
+      );
+
+      if (!updatedCustomer) {
+        return res
+          .status(404)
+          .json({ message: "Unable to update the customer." });
+      }
+
+      return res.status(200).json({ message: "User updated successfully." });
+    } else if (req.body.thumb && !req.file) {
+      const updatedCustomer = await Customers.findByIdAndUpdate(id, req.body, {
+        new: true,
+        select: "-password",
+      });
+
+      if (!updatedCustomer) {
+        return res
+          .status(404)
+          .json({ message: "Unable to update the customer." });
+      }
+
+      return res.status(200).json({
+        data: updatedCustomer,
+        message: "User updated successfully.",
+      });
+    } else if (req.file) {
+      var url_parts = url.parse(req.url, true).query;
+      var oldThumb = url_parts.cthumb;
+
+      if (oldThumb) {
+        try {
+          const filePath = `uploads/customers/${oldThumb}`;
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
           }
-        });
-      } else {
-        res.json({ message: "An error occurred updatating the customer." });
+        } catch (fileError) {
+          console.error("Error deleting customer image:", fileError);
+        }
       }
+
+      const updatedCustomer = await Customers.findByIdAndUpdate(
+        id,
+        { ...req.body, thumb: req.file.filename },
+        { new: true, select: "-password" }
+      );
+
+      if (!updatedCustomer) {
+        return res
+          .status(404)
+          .json({ message: "Unable to update the customer." });
+      }
+
+      return res.status(200).json({
+        data: updatedCustomer,
+        message: "User updated successfully.",
+      });
+    } else {
+      const updatedCustomer = await Customers.findByIdAndUpdate(id, req.body, {
+        new: true,
+        select: "-password",
+      });
+
+      if (!updatedCustomer) {
+        return res
+          .status(404)
+          .json({ message: "Unable to update the customer." });
+      }
+
+      return res.status(200).json({
+        data: updatedCustomer,
+        message: "User updated successfully.",
+      });
+    }
+  } catch (err) {
+    console.error("Error updating customer:", err);
+    return res.status(500).json({
+      message: "An error occurred updating the customer.",
+      error: err.message,
     });
-  } else if (req.body.thumb) {
-    await Customers.findByIdAndUpdate(id, req.body, {
-      useFindAndModify: false,
-    })
-      .then((data) => {
-        if (!data) {
-          res.json({ message: "Unable to update the customer." });
-        } else {
-          res.json({ data, message: "User updated successfully." });
-        }
-      })
-      .catch((err) => {
-        res.json({ message: "An error occurred updatating the customer." });
-      });
-  } else if (req.file.filename) {
-
-    var url_parts = url.parse(req.url, true).query;
-    var oldThumb = url_parts.cthumb;
-    fs.unlinkSync(`uploads/customers/${oldThumb}`);
-
-    await Customers.findByIdAndUpdate(
-      id,
-      { ...req.body, thumb: req.file.filename },
-      {
-        useFindAndModify: false,
-      }
-    )
-      .then((data) => {
-        if (!data) {
-          res.json({ message: "Unable to update the customer." });
-        } else {
-          res.json({ message: "User updated successfully." });
-        }
-      })
-      .catch((err) => {
-        res.json({ message: "An error occurred updatating the customer." });
-      });
   }
 });
-
 
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
-  var url_parts = url.parse(req.url, true).query;
-  var thumb = url_parts.thumb;
-  fs.unlinkSync(`uploads/customers/${thumb}`);
-
-  await Customers.findByIdAndDelete(id)
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: "Unable to delete the customer" });
-      } else {
-        res.status(200).send("Customer deleted successfully.");
+  try {
+    const customer = await Customers.findById(id);
+    if (!customer) {
+      return res.status(404).send({ message: "Customer not found." });
+    }
+    
+    var url_parts = url.parse(req.url, true).query;
+    var thumb = url_parts.thumb || customer.thumb;
+    
+    if (thumb) {
+      try {
+        const filePath = `uploads/customers/${thumb}`;
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileError) {
+        console.error("Error deleting customer image:", fileError);
       }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: "An error occurred deleting the customer." });
+    }
+
+    await Customers.findByIdAndDelete(id);
+    res.status(200).send({ message: "Customer deleted successfully." });
+    
+  } catch (err) {
+    console.error("Error deleting customer:", err);
+    res.status(500).send({ 
+      message: "An error occurred deleting the customer.",
+      error: err.message 
     });
+  }
 });
 
 export default router;

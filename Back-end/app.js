@@ -73,14 +73,12 @@ app.get("/", (req, res) => {
   res.send("<h1>App is running...</h1>");
 });
 
-// Router Not Found
 app.use((req, res, next) => {
   res.json({
     message: "Router Not Found!",
   });
 });
 
-// Server Error
 app.use((err, req, res, next) => {
   res.json({
     message: "Something broken!",
