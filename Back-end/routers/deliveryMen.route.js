@@ -7,7 +7,6 @@ import url from "url";
 import bcrypt from "bcrypt";
 const saltRounds = 10;
 
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/delivery-men/");
@@ -19,58 +18,95 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-
-router.post("/", async (req, res) => {
+router.post("/", upload.single("thumb"), async (req, res) => {
   try {
-    const email = req.body.email;
-    const emailCheck = await DeliveryMen.findOne({ email: email });
+    // Check required fields
+    if (
+      !req.body.name ||
+      !req.body.email ||
+      !req.body.password ||
+      !req.body.phone
+    ) {
+      return res.status(400).json({ message: "Required fields are missing" });
+    }
+
+    // Check if email already exists
+    const emailCheck = await DeliveryMen.findOne({ email: req.body.email });
     if (emailCheck) {
-      res.json({ message: "Delivery boy already exists." });
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Handle image upload or use default avatar
+    let avatar;
+    if (req.file) {
+      avatar = req.file.filename;
     } else {
+      // Copy default avatar
       const filePath = "uploads/default/avatar.png";
-      const avatar = Date.now() + "-avatar.png";
+      avatar = Date.now() + "-avatar.png";
       const copyPath = "uploads/delivery-men/" + avatar;
       fs.copyFile(filePath, copyPath, (error) => {
-        if (error) {
-          throw error;
-        }
-      });
-
-      bcrypt.hash("admin", saltRounds, async (err, hash) => {
-        const newDeliveryMen = new DeliveryMen({
-          name: req.body.name,
-          email: req.body.email,
-          password: hash,
-          thumb: avatar,
-          phone: req.body.phone,
-          address: req.body.address,
-        });
-        await newDeliveryMen.save().then((data) => {
-          res.json({ message: "Delivery boy registered successfully." });
-        });
+        if (error) console.error("Error copying default avatar:", error);
       });
     }
+
+    // Hash the provided password (not hardcoded "admin")
+    const hash = await bcrypt.hash(req.body.password, saltRounds);
+
+    const newDeliveryMen = new DeliveryMen({
+      name: req.body.name,
+      email: req.body.email,
+      password: hash,
+      thumb: avatar,
+      phone: req.body.phone,
+      address: req.body.address || "",
+    });
+
+    const savedDeliveryMan = await newDeliveryMen.save();
+
+    // Create a response object without the password
+    const responseData = {
+      _id: savedDeliveryMan._id,
+      name: savedDeliveryMan.name,
+      email: savedDeliveryMan.email,
+      phone: savedDeliveryMan.phone,
+      address: savedDeliveryMan.address,
+      thumb: savedDeliveryMan.thumb,
+      rating: savedDeliveryMan.rating,
+      totalReviews: savedDeliveryMan.totalReviews,
+      completeOrders: savedDeliveryMan.completeOrders,
+      pendingOrders: savedDeliveryMan.pendingOrders,
+      date: savedDeliveryMan.date,
+    };
+
+    // Return success with the created data
+    res.status(201).json(responseData);
   } catch (error) {
-    throw new Error(error);
+    console.error("Error creating delivery rider:", error);
+    res.status(500).json({
+      message: "An error occurred creating delivery rider",
+      error: error.message,
+    });
   }
 });
 
-
 router.get("/", async (req, res) => {
-  await DeliveryMen.find()
-    .sort({ _id: -1 })
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: "No delivery boy found." });
-      } else {
-        res.status(200).send(data);
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: "An error occurred fetching delivery boys." });
-    });
-});
+  try {
+    const data = await DeliveryMen.find().sort({ _id: -1 }).select("-password"); // Exclude password but include all other fields
 
+    if (!data || data.length === 0) {
+      return res.status(404).send({ message: "No delivery boy found." });
+    }
+
+    res.status(200).send(data);
+  } catch (err) {
+    console.error("Error fetching delivery riders:", err);
+    res.status(500).send({
+      message: "An error occurred fetching delivery boys.",
+      error: err.message,
+    });
+  }
+});
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
@@ -83,117 +119,148 @@ router.get("/:id", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({ message: "An error occurred fetching delivery boy." });
+      res
+        .status(500)
+        .send({ message: "An error occurred fetching delivery boy." });
     });
 });
-
 
 router.put("/:id", upload.single("thumb"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.body) {
-    return res
-      .status(400)
-      .send({ Message: "Unable to update delivery boy." });
+    return res.status(400).send({ message: "Unable to update delivery boy." });
   }
 
-  if (req.body.oldPassword) {
-    const oldPassword = req.body.oldPassword;
-    const newPassword = req.body.newPassword;
-    const email = req.body.email;
-
-    await DeliveryMen.findOne({ email: email }).then((deliveryMan) => {
-      if (deliveryMan) {
-        bcrypt.compare(oldPassword, deliveryMan.password, (err, result) => {
-          if (result === true) {
-            bcrypt.hash(newPassword, saltRounds, async (err, hash) => {
-              await DeliveryMen.findByIdAndUpdate(
-                id,
-                { password: hash },
-                {
-                  useFindAndModify: false,
-                }
-              )
-                .then((data) => {
-                  if (!data) {
-                    res.json({ message: "Unable to update delivery boy." });
-                  } else {
-                    res.json({ message: "Delivery boy updated successfully." });
-                  }
-                })
-                .catch((err) => {
-                  res.json({ message: "An error occurred updatating delivery boy." });
-                });
-            });
-          } else {
-            res.json({ message: "The password do not match" });
+  try {
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(req.body.password, saltRounds);
+      
+      const updatedRider = await DeliveryMen.findByIdAndUpdate(
+        id,
+        { 
+          ...req.body,
+          password: hash 
+        },
+        {
+          useFindAndModify: false,
+          new: true,
+          select: "-password" 
+        }
+      );
+      
+      if (!updatedRider) {
+        return res.status(404).send({ message: "Delivery boy not found." });
+      }
+      
+      return res.status(200).send({ 
+        message: "Delivery boy updated successfully.",
+        data: updatedRider
+      });
+    }
+    else if (req.file) {
+      const rider = await DeliveryMen.findById(id);
+      if (!rider) {
+        return res.status(404).send({ message: "Delivery boy not found." });
+      }
+      
+      var url_parts = url.parse(req.url, true).query;
+      var oldThumb = url_parts.cthumb || rider.thumb;
+      
+      if (oldThumb) {
+        try {
+          const filePath = `uploads/delivery-men/${oldThumb}`;
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
           }
-        });
-      } else {
-        res.json({ message: "Something went wrong." });
+        } catch (fileError) {
+          console.log("Error deleting old image:", fileError);
+        }
       }
+      
+      const updatedRider = await DeliveryMen.findByIdAndUpdate(
+        id,
+        { ...req.body, thumb: req.file.filename },
+        {
+          useFindAndModify: false,
+          new: true,
+          select: "-password" // Don't return password in response
+        }
+      );
+      
+      if (!updatedRider) {
+        return res.status(404).send({ message: "Delivery boy not found." });
+      }
+      
+      return res.status(200).send({ 
+        message: "Delivery boy updated successfully.",
+        data: updatedRider
+      });
+    }
+    else {
+      const updatedRider = await DeliveryMen.findByIdAndUpdate(
+        id,
+        req.body,
+        {
+          useFindAndModify: false,
+          new: true,
+          select: "-password" // Don't return password in response
+        }
+      );
+      
+      if (!updatedRider) {
+        return res.status(404).send({ message: "Delivery boy not found." });
+      }
+      
+      return res.status(200).send({ 
+        message: "Delivery boy updated successfully.",
+        data: updatedRider
+      });
+    }
+  } catch (err) {
+    console.error("Error updating delivery boy:", err);
+    return res.status(500).send({ 
+      message: "An error occurred updating delivery boy.",
+      error: err.message
     });
-  } else if (req.body.thumb) {
-    await DeliveryMen.findByIdAndUpdate(id, req.body, {
-      useFindAndModify: false,
-    })
-      .then((data) => {
-        if (!data) {
-          res.json({ message: "Unable to update delivery boy." });
-        } else {
-          res.json({ data, message: "Delivery boy updated successfully." });
-        }
-      })
-      .catch((err) => {
-        res.json({ message: "An error occurred updatating delivery boy." });
-      });
-  } else if (req.file.filename) {
-
-    var url_parts = url.parse(req.url, true).query;
-    var oldThumb = url_parts.cthumb;
-    fs.unlinkSync(`uploads/delivery-men/${oldThumb}`);
-
-    await DeliveryMen.findByIdAndUpdate(
-      id,
-      { ...req.body, thumb: req.file.filename },
-      {
-        useFindAndModify: false,
-      }
-    )
-      .then((data) => {
-        if (!data) {
-          res.json({ message: "Unable to update delivery boy." });
-        } else {
-          res.json({ message: "Delivery boy updated successfully." });
-        }
-      })
-      .catch((err) => {
-        res.json({ message: "An error occurred updatating delivery boy." });
-      });
   }
 });
-
 
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
-  var url_parts = url.parse(req.url, true).query;
-  var thumb = url_parts.thumb;
-  fs.unlinkSync(`uploads/delivery-men/${thumb}`);
+  try {
+    const rider = await DeliveryMen.findById(id);
+    if (!rider) {
+      return res.status(404).send({ message: "Delivery rider not found." });
+    }
 
-  await DeliveryMen.findByIdAndDelete(id)
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: "Unable to delete the delivery boy." });
-      } else {
-        res.status(200).send("Delivery boy deleted successfully.");
+    var url_parts = url.parse(req.url, true).query;
+    var thumb = url_parts.thumb || rider.thumb;
+    
+    if (thumb) {
+      try {
+        const filePath = `uploads/delivery-men/${thumb}`;
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileError) {
+        console.error("Error deleting rider image:", fileError);
       }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: "An error occurred deleting delivery boy." });
-    });
-});
+    }
 
+    await DeliveryMen.findByIdAndDelete(id);
+    
+    res.status(200).send({ message: "Delivery rider deleted successfully." });
+  } catch (err) {
+    console.error("Error deleting delivery rider:", err);
+    res.status(500).send({ 
+      message: "An error occurred deleting delivery rider.", 
+      error: err.message 
+    });
+  }
+});
 
 router.post("/:id/review", async (req, res) => {
   try {
