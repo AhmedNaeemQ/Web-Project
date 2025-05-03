@@ -219,11 +219,11 @@ const Messages = () => {
         </motion.div>
       )}
 
-      {/* Confirm Delete Modal */}
       {confirmModal && (
         <ConfirmModal
           isOpen={confirmModal}
-          onClose={() => {
+          onCancel={() => {
+            console.log("Modal closed");
             setConfirmModal(false);
             setMessageToDelete(null);
           }}
