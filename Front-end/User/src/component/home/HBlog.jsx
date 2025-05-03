@@ -1,97 +1,135 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Title from "../common/header/title/Title";
+import axios from "axios";
+import Slider from "react-slick";
 import moment from "moment";
+import { motion } from "framer-motion";
 
-const blogs = [
-  {
-    "_id": "1",
-    "title": "10 Must-Try Street Foods Around the World",
-    "description": "From spicy tacos in Mexico to crispy tempura in Japan, explore the most delicious street foods globally.",
-    "thumb": "street-foods.jpg",
-    "post_by": "Ali Khan",
-    "date": "2024-03-25T10:30:00Z"
-  },
-  {
-    "_id": "2",
-    "title": "The Secret to Making Perfect Pasta at Home",
-    "description": "Discover the key ingredients and techniques to prepare restaurant-style pasta in your own kitchen.",
-    "thumb": "perfect-pasta.jpg",
-    "post_by": "Sana Umar",
-    "date": "2024-03-20T15:45:00Z"
-  },
-  {
-    "_id": "3",
-    "title": "Top 5 Healthy Smoothies for a Refreshing Start",
-    "description": "Boost your mornings with these delicious and nutritious smoothie recipes which are healthy.",
-    "thumb": "healthy-smoothies.jpg",
-    "post_by": "Ayesha Durrani",
-    "date": "2024-03-18T08:00:00Z"
-  },
-  {
-    "_id": "4",
-    "title": "A Guide to the Best Spices for Flavorful Cooking",
-    "description": "Learn how to use essential spices to enhance your dishes with rich and vibrant flavors.",
-    "thumb": "spices-guide.jpg",
-    "post_by": "Mehran Ali",
-    "date": "2024-03-15T12:20:00Z"
-  },
-  {
-    "_id": "5",
-    "title": "How to Bake the Perfect Chocolate Cake",
-    "description": "Follow this step-by-step guide to make a moist and rich chocolate cake that melts in your mouth.",
-    "thumb": "chocolate-cake.jpg",
-    "post_by": "Ameer Hamza",
-    "date": "2024-03-10T22:10:00Z"
-  }
-]
+import "bootstrap/dist/css/bootstrap.min.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
+const headerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const cardVariants = {
+  hidden: i => ({
+    opacity: 0,
+    y: 20,
+    transition: { delay: i * 0.1, type: "spring", stiffness: 100 }
+  }),
+  visible: { opacity: 1, y: 0 },
+  hover: { scale: 1.02, boxShadow: "0 6px 18px rgba(0,0,0,0.15)" }
+};
 
 const HBlog = () => {
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:1000/api/admin/blogs")
+      .then(({ data }) =>
+        setBlogs(data.filter(b => b.featured.toLowerCase() === "on"))
+      )
+      .catch(console.error);
+  }, []);
+
+  const settings = {
+    dots: true,
+    infinite: blogs.length > 3,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      { breakpoint: 992, settings: { slidesToShow: 2 } },
+      { breakpoint: 576, settings: { slidesToShow: 1 } }
+    ]
+  };
+
   return (
-    <>
-      <section className="blog padding">
-        <div className="container">
-          <Title subtitle="Our Blog" title="Recent Posts From Blog" />
-        </div>
-        <div className="container grid-3">
-          {blogs.length === 0 ? (
-            <h3 className="text-center">No items found!</h3>
-          ) : (
-            blogs.slice(0, 3).map((item, index) => (
-              <div key={index} className="items shadow">
-                <div className="img">
-                  <img src={"/img/blog/b1.jpg"} alt={item.title} />
-                </div>
-                <div className="text">
-                  <div className="admin flexSB">
-                    <span>
-                      <i className="fa fa-user"></i>
-                      <label htmlFor="">{item.post_by}</label>
-                    </span>
-                    <span>
-                      <i className="fa fa-calendar-alt"></i>
-                      <label htmlFor="">
-                        {moment(item.date).format("yyyy")}
-                      </label>
-                    </span>
-                  </div>
-                  <Link to={"/blogs/" + item._id} className="blog-title">
-                    <h1>{item.title.slice(0, 60)}...</h1>
+    <section className="py-5 bg-light">
+      <div className="container">
+        {/* Inline animated header */}
+        <motion.div
+          className="text-center mb-5"
+          initial="hidden"
+          animate="visible"
+          variants={headerVariants}
+        >
+          <p className="text-uppercase text-secondary small mb-2">
+            From Our Journal
+          </p>
+          <h2 className="display-5 fw-bold">Insights & Inspirations</h2>
+          <div
+            className="mx-auto border-bottom border-3 border-primary my-3"
+            style={{ width: "80px" }}
+          />
+        </motion.div>
+
+        {blogs.length === 0 ? (
+          <h4 className="text-center text-secondary">No posts found.</h4>
+        ) : (
+          <Slider {...settings}>
+            {blogs.slice(0, 3).map((post, idx) => (
+              <div key={post._id} className="px-2">
+                <motion.div
+                  className="card h-100 border-0 shadow-sm overflow-hidden"
+                  custom={idx}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover="hover"
+                  variants={cardVariants}
+                >
+                  <Link to={`/blogs/${post._id}`} className="text-decoration-none">
+                    <div className="ratio ratio-4x3">
+                      <img
+                        src={`/blogs/${post.thumb}`}
+                        alt={post.title}
+                        className="card-img-top img-fluid"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
                   </Link>
-                  <p>
-                    {item.description.slice(0, 100)}...{" "}
-                    <Link to={"/blogs/" + item._id} class="success-btn">
-                      <i className="fas fa-eye"></i> Read More
+                  <div className="card-body d-flex flex-column">
+                    <div className="d-flex justify-content-between text-muted small mb-2">
+                      <span>
+                        <i className="fa fa-user me-1" />
+                        {post.post_by}
+                      </span>
+                      <span>
+                        <i className="fa fa-calendar-alt me-1" />
+                        {moment(post.date).format("MMM D, YYYY")}
+                      </span>
+                    </div>
+                    <Link to={`/blogs/${post._id}`} className="text-dark">
+                      <h5 className="card-title">
+                        {post.title.length > 60
+                          ? post.title.slice(0, 60) + "…"
+                          : post.title}
+                      </h5>
                     </Link>
-                  </p>
-                </div>
+                    <p className="card-text flex-grow-1 text-secondary">
+                      {post.description.length > 100
+                        ? post.description.slice(0, 100) + "…"
+                        : post.description}
+                    </p>
+                    <Link
+                      to={`/blogs/${post._id}`}
+                      className="btn btn-sm btn-primary mt-3 align-self-start"
+                    >
+                      <i className="fas fa-eye me-1" />
+                      Read More
+                    </Link>
+                  </div>
+                </motion.div>
               </div>
-            ))
-          )}
-        </div>
-      </section>
-    </>
+            ))}
+          </Slider>
+        )}
+      </div>
+    </section>
   );
 };
 

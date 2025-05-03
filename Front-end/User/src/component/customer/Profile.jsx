@@ -1,17 +1,24 @@
+import axios from "axios";
+import Cookies from "js-cookie";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const customer = {
-  name: "Ali",
-  date: "2025-11-02",
-  email: "ali@gmail.com",
-  phone: "+92 300 1289722",
-  address: "Johar Town, Lahore",
-}
-
 const Profile = () => {
+  const id = Cookies.get("customer");
+  const [customer, setCustomer] = useState({});
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
+      setCustomer(data);
+    };
+    fetchCustomer();
+  }, []);
+
+
   const customerLogout = () => {
+    Cookies.remove("customer");
+    Cookies.remove("customerName");
     window.location.href = "/";
   };
 
@@ -20,7 +27,7 @@ const Profile = () => {
       <div className="dashboard-content-inner grid-2">
         <div className="grid-2">
           <div className="img">
-            <img src={"/img/avatar.png"} alt={""} />
+            <img src={"/customers/" + customer.thumb} alt={customer.name} />
           </div>
           <div className="profile-text">
             <h4>
@@ -28,7 +35,7 @@ const Profile = () => {
             </h4>
             <p>
               <i class="fa fa-user-plus"></i>
-              {" "}
+              {""}
               {customer.date && moment(customer.date).format("ll")}
             </p>
             <p>

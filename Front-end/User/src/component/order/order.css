@@ -67,9 +67,6 @@
   padding: 3px 10px;
   border-radius: 4px;
 }
-.order-form fieldset {
-  border: 1px solid #bfbbbb;
-}
 .order-form fieldset legend {
   font-size: 23px;
   color: #2f3542;

@@ -1,43 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../common/header/title/PageHeader";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import moment from "moment";
-
-const blog = {
-  "title": "The Perfect Spaghetti Carbonara Recipe",
-  "post_by": "Chef Antonio Rossi",
-  "date": "2025-03-30T15:30:00Z",
-  "thumb": "spaghetti-carbonara.jpg",
-  "description": "Spaghetti Carbonara is a classic Italian pasta dish that combines eggs, cheese, pancetta, and pepper for a rich and creamy flavor.To make the perfect carbonara, use fresh ingredients and avoid adding cream—authentic carbonara gets its creamy texture from eggs and cheese. Follow our step-by-step guide and impress your guests with this delicious homemade recipe! Cook spaghetti until al dente. Sauté pancetta until crispy. Mix eggs and cheese, then combine everything off the heat. Season with black pepper and enjoy!"
-}
+import Banner from "../common/banner/Banner";
 
 const SingleBlog = () => {
+  const { id } = useParams();
+  const [blog, setBlog] = useState({});
+  useEffect(() => {
+    const fetchBlog = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/blogs/${id}`);
+      setBlog(data);
+    };
+    fetchBlog();
+  }, [id]);
 
   return (
     <>
-      <PageHeader title={blog.title} />
-      <section className="singleBlog padding">
-        <div className="container">
-          <div className="blog-content">
-            <div className="blog-title">
-              <h3>{blog.title}</h3>
-              <div className="admin flex">
-                <span>
-                  <i className="fa fa-user"></i>{" "}
-                  <label htmlFor="">{blog.post_by}</label>
-                </span>
-                <span>
-                  <i className="fa fa-calendar-alt"></i>{" "}
-                  <label htmlFor="">{moment(blog.date).format("lll")}</label>
-                </span>
-              </div>
-            </div>
-            <div className="blog-text" style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-              <img src={"/img/blog/b1.jpg"} alt="" style={{ width: "100%", maxWidth: "600px", height: "300px" }} />
-              <p style={{ textAlign: "justify", marginTop: "10px" }}>{blog.description}</p>
-            </div>
+      <Banner title={blog.post_by} subtitle={blog.title}/>
+      <section className="py-5">
+  <div className="container">
+    {/* Blog Info and Image */}
+    <div className="d-flex flex-column align-items-center flex-md-row gap-4 mb-4">
+      
+      {/* Info */}
+      <div className="flex-fill">
+        <h2 className="fw-bold mb-3">{blog.title}</h2>
+        <div className="d-flex flex-wrap gap-3 text-muted small">
+          <div className="d-flex align-items-center gap-2">
+            <i className="fa fa-user"></i>
+            <span>{blog.post_by}</span>
+          </div>
+          <div className="d-flex align-items-center gap-2">
+            <i className="fa fa-calendar-alt"></i>
+            <span>{moment(blog.date).format("MMMM Do, YYYY")}</span>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Image */}
+      <div className="flex-shrink-0">
+        <img
+          src={`/blogs/${blog.thumb}`}
+          alt={blog.title}
+          className="img-fluid rounded shadow"
+          style={{ width: "250px", height: "180px", objectFit: "cover" }}
+        />
+      </div>
+    </div>
+
+    {/* Blog Content */}
+    <div className="fs-6 lh-lg">
+      {blog.description}
+    </div>
+  </div>
+</section>
+
+
+
     </>
   );
 };

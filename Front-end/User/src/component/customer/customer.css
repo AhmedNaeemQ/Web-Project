@@ -94,7 +94,7 @@
   padding: 15px 0;
 }
 .dashboard-content .order .success-btn.disableLink {
-  color: #0000D1 !important;
+  color: #44bd32 !important;
 }
 /* ----------- */
 
@@ -131,8 +131,8 @@
 } */
 .dashboard i {
   font-size: 10px;
-  border: 1px solid #0000D1;
-  color: #0000D1;
+  border: 1px solid #44bd32;
+  color: #44bd32;
   padding: 2px 2px;
   margin-right: 5px;
 }
@@ -234,7 +234,7 @@
   color: #fff !important;
 }
 .order-summury .disableLink {
-  color: #0000D1 !important;
+  color: #44bd32 !important;
 }
 .order-summury .delivery-man-details {
   text-align: center;

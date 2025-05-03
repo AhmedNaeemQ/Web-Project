@@ -2,26 +2,50 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "../../../assets/context/ToastContext";
 import ButtonLoader from "../../../assets/components/ButtonLoader";
+import axiosInstance from "../../../../config/axios";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setToast } = useToast();
   const navigate = useNavigate();
   const [isLogging, setIsLogging] = useState(false);
 
   const handleLogin = async () => {
-    setIsLogging(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setIsLogging(false);
-      setToast({
-        message: "Login successful",
-        type: "success",
+    try {
+      setIsLogging(true);
+      const response = await axiosInstance.post("/adminLogin", {
+        email,
+        password,
       });
+      if (response.data.message === "Login successfully.") {
+        setToast({
+          message: "Login successful",
+          type: "success",
+        });
 
-     navigate("/dashboard");
+        localStorage.setItem("isLogin", true);
+        localStorage.setItem("id", response.data.admin._id);
+        localStorage.setItem("username", response.data.admin.username);
 
+        navigate("/dashboard");
+      } else {
+        setToast({
+          message: response.data.message,
+          type: "error",
+        });
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      setToast({
+        message: "Login failed. Please try again.",
+        type: "error",
+      });
+      return;
+    } finally {
+      setIsLogging(false);
+    }
   };
 
   return (
@@ -33,9 +57,9 @@ const LoginForm = () => {
           <label className="font-semibold">Username</label>
           <input
             type="text"
-            placeholder="Enter your username"
+            placeholder="Enter your email"
             className="border p-2 rounded-xl"
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="my-4 flex flex-col gap-1">
@@ -57,7 +81,7 @@ const LoginForm = () => {
           className="my-4 w-full bg-[#0D1552] rounded-xl p-3 text-white text-center"
           disabled={isLogging}
         >
-          {isLogging ? <ButtonLoader/> : "Login"}
+          {isLogging ? <ButtonLoader /> : "Login"}
         </button>
         {/* <p className="mt-4 text-sm">
           Don’t have an account?{" "}

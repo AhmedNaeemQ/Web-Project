@@ -26,7 +26,7 @@ const FoodItem = ({ foods }) => {
 
   // ADD-TO-CART
   const { addItem } = useCart();
-  const addItemHandlar = (item, id) => {
+  const addItemHandler = (item, id) => {
     item.id = id;
     addItem(item);
     Swal.fire({
@@ -48,8 +48,8 @@ const FoodItem = ({ foods }) => {
               <div className="img">
                 <Link to={"/foods/" + item._id}>
                   <img
-                    src={"img/food/p2.jpg"}
-                    alt="Pizza"
+                    src={"/foods/" + item.thumb}
+                    alt={item.title}
                     className="img-responsive img-curve"
                   />
                 </Link>
@@ -69,18 +69,16 @@ const FoodItem = ({ foods }) => {
                     <i className="fas fa-eye"></i> View Detail
                   </Link>
                   {item.active === "on" ? (
-                    <Link
+                    <button
                       className="btn-primary"
-                      onClick={() => {
-                        addItemHandlar(item, item._id);
-                      }}
+                      onClick={() => addItemHandler(item, item._id)}
                     >
                       <i className="fas fa-shopping-cart"></i> Add To Cart
-                    </Link>
+                    </button>
                   ) : (
-                    <Link className="btn-primary disableLink">
+                    <button className="btn-primary disableLink" disabled>
                       <i className="fas fa-shopping-cart"></i> Stock Out
-                    </Link>
+                    </button>
                   )}
                 </div>
               </div>
@@ -89,7 +87,7 @@ const FoodItem = ({ foods }) => {
         )}
       </div>
 
-      {foods.length >= 13 && (
+      {foods.length >= itemsPerPage + 1 && (
         <ReactPaginate
           breakLabel="..."
           nextLabel=">>"

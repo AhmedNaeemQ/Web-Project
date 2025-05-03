@@ -57,7 +57,7 @@ const Toast: React.FC<ToastProps> = ({ message, type }) => {
       {type === "success" ? (
         <div
           id="toast-success"
-          className="fixed bottom-4 right-4 border-2 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm"
+          className="fixed bottom-4 right-4 border-2 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm z-50"
           role="alert"
         >
           <div className="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">

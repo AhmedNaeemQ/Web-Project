@@ -1,5 +1,5 @@
 .food {
-  background: url(../../../public/img/food-bg-2.jpg);
+  background: url(../../../public/img/food-bg-2.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: bottom right;
@@ -68,7 +68,7 @@
   text-align: center;
 }
 .food .btn-primary {
-  background: #0000D1;
+  background: #44bd32;
   padding: 5px 10px;
   color: #fff;
   font-size: 14px;

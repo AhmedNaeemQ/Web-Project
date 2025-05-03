@@ -14,7 +14,7 @@ const CategoryFood = () => {
   const [foods, setFoods] = useState([]);
   useEffect(() => {
     const fatchFoods = async () => {
-      const { data } = await axios.get(`/api/admin/foods`);
+      const { data } = await axios.get(`http://localhost:1000/api/admin/foods`);
       const categoryFoods = data.filter((curData) => {
         return curData.category.toLowerCase() === title.toLowerCase();
       });

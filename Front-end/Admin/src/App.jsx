@@ -17,21 +17,20 @@ const App = () => {
         <Route
           path="*"
           element={
-            <WithSidebar>
-              <Routes>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/foods" element={<Food />} />
-                <Route path="/categories" element={<Category />} />
-                <Route path="/delivery-riders" element={<DeliveryRiders />} />
-                <Route path="/customers" element={<Customer />} />
-                <Route path="/messages" element={<Message />} />
-                <Route path="/users" element={<div>Users Page</div>} />
-                <Route path="/settings" element={<div>Settings Page</div>} />
-                {/* Add more routes here */}
-                <Route path="*" element={<Navigate to="/dashboard" />} />
-              </Routes>
-            </WithSidebar>
+            <ProtectedRoute>
+              <WithSidebar>
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/foods" element={<Food />} />
+                  <Route path="/categories" element={<Category />} />
+                  <Route path="/delivery-riders" element={<DeliveryRiders />} />
+                  <Route path="/customers" element={<Customer />} />
+                  <Route path="/messages" element={<Message />} />
+                  <Route path="*" element={<Navigate to="/dashboard" />} />
+                </Routes>
+              </WithSidebar>
+            </ProtectedRoute>
           }
         />
       </Routes>
@@ -39,11 +38,19 @@ const App = () => {
   );
 };
 
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = !!localStorage.getItem("isLogin");
+
+  return isAuthenticated ? children : <Navigate to="/" />;
+};
+
 const WithSidebar = ({ children }) => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 p-4 bg-[#E9F0F7] ml-64 min-h-screen">{children}</div>
+      <div className="flex-1 p-4 bg-[#E9F0F7] ml-64 min-h-screen">
+        {children}
+      </div>
     </div>
   );
 };

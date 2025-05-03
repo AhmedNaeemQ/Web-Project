@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import axiosInstance from "../../../config/axios";
+import { useToast } from "../../assets/context/ToastContext";
 
 const Dashboard = () => {
+  const [dashboardData, setDashboardData] = useState({
+    totalOrders: 0,
+    revenue: 0,
+    totalFoods: 0,
+    totalCategories: 0,
+    totalBlogs: 0,
+    totalCustomers: 0,
+    totalDeliveryRiders: 0,
+    totalManagers: 0,
+    totalMessages: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const { setToast } = useToast();
+
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: (i) => ({
@@ -11,16 +27,74 @@ const Dashboard = () => {
     }),
   };
 
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get("/revenue/dashboard-stats");
+      if (!response.status === 200) {
+        setToast({
+          message: "Failed to fetch dashboard data",
+        });
+      }
+      setDashboardData(response.data);
+      console.log("Dashboard data loaded:", data);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const cards = [
-    { title: "Total Orders", icon: "ri-shopping-basket-line", count: "120+" },
-    { title: "Revenue", icon: "ri-currency-fill", count: "Rs 50,000+" },
-    { title: "Foods", icon: "ri-service-line", count: "80+" },
-    { title: "Categories", icon: "ri-list-check", count: "10+" },
-    { title: "Blogs", icon: "ri-pages-line", count: "15+" },
-    { title: "Customers", icon: "ri-map-pin-user-fill", count: "200+" },
-    { title: "Delivery Riders", icon: "ri-truck-line", count: "25+" },
-    { title: "Managers", icon: "ri-team-line", count: "5+" },
-    { title: "Messages", icon: "ri-chat-2-line", count: "50+" },
+    {
+      title: "Total Orders",
+      icon: "ri-shopping-basket-line",
+      count: loading ? "0" : `${dashboardData.totalOrders}+`,
+    },
+    {
+      title: "Revenue",
+      icon: "ri-currency-fill",
+      count: loading ? "0" : `Rs ${dashboardData.revenue}+`,
+    },
+    {
+      title: "Foods",
+      icon: "ri-service-line",
+      count: loading ? "0" : `${dashboardData.totalFoods}+`,
+    },
+    {
+      title: "Categories",
+      icon: "ri-list-check",
+      count: loading ? "0" : `${dashboardData.totalCategories}+`,
+    },
+    {
+      title: "Blogs",
+      icon: "ri-pages-line",
+      count: loading ? "0" : `${dashboardData.totalBlogs}+`,
+    },
+    {
+      title: "Customers",
+      icon: "ri-map-pin-user-fill",
+      count: loading ? "0" : `${dashboardData.totalCustomers}+`,
+    },
+    {
+      title: "Delivery Riders",
+      icon: "ri-truck-line",
+      count: loading ? "0" : `${dashboardData.totalDeliveryRiders}+`,
+    },
+    {
+      title: "Managers",
+      icon: "ri-team-line",
+      count: loading ? "0" : `${dashboardData.totalManagers}+`,
+    },
+    {
+      title: "Messages",
+      icon: "ri-chat-2-line",
+      count: loading ? "0" : `${dashboardData.totalMessages}+`,
+    },
   ];
 
   return (

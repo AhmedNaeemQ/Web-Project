@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
+import Banner from "../common/banner/Banner";
 
 function Order() {
   // ADD TO CART
@@ -36,6 +37,9 @@ function Order() {
   };
 
   // PLACE ORDER
+  const orderID = uuid().slice(0, 8);
+  const customer_id = Cookies.get("customer");
+  const customer_name = Cookies.get("customerName");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
@@ -52,31 +56,77 @@ function Order() {
     deliveryCost = 100;
   }
 
-
+  // GET CUSTOMER DETAILS
+  const id = Cookies.get("customer");
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
+      setPhone(data.phone);
+      setEmail(data.email);
+      setAddress(data.address);
+    };
+    if(customer_id){
+      fetchCustomer();
+    }
+  }, [id]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (!isEmpty) {
-      if (true) {
-        Swal.fire({
-          icon: "success",
-          text: "Order placed successfully.",
-        });
-
+      if (customer_id) {
+        let data = {
+          orderID,
+          customer_id,
+          customer_name,
+          items,
+          email,
+          phone,
+          city,
+          address,
+          payment,
+          total_foods: totalUniqueItems,
+          total_quantity: totalItems,
+          deliveryCost: deliveryCost,
+          total_price: cartTotal + deliveryCost,
+        };
+        axios
+          .post(`/api/admin/orders`, data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            Swal.fire({
+              icon: "success",
+              text: response.data.message,
+              showConfirmButton: false,
+              timer: 500,
+            });
+            emptyCart();
+            window.location.href = "/customer/dashboard";
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong.",
+            });
+          });
       } else {
         window.location.href = "/login";
       }
     } else {
       Swal.fire({
         icon: "error",
-        text: "Please, select any food.",
+        text: "Please, select any food item.",
       });
     }
   };
 
   return (
     <>
-      <PageHeader title="Order" />
+      {/* <PageHeader title="Order" /> */}
+      <Banner title="Order" subtitle="Place Order"/>
       <section className="order">
         <div className="container">
           <div className="order-items">
@@ -94,7 +144,7 @@ function Order() {
                   <td colSpan="6">
                     Your Cart is Empty.{" "}
                     <Link to="/foods/" className="btn-primary danger-btn">
-                      Brows Foods
+                      Browse Cuisines
                     </Link>
                   </td>
                 </tr>
@@ -103,13 +153,13 @@ function Order() {
                   <tr>
                     <td>
                       <Link to={"/foods/" + item._id}>
-                        <img src={"img/food/p2.jpg"} alt="" />
+                        <img src={"/foods/" + item.thumb} alt="" />
                       </Link>
                     </td>
                     <td>
                       <Link to={"/foods/" + item._id}>{item.title}</Link>
                     </td>
-                    <td>Rs {item.price}</td>
+                    <td>Rs. {item.price}</td>
                     <td>
                       <button
                         className="btn-primary"
@@ -129,7 +179,7 @@ function Order() {
                         +
                       </button>
                     </td>
-                    <td>Rs {item.itemTotal}</td>
+                    <td>Rs. {item.itemTotal}</td>
                     <td>
                       <Link
                         onClick={() => removeItem(item.id)}
@@ -148,7 +198,7 @@ function Order() {
                     <td></td>
                     <td>Sub-Total</td>
                     <td>{totalItems}</td>
-                    <td>Rs {cartTotal}</td>
+                    <td>Rs. {cartTotal}</td>
                     <td>
                       <Link className="btn-danger" onClick={() => claerCart()}>
                         Clear All
@@ -157,9 +207,9 @@ function Order() {
                   </tr>
                   <tr className="bold">
                     <td colSpan="2">Delivery Cost</td>
-                    <td>Rs{deliveryCost}</td>
+                    <td>Rs.{deliveryCost}</td>
                     <td>Total Cost</td>
-                    <td>Rs {cartTotal && cartTotal + deliveryCost}</td>
+                    <td>Rs. {cartTotal && cartTotal + deliveryCost}</td>
                     <td></td>
                   </tr>
                 </>
@@ -167,14 +217,15 @@ function Order() {
               <tr>
                 <td colSpan="6">
                   <span className="nb">
-                    (Delivery only available within Lahore )
+                    (Delivery cost Rs 80 for inside of Gulberg and Rs 100 for
+                    outside of Gulberg )
                   </span>
                 </td>
               </tr>
             </table>
           </div>
           <div className="">
-            <form className="order-form" onSubmit={submitHandler}>
+            <form className="order-form px-5 py-2" onSubmit={submitHandler}>
               <fieldset>
                 <legend>Delivery Details</legend>
                 <div className="order-label">Phone Number</div>
@@ -206,14 +257,13 @@ function Order() {
                     Select
                   </option>
                   <option value="Gulberg">Gulberg</option>
-                  <option value="DHA">DHA</option>
                   <option value="Johar Town">Johar Town</option>
-                  <option value="Model Town">Model Town</option>
+                  <option value="Defence">Defence</option>
+                  <option value="Valencia Town">Valencia Town</option>
                   <option value="Bahria Town">Bahria Town</option>
-                  <option value="Iqbal Town">Iqbal Town</option>
-                  <option value="Garden Town">Garden Town</option>
-                  <option value="Wapda Town">Wapda Town</option>
-                  <option value="Valencia">Valencia Town</option>
+                  <option value="Lake City">Lake City</option>
+                  <option value="Walton">Walton</option>
+                  <option value="Township  ">Township </option>
                 </select>
                 <div class="order-label">Address</div>
                 <input
