@@ -130,11 +130,7 @@ const DeliveryRiders = () => {
             riders.map((rider) => (
               <Card
                 key={rider._id}
-                thumb={
-                  rider.thumb
-                    ? `/uploads/riders/${rider.thumb}`
-                    : "/placeholder-user.jpg"
-                }
+                thumb={`${import.meta.env.VITE_API_URL}/delivery-men/${rider.thumb}`}
                 title={rider.name}
                 subtitle={`${rider.phone}`}
                 description={rider.email}
@@ -175,7 +171,7 @@ const DeliveryRiders = () => {
           image={
             selectedRider.thumb
               ? `/uploads/riders/${selectedRider.thumb}`
-              : "/placeholder-user.jpg"
+              : "/placeholder-user.png"
           }
           details={{
             Name: selectedRider.name,

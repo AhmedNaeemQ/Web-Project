@@ -21,6 +21,9 @@ const messageSchema = mongoose.Schema({
     type: String,
     // require: true,
   },
+  reply: {
+    type: String,
+  },
   read: {
     type: String,
     default: "No",

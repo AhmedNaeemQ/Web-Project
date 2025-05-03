@@ -146,7 +146,7 @@ const Foods = () => {
                       food.category === category._id && (
                         <Card
                           key={food._id}
-                          thumb={`/uploads/foods/${food.thumb}`}
+                          thumb={`${import.meta.env.VITE_API_URL}/foods/${food.thumb}`}
                           title={food.title}
                           price={food.price}
                           description={

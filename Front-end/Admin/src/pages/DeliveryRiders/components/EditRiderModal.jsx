@@ -314,13 +314,13 @@ const EditRiderModal = ({ onClose, rider, onSuccess }) => {
                 src={
                   rider?.thumb
                     ? `/uploads/delivery-men/${rider.thumb}`
-                    : "/placeholder-user.jpg"
+                    : "/placeholder-user.png"
                 }
                 alt={rider?.name}
                 className="w-24 h-24 object-cover rounded-full"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "/placeholder-user.jpg";
+                  e.target.src = "/placeholder-user.png";
                 }}
               />
               <div className="text-sm text-gray-500">Current profile image</div>

@@ -59,23 +59,38 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const id = req.params.id;
 
-  await Messages.findByIdAndUpdate(
-    id,
-    { read: "Yes" },
-    {
-      useFindAndModify: false,
+  try {
+    const message = await Messages.findById(id);
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
     }
-  )
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: "Feedback not found" });
-      } else {
-        res.send("Feedback status updated successfully.");
+
+    const updateData = { read: "Yes" };
+    
+    if (req.body.reply !== undefined) {
+      updateData.reply = req.body.reply;
+    }
+
+    const updatedMessage = await Messages.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true, 
+        useFindAndModify: false,
       }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: "An error occurred updatating the feedback status." });
+    );
+
+    res.status(200).json({
+      message: "Message updated successfully",
+      data: updatedMessage
     });
+  } catch (err) {
+    console.error("Error updating message:", err);
+    res.status(500).json({ 
+      message: "An error occurred updating the message", 
+      error: err.message 
+    });
+  }
 });
 
 

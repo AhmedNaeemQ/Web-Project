@@ -101,7 +101,7 @@ const Customer = () => {
             customers.map((customer) => (
               <Card
                 key={customer._id}
-                thumb={customer.thumb ? `/uploads/customers/${customer.thumb}` : "/placeholder-user.jpg"}
+                thumb={`${import.meta.env.VITE_API_URL}/customers/${customer.thumb}`}
                 title={customer.name}
                 subtitle={customer.email}
                 description={customer.phone || "No phone number"}
@@ -136,7 +136,7 @@ const Customer = () => {
           isOpen={true}
           onClose={closePopup}
           title="Customer Details"
-          image={selectedCustomer.thumb ? `/uploads/customers/${selectedCustomer.thumb}` : "/placeholder-user.jpg"}
+          image={selectedCustomer.thumb ? `/uploads/customers/${selectedCustomer.thumb}` : "/placeholder-user.png"}
           details={{
             Name: selectedCustomer.name,
             Email: selectedCustomer.email,

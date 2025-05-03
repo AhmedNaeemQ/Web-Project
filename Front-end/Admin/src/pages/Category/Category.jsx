@@ -110,7 +110,7 @@ const Category = () => {
             categories.map((category) => (
               <Card
                 key={category._id}
-                thumb={`/uploads/categories/${category.thumb}`}
+                thumb={`${import.meta.env.VITE_API_URL}/categories/${category.thumb}`}
                 title={category.title}
                 onClick={() => handleCategoryClick(category)}
                 badges={[

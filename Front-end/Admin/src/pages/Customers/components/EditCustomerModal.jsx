@@ -234,7 +234,7 @@ const EditCustomerModal = ({ onClose, customer, onSuccess }) => {
                 src={
                   !imageError && customer?.thumb
                     ? `/uploads/customers/${customer.thumb}`
-                    : "/placeholder-user.jpg"
+                    : "/placeholder-user.png"
                 }
                 alt={customer?.name || "Customer"}
                 className="w-24 h-24 object-cover rounded-full"
