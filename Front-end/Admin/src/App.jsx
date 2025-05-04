@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Sidebar from "./assets/components/Sidebar";
@@ -39,9 +40,23 @@ const App = () => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem("isLogin");
+  const accessToken = localStorage.getItem("accessToken");
+  let isValidToken = false;
 
-  return isAuthenticated ? children : <Navigate to="/" />;
+  if (accessToken) {
+    try {
+      const decoded = jwtDecode(accessToken);
+      const currentTime = Date.now() / 1000;
+
+      if (decoded.exp > currentTime) {
+        isValidToken = true;
+      }
+    } catch (err) {
+      console.error("Invalid token:", err);
+    }
+  }
+
+  return isValidToken ? children : <Navigate to="/" />;
 };
 
 const WithSidebar = ({ children }) => {

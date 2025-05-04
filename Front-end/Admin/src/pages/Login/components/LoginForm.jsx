@@ -23,8 +23,7 @@ const LoginForm = () => {
           message: "Login successful",
           type: "success",
         });
-
-        localStorage.setItem("isLogin", true);
+        localStorage.setItem("accessToken", response.data.token);
         localStorage.setItem("id", response.data.admin._id);
         localStorage.setItem("username", response.data.admin.username);
 
