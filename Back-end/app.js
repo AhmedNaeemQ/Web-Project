@@ -24,9 +24,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const verifyToken = (req, res, next) => {
-  if (req.path === '/api/admin/adminlogin') {
+  const origin = req.headers.origin;
+  if (origin === 'http://localhost:3000' || req.headers.referer.includes('http://localhost:3000') || !req.headers.origin) {
+    // console.log("Request from localhost:3000, skipping token verification.");
+    // console.log("its call", req.headers)
     return next();
   }
+
+  if (req.path === '/api/admin/adminlogin') {
+    // console.log("Admin login route, skipping token verification.");
+    return next();
+  }
+  console.log('req: ', req.headers);
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
