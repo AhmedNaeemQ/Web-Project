@@ -24,69 +24,66 @@ const Profile = () => {
 
   return (
     <>
-      <div className="dashboard-content-inner grid-2">
-        <div className="grid-2">
-          <div className="img">
-            <img src={"/customers/" + customer.thumb} alt={customer.name} />
-          </div>
-          <div className="profile-text">
-            <h4>
-              <i class="fa fa-user"></i> {customer.name}
-            </h4>
-            <p>
-              <i class="fa fa-user-plus"></i>
-              {""}
-              {customer.date && moment(customer.date).format("ll")}
-            </p>
-            <p>
-              <i class="fa fa-envelope"></i> {customer.email}
-            </p>
-            <p>
-              <i class="fa fa-phone"></i> {customer.phone}
-            </p>
-            <p>
-              <i class="fa fa-location-dot"></i> {customer.address}
-            </p>
-          </div>
+    <div className="bg-white rounded-4 shadow-sm p-4">
+
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-4 pb-4 border-bottom">
+        
+        <div
+          className="order-0 order-md-1 mx-auto mx-md-0 rounded-circle overflow-hidden border"
+          style={{ width: '120px', height: '120px' }}
+        >
+          <img
+            src={`/customers/${customer.thumb}`}
+            alt={customer.name}
+            className="w-100 h-100"
+            style={{ objectFit: 'cover' }}
+          />
         </div>
-        <div>
-          <ul>
-            <li>
-              <Link to="/customer/dashboard" className="btn-primary">
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link to="/customer/change-details" className="btn-primary">
-                Change Details
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/customer/change-profile-picture"
-                className="btn-primary"
-              >
-                Change Profile Picture
-              </Link>
-            </li>
-            <li>
-              <Link to="/customer/change-password" className="btn-primary">
-                Change Password
-              </Link>
-            </li>
-            <li>
-              <Link
-                onClick={() => {
-                  customerLogout();
-                }}
-                className="btn-primary"
-              >
-                Logout
-              </Link>
-            </li>
-          </ul>
+
+        <div className="flex-grow-1 order-1 order-md-0">
+          <h5 className="fw-semibold text-dark mb-3">
+            {customer.name}
+          </h5>
+
+          <div className="d-flex flex-column flex-sm-row flex-wrap gap-3 small text-muted">
+            <div className="flex-fill">
+              <div className="fw-medium">Phone</div>
+              <div>{customer.phone}</div>
+            </div>
+            <div className="flex-fill">
+              <div className="fw-medium">Email</div>
+              <div>{customer.email}</div>
+            </div>
+            <div className="flex-fill">
+              <div className="fw-medium">Address</div>
+              <div>{customer.address}</div>
+            </div>
+          </div>
         </div>
       </div>
+      <div className="pt-4">
+        <div className="d-flex flex-wrap justify-content-between gap-3">
+          <Link to="/customer/dashboard" className="btn btn-warning text-black fw-medium flex-fill text-center">
+            Dashboard
+          </Link>
+          <Link to="/customer/change-details" className="btn btn-warning text-black fw-medium flex-fill text-center">
+            Edit Details
+          </Link>
+          <Link to="/customer/change-profile-picture" className="btn btn-warning text-black fw-medium flex-fill text-center">
+            Profile Picture
+          </Link>
+          <Link to="/customer/change-password" className="btn btn-warning text-black fw-medium flex-fill text-center">
+            Change Password
+          </Link>
+          <button
+            onClick={customerLogout}
+            className="btn btn-warning text-black fw-medium flex-fill text-center"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
     </>
   );
 };

@@ -135,19 +135,25 @@ function Order() {
                 <th>Food</th>
                 <th>Title</th>
                 <th>Price</th>
-                <th>Quantity</th>
+                <th colSpan={2}>Quantity</th>
                 <th>Total</th>
                 <th>Action</th>
               </tr>
               {isEmpty ? (
+                <>
                 <tr>
-                  <td colSpan="6">
-                    Your Cart is Empty.{" "}
-                    <Link to="/foods/" className="btn-primary danger-btn">
+                  <td colSpan="8">
+                    Your Cart is Empty.
+                  </td>
+                </tr>
+                  <tr>
+                  <td colSpan="8">
+                    <Link to="/foods/" className="btn btn-warning">
                       Browse Cuisines
                     </Link>
                   </td>
                 </tr>
+                </>
               ) : (
                 items.map((item) => (
                   <tr>
@@ -160,14 +166,13 @@ function Order() {
                       <Link to={"/foods/" + item._id}>{item.title}</Link>
                     </td>
                     <td>Rs. {item.price}</td>
-                    <td>
+                    <td colSpan={2}>
                       <button
                         className="btn-primary"
                         onClick={() =>
                           updateItemQuantity(item.id, item.quantity - 1)
                         }
-                      >
-                        -
+                      > -
                       </button>{" "}
                       <span className="item-qty">{item.quantity}</span>{" "}
                       <button
@@ -183,9 +188,9 @@ function Order() {
                     <td>
                       <Link
                         onClick={() => removeItem(item.id)}
-                        class="danger-btn"
+                        class="btn btn-danger"
                       >
-                        Remove
+                        <i className="fas fa-trash"/>
                       </Link>
                     </td>
                   </tr>
@@ -196,26 +201,26 @@ function Order() {
                   <tr className="bold">
                     <td></td>
                     <td></td>
-                    <td>Sub-Total</td>
+                    <td colSpan={2}>Sub-Total</td>
                     <td>{totalItems}</td>
                     <td>Rs. {cartTotal}</td>
                     <td>
-                      <Link className="btn-danger" onClick={() => claerCart()}>
-                        Clear All
+                      <Link className="btn btn-danger" onClick={() => claerCart()}>
+                        Clear
                       </Link>
                     </td>
                   </tr>
                   <tr className="bold">
-                    <td colSpan="2">Delivery Cost</td>
+                    <td></td>
+                    <td colSpan={2}>Delivery Cost</td>
                     <td>Rs.{deliveryCost}</td>
                     <td>Total Cost</td>
                     <td>Rs. {cartTotal && cartTotal + deliveryCost}</td>
-                    <td></td>
                   </tr>
                 </>
               )}
               <tr>
-                <td colSpan="6">
+                <td colSpan="8">
                   <span className="nb">
                     (Delivery cost Rs 80 for inside of Gulberg and Rs 100 for
                     outside of Gulberg )
@@ -224,8 +229,8 @@ function Order() {
               </tr>
             </table>
           </div>
-          <div className="">
-            <form className="order-form px-5 py-2" onSubmit={submitHandler}>
+          <div className="container">
+            <form className="order-form px-5 py-5" onSubmit={submitHandler}>
               <fieldset>
                 <legend>Delivery Details</legend>
                 <div className="order-label">Phone Number</div>
@@ -244,7 +249,7 @@ function Order() {
                   placeholder="Enter your email..."
                   required
                 />
-                <div class="order-label">City</div>
+                <div class="order-label">Area</div>
                 <select
                   name="category"
                   onChange={(e) => {
@@ -298,13 +303,13 @@ function Order() {
                   required
                 />{" "}
                 Cash On Delivery <br />
-                <input
+              </fieldset>
+              <button
                   type="submit"
                   name="submit"
-                  value="Confirm Order"
-                  className="btn-primary"
-                />
-              </fieldset>
+                  className="mt-5 btn btn-warning"
+                >Confirm Order
+                </button>
             </form>
           </div>
         </div>

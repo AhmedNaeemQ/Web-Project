@@ -87,36 +87,67 @@ const ChangePassword = () => {
     return (
       <>
         <Banner title="Dashboard" subtitle="Update Password"/>
-        <section className="dashboard">
-          <div className="container padding">
+        <section className="container py-4 d-flex flex-column align-items-center">
+          <div className="w-100 mb-4">
             <Profile />
-            <div className="dashboard-content">
-              <form enctype="multipart/form-data" onSubmit={submitHandler}>
-                <input
-                  type="password"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  placeholder="Old password..."
-                  required
-                />
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="New password..."
-                  required
-                />
-                <input
-                  type="password"
-                  value={conPassword}
-                  onChange={(e) => setConPassword(e.target.value)}
-                  placeholder="Confirm password..."
-                  required
-                />
-                <button className="btn-primary">Update</button>
-              </form>
-            </div>
           </div>
+
+          <form
+            encType="multipart/form-data"
+            onSubmit={submitHandler}
+            className="w-100 p-4 border rounded-4 shadow-sm bg-white d-flex flex-column gap-3"
+          >
+            <div className="d-flex flex-column">
+              <label htmlFor="oldPassword" className="form-label fw-medium">
+                Old Password
+              </label>
+              <input
+                type="password"
+                id="oldPassword"
+                className="form-control"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                placeholder="Enter old password"
+                required
+              />
+            </div>
+
+            <div className="d-flex flex-column">
+              <label htmlFor="newPassword" className="form-label fw-medium">
+                New Password
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                className="form-control"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password"
+                required
+              />
+            </div>
+
+            <div className="d-flex flex-column">
+              <label htmlFor="conPassword" className="form-label fw-medium">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="conPassword"
+                className="form-control"
+                value={conPassword}
+                onChange={(e) => setConPassword(e.target.value)}
+                placeholder="Confirm new password"
+                required
+              />
+            </div>
+
+            <div className="d-flex justify-content-end">
+              <button type="submit" className="btn btn-warning text-black fw-medium">
+                Update Password
+              </button>
+            </div>
+          </form>
         </section>
       </>
     );

@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import PageHeader from "../common/header/title/PageHeader";
 import Swal from "sweetalert2";
 import { useCart } from "react-use-cart";
 import Rating from "../common/rating/Rating";
 import ReactPaginate from "react-paginate";
+import { motion } from 'framer-motion';
+import Banner from "../common/banner/Banner";
 
 const CategoryFood = () => {
   const { title } = useParams();
@@ -13,19 +14,19 @@ const CategoryFood = () => {
   // GET CATEGORY FOODS
   const [foods, setFoods] = useState([]);
   useEffect(() => {
-    const fatchFoods = async () => {
+    const fetchFoods = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/foods`);
       const categoryFoods = data.filter((curData) => {
         return curData.category.toLowerCase() === title.toLowerCase();
       });
       setFoods(categoryFoods);
     };
-    fatchFoods();
+    fetchFoods();
   }, [title, foods]);
 
   // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 12;
+  const itemsPerPage = 4;
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = foods.slice(itemOffset, endOffset);
@@ -41,9 +42,19 @@ const CategoryFood = () => {
     });
   };
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: i => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1, type: 'spring', stiffness: 100 },
+    }),
+    hover: { scale: 1.03 },
+  };
+
   // ADD-TO-CART
   const { addItem } = useCart();
-  const addItemHandlar = (item, id) => {
+  const addItemHandler = (item, id) => {
     item.id = id;
     addItem(item);
     Swal.fire({
@@ -56,53 +67,77 @@ const CategoryFood = () => {
 
   return (
     <>
-      <PageHeader title={title} />
-      <section className="food">
+
+      <Banner title={"Our Menu"} subtitle={title}/>
+      <section className="container">
         <div className="container">
           <div className="grid-4">
             {currentItems.length === 0 ? (
               <h3 className="text-center">No items found!</h3>
             ) : (
               currentItems.map((item, index) => (
-                <div key={index} class="items shadow">
-                  <div class="img">
-                    <img
-                      src={"/foods/" + item.thumb}
-                      alt="Pizza"
-                      class="img-responsive img-curve"
-                    />
-                  </div>
-                  <div class="text text-center">
-                    <h4>
-                      <Link to={"/foods/" + item._id}>{item.title}</Link>
-                    </h4>
-                    <h5>
-                      <Rating rating={item.rating} />
-                      <span>({item.totalReviews})</span>
-                    </h5>
-                    <p>{item.description.slice(0, 50)}...</p>
-                    <h5>Rs {item.price}</h5>
-                    <div class="flexSB">
-                      <Link to={"/foods/" + item._id} class="btn-primary">
-                        <i class="fas fa-eye"></i> View Detail
-                      </Link>
-                      {item.active === "on" ? (
-                        <Link
-                          className="btn-primary"
-                          onClick={() => {
-                            addItemHandlar(item, item._id);
-                          }}
-                        >
-                          <i className="fas fa-shopping-cart"></i> Add To Cart
-                        </Link>
-                      ) : (
-                        <Link className="btn-primary disableLink">
-                          <i className="fas fa-shopping-cart"></i> Stock Out
-                        </Link>
-                      )}
-                    </div>
-                  </div>
+                <div key={item._id} className="px-2">
+            <motion.div
+              className="card bg-white border-0 shadow h-100"
+              
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              variants={cardVariants}
+            >
+              <Link
+                to={`/foods/${item._id}`}
+                className="text-decoration-none"
+              >
+                <div className="ratio ratio-4x3 overflow-hidden">
+                  <img
+                    src={`/foods/${item.thumb}`}
+                    alt={item.title}
+                    className="img-fluid"
+                    style={{
+                      objectFit: 'cover',
+                      filter: 'brightness(0.75)',
+                    }}
+                  />
                 </div>
+              </Link>
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title mb-2">
+                  <Link
+                    to={`/foods/${item._id}`}
+                    className="text-warning text-decoration-none"
+                  >
+                    {item.title}
+                  </Link>
+                </h5>
+                <div className="mb-2">
+                  <Rating rating={item.rating} color="gold" />{' '}
+                  <small className="text-light">
+                    ({item.totalReviews})
+                  </small>
+                </div>
+                <p className="card-text flex-grow-1 mb-3">
+                  {item.description.slice(0, 60)}…
+                </p>
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="h6 mb-0">Rs. {item.price}</span>
+                  {item.active === 'on' ? (
+                    <button
+                      className="btn btn-sm btn-warning"
+                      onClick={() => addItemHandler(item, item._id)}
+                    >
+                      <i className="fas fa-cart-plus me-1"></i>
+                      Add to Cart
+                    </button>
+                  ) : (
+                    <button className="btn btn-sm btn-dark" disabled>
+                      Out of Stock
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
               ))
             )}
           </div>

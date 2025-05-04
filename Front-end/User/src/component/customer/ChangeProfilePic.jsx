@@ -63,27 +63,44 @@ const ProfilePicChange = () => {
     return (
       <>
         <Banner title="Dashboard" subtitle="Update Profile Picture"/>
-        <section className="dashboard">
-          <div className="container padding">
+        <section className="container py-4 d-flex flex-column align-items-center">
+          <div className="w-100 mb-4">
             <Profile />
-            <div className="dashboard-content change-profile-pic-form">
-              <form enctype="multipart/form-data" onSubmit={submitHandler}>
-                {file ? (
-                  <img src={file} alt="" />
-                ) : (
-                  <img src={"/customers/" + currentThumb} alt="" />
-                )}
-                <input
-                  type="file"
-                  onChange={handleThumbChange}
-                  id="thumb"
-                  class="form-control"
-                  required
-                />
-                <button className="btn-primary">Update</button>
-              </form>
-            </div>
           </div>
+
+          <form
+            encType="multipart/form-data"
+            onSubmit={submitHandler}
+            className="w-100 p-4 border rounded-4 shadow-sm bg-white d-flex flex-column gap-4"
+          >
+            <div className="text-center">
+              <img
+                src={file || `/customers/${currentThumb}`}
+                alt="Selected"
+                className="rounded-circle shadow-sm border"
+                style={{ width: "140px", height: "140px", objectFit: "cover" }}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="thumb" className="form-label fw-medium">
+                Choose New Profile Picture
+              </label>
+              <input
+                type="file"
+                id="thumb"
+                onChange={handleThumbChange}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="d-flex justify-content-end">
+              <button type="submit" className="btn btn-warning text-black fw-medium">
+                Update
+              </button>
+            </div>
+          </form>
         </section>
       </>
     );

@@ -3,16 +3,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import { motion } from "framer-motion";
+
 
 const BlogItem = () => {
   // GET BLOGS
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
-    const fatchBlogs = async () => {
+    const fetchBlogs = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/blogs`);
       setBlogs(data);
     };
-    fatchBlogs();
+    fetchBlogs();
   }, []);
 
   // PAGINATION
@@ -33,39 +35,72 @@ const BlogItem = () => {
     });
   };
 
+  const cardVariants = {
+    hidden: i => ({
+      opacity: 0,
+      y: 20,
+      transition: { delay: i * 0.1, type: "spring", stiffness: 100 }
+    }),
+    visible: { opacity: 1, y: 0 },
+    hover: { scale: 1.02, boxShadow: "0 6px 18px rgba(0,0,0,0.15)" }
+  };
+
   return (
     <>
       <div className="grid-3">
         {currentItems.length === 0 ? (
           <h3 className="text-center">No items found!</h3>
         ) : (
-          currentItems.map((item) => (
-            <div className="items shadow">
-              <div className="img">
-                <img src={"/blogs/" + item.thumb} alt="" />
-              </div>
-              <div className="text">
-                <div className="admin flexSB">
-                  <span>
-                    <i className="fa fa-user"></i>
-                    <label htmlFor="">{item.post_by}</label>
-                  </span>
-                  <span>
-                    <i className="fa fa-calendar-alt"></i>
-                    <label htmlFor="">{moment(item.date).format("lll")}</label>
-                  </span>
-                </div>
-                <Link to={"/blogs/" + item._id} className="blog-title">
-                  <h1>{item.title.slice(0, 60)}...</h1>
-                </Link>
-                <p>
-                  {item.description.slice(0, 100)}...{" "}
-                  <Link to={"/blogs/" + item._id} class="success-btn">
-                    <i className="fas fa-eye"></i> Read More
+          currentItems.map((post) => (
+            <motion.div
+                  className="card h-100 border-0 shadow-sm overflow-hidden"
+                  initial="hidden"
+                  animate="visible"
+                  whileHover="hover"
+                  variants={cardVariants}
+                >
+                  <Link to={`/blogs/${post._id}`} className="text-decoration-none">
+                    <div className="ratio ratio-4x3">
+                      <img
+                        src={`/blogs/${post.thumb}`}
+                        alt={post.title}
+                        className="card-img-top img-fluid"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
                   </Link>
-                </p>
-              </div>
-            </div>
+                  <div className="card-body d-flex flex-column">
+                    <div className="d-flex justify-content-between text-muted small mb-2">
+                      <span>
+                        <i className="fa fa-user me-1" />
+                        {post.post_by}
+                      </span>
+                      <span>
+                        <i className="fa fa-calendar-alt me-1" />
+                        {moment(post.date).format("MMM D, YYYY")}
+                      </span>
+                    </div>
+                    <Link to={`/blogs/${post._id}`} className="text-dark">
+                      <h5 className="card-title">
+                        {post.title.length > 60
+                          ? post.title.slice(0, 60) + "…"
+                          : post.title}
+                      </h5>
+                    </Link>
+                    <p className="card-text flex-grow-1 text-secondary">
+                      {post.description.length > 100
+                        ? post.description.slice(0, 100) + "…"
+                        : post.description}
+                    </p>
+                    <Link
+                      to={`/blogs/${post._id}`}
+                      className="btn btn-sm btn-primary mt-3 align-self-start"
+                    >
+                      <i className="fas fa-eye me-1" />
+                      Read More
+                    </Link>
+                  </div>
+                </motion.div>
           ))
         )}
       </div>

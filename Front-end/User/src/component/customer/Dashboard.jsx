@@ -118,12 +118,12 @@ const Dashboard = () => {
                       <th>Order ID</th>
                       <th>Item</th>
                       <th>Qty</th>
-                      <th>Total_price</th>
+                      <th>Total Price</th>
                       <th>Payment</th>
                       <th>Status</th>
                       <th>Order_Date</th>
-                      <th>Accept_Time</th>
-                      <th>Expected_Time</th>
+                      <th>Accept Time</th>
+                      <th>Expected Time</th>
                       <th>Action</th>
                     </tr>
                     {currentItems.length === 0 ? (

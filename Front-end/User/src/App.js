@@ -13,7 +13,6 @@ import { Home } from "./component/home/Home";
 import Login from "./component/login/Login";
 import SignUp from "./component/login/SignUp";
 import Order from "./component/order/Order";
-// Customer Profile
 import Dashboard from "./component/customer/Dashboard";
 import CustomerOrder from "./component/customer/Order";
 import ProfilePicChange from "./component/customer/ChangeProfilePic";
