@@ -35,12 +35,13 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if(navOpen)
+    if(navOpen) {
       setScrolled(true)
+    }
     else{
       setScrolled(false)
     }
-  },[navOpen,scrolled])
+  },[navOpen])
 
   // Fetch customer data
   useEffect(() => {
