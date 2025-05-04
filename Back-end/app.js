@@ -1,4 +1,5 @@
 import express from "express";
+import jwt from 'jsonwebtoken';
 import cors from "cors";
 import messages from "./routers/messages.route.js";
 import foodRoute from "./routers/foods.route.js";
@@ -21,6 +22,27 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+const verifyToken = (req, res, next) => {
+  if (req.path === '/api/admin/adminlogin') {
+    return next();
+  }
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid token" });
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    res.status(401).json({ message: "You are not authenticated!" });
+  }
+};
+
+app.use(verifyToken);
 
 
 app.use("/api/admin/messages", messages);
@@ -57,7 +79,7 @@ app.use("/api/admin/revenue", revenueRoute);
 
 app.use("/api/admin/customerlogin", customerLogin);
 app.use("/api/admin/manlogin", manLogin);
-app.use("/api/admin/adminlogin", adminLogin);
+app.use("/api/admin/adminlogin", adminLogin); // No need to verify token here
 
 
 app.use("/default", express.static("uploads/default"));
