@@ -117,15 +117,15 @@ const SingleFood = () => {
               </li>
               <li className="mb-2 d-flex align-items-center justify-content-between">
                 <span className="text-muted">Status</span>
-                <h6 className={`mb-0 ${food.active === 'on' ? 'text-success' : 'text-danger'}`}>
-                  {food.active === 'on' ? 'Available' : 'Unavailable'}
+                <h6 className={`mb-0 ${food.active === 'true' ? 'text-success' : 'text-danger'}`}>
+                  {food.active === 'true' ? 'Available' : 'Unavailable'}
                 </h6>
               </li>
             </ul>
 
             {/* Add to Cart Button */}
             <div className="d-flex justify-content-center justify-content-md-end">
-              {food.active === 'on' ? (
+              {food.active === 'true' ? (
                 <button
                   className="btn btn-warning d-inline-flex align-items-center text-dark"
                   onClick={() => addItemHandler(food, food._id)}
@@ -269,7 +269,7 @@ const SingleFood = () => {
                 </p>
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="h6 mb-0">Rs. {item.price}</span>
-                  {item.active === 'on' ? (
+                  {item.active === 'true' ? (
                     <button
                       className="btn btn-sm btn-warning"
                       onClick={() => addItemHandler(item, item._id)}

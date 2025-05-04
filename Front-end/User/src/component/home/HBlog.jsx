@@ -31,7 +31,7 @@ const HBlog = () => {
     axios
       .get("http://localhost:1000/api/admin/blogs")
       .then(({ data }) =>
-        setBlogs(data.filter(b => b.featured.toLowerCase() === "on"))
+        setBlogs(data.filter(b => b.featured.toLowerCase() === "true"))
       )
       .catch(console.error);
   }, []);

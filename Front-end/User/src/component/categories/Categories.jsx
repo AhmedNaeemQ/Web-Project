@@ -81,7 +81,7 @@ const Categories = () => {
                   }}
                 />
 
-                {cat.featured === "on" && (
+                {cat.featured === "true" && (
                   <div className="badge bg-warning text-dark position-absolute top-0 end-0 m-3">
                     Featured
                   </div>

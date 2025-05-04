@@ -19,7 +19,7 @@ const HFood = () => {
     axios
       .get('http://localhost:1000/api/admin/foods')
       .then(({ data }) =>
-        setFoods(data.filter(f => f.featured.toLowerCase() === 'on'))
+        setFoods(data.filter(f => f.featured.toLowerCase() === 'true'))
       )
       .catch(console.error);
   }, []);
@@ -129,7 +129,7 @@ const HFood = () => {
                     </p>
                     <div className="d-flex justify-content-between align-items-center">
                       <span className="h6 mb-0">Rs. {item.price}</span>
-                      {item.active === 'on' ? (
+                      {item.active === 'true' ? (
                         <button
                           className="btn btn-sm btn-warning"
                           onClick={() => addItemHandler(item)}

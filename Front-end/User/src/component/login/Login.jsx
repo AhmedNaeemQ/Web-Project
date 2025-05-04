@@ -94,7 +94,7 @@ const Login = () => {
                     class="btn btn-warning"
                   />
                 </form>
-                <Link className="text-decoration-none text-black" to="/register">
+                <Link className="text-decoration-none text-black" to="/registration">
                   Don’t have an account? <span className="text-decoration-underline text-primary">Create one</span>
                 </Link>
               </div>

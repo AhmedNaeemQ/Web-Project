@@ -121,7 +121,7 @@ const CategoryFood = () => {
                 </p>
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="h6 mb-0">Rs. {item.price}</span>
-                  {item.active === 'on' ? (
+                  {item.active === 'true' ? (
                     <button
                       className="btn btn-sm btn-warning"
                       onClick={() => addItemHandler(item, item._id)}
