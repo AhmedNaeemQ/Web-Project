@@ -123,11 +123,10 @@ const Contact = () => {
                 placeholder="Type messages...."
                 required
               ></textarea>
-              <input
+              <button
                 type="submit"
-                value="SEND MESSAGE"
-                className="btn-primary"
-              />
+                className="btn btn-warning"
+              >Send Inquiry</button>
             </form>
             <h3>Follow Us</h3>
             <div className="social">

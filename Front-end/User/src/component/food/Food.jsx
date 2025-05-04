@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import PageHeader from "../common/header/title/PageHeader";
 import FoodItem from "./FoodItem";
-import "./food.css";
 import { useState } from "react";
 import axios from "axios";
 import Banner from "../common/banner/Banner";
@@ -22,18 +20,23 @@ const Food = () => {
     <>
 
       <Banner title="Our Menu" subtitle="Explore Cuisines"/>
-      <section className="food">
+      <section className="container">
         <div className="container text-center">
-          <div className="search-food-form">
-            <input
-              type="search"
-              name="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for Dishes.."
-              required
-            />
-          </div>
+          <div className="input-group">
+              <input
+                type="search"
+                name="search"
+                className="form-control"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search for Cuisines..."
+                required
+              />
+              <span className="input-group-text px-4 py-3 bg-dark">
+                <i className="text-warning fas fa-search"></i>
+              </span>
+            </div>
+
         </div>
         <div className="container">
           <FoodItem foods={foods} />
