@@ -42,8 +42,11 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-app.use(verifyToken);
+app.use("/api/admin/customerlogin", customerLogin);
+app.use("/api/admin/manlogin", manLogin);
+app.use("/api/admin/adminlogin", adminLogin);
 
+app.use(verifyToken);
 
 app.use("/api/admin/messages", messages);
 app.use("/api/admin/messages/:id", messages);
@@ -77,9 +80,6 @@ app.use("/api/admin/orders/:id", orderRoute);
 app.use("/api/admin/revenue", revenueRoute);
 
 
-app.use("/api/admin/customerlogin", customerLogin);
-app.use("/api/admin/manlogin", manLogin);
-app.use("/api/admin/adminlogin", adminLogin); // No need to verify token here
 
 
 app.use("/default", express.static("uploads/default"));
