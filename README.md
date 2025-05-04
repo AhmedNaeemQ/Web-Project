@@ -49,3 +49,120 @@ The project will be developed using the following technologies:
 
 ### 5. Conclusion
 This project aims to create a fully functional and interactive restaurant website that enhances the user experience and simplifies restaurant operations. Built with the MERN stack, the website will provide an efficient and well-structured system, while Tailwind CSS ensures a modern and responsive design. Key features such as menu browsing, reservations, and order management will offer a seamless and convenient experience for both customers and restaurant staff.
+
+
+### Setup and Usage
+
+This section outlines the steps to set up and run the MERN (MongoDB, Express.js, React, Node.js) project locally. The repository contains two main folders: **Front-end** and **Back-end**. The **Front-end** folder includes two React applications: **Admin** and **User**.
+
+#### **Prerequisites**
+Ensure the following are installed:
+- **Node.js** (v14 or higher): [Download](https://nodejs.org/)
+- **MongoDB**: Local MongoDB instance or MongoDB Atlas account ([Setup Guide](https://www.mongodb.com/docs/atlas/getting-started/))
+- **Git**: To clone the repository ([Download](https://git-scm.com/))
+- A code editor like **VS Code** (recommended)
+
+#### **Project Structure**
+```
+Web-Project/
+├── Back-end/
+│   └── (Express.js API and MongoDB connection)
+├── Front-end/
+│   ├── Admin/
+│   │   └── (React app for admin interface)
+│   ├── User/
+│   │   └── (React app for user interface)
+└── README.md
+```
+
+#### **Setup Instructions**
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/AhmedNaeemQ/Web-Project.git
+   cd Web-Project
+   ```
+
+2. **Set Up the Back-end**
+   - Navigate to the **Back-end** folder:
+     ```bash
+     cd Back-end
+     ```
+   - Install dependencies:
+     ```bash
+     npm install
+     ```
+   - Create a `.env` file in the **Back-end** folder with:
+     ```
+     MONGO_URI=your_mongodb_connection_string
+     PORT=1000
+     ```
+     Replace `your_mongodb_connection_string` with your MongoDB URI (e.g., `mongodb://localhost:27017/yourdb` for local or a MongoDB Atlas URI).
+   - Start the back-end server:
+     ```bash
+     npm start
+     ```
+     The server runs on `http://localhost:1000`.
+
+3. **Set Up the Front-end (Admin App)**
+   - Navigate to the **Admin** folder:
+     ```bash
+     cd ../Front-end/Admin
+     ```
+   - Install dependencies:
+     ```bash
+     npm install
+     ```
+   - Create a `.env` file in the **Admin** folder with:
+     ```
+     VITE_BACKEND_URL=http://localhost:1000/api/admin
+     VITE_API_URL=http://localhost:1000
+     ```
+   - Start the Admin app:
+     ```bash
+     npm start
+     ```
+     The Admin app runs on `http://localhost:5173`.
+
+4. **Set Up the Front-end (User App)**
+   - Navigate to the **User** folder:
+     ```bash
+     cd ../User
+     ```
+   - Install dependencies:
+     ```bash
+     npm install
+     ```
+   - Create a `.env` file in the **User** folder with:
+     ```
+     VITE_BACKEND_URL=http://localhost:1000/api/admin
+     VITE_API_URL=http://localhost:1000
+     ```
+   - Start the User app:
+     ```bash
+     npm start
+     ```
+     The User app runs on `http://localhost:3000` (or another port if `3000` is occupied).
+
+5. **Verify the Setup**
+   - Ensure the back-end server is running (`http://localhost:1000`).
+   - Open `http://localhost:5173` for the **Admin** app.
+   - Open `http://localhost:3000` for the **User** app.
+   - Test API connectivity via app interactions (e.g., login, data fetching).
+
+#### **Usage**
+- **Admin App**: Manage administrative tasks (e.g., user management, content moderation). Ensure admin credentials are configured in the back-end.
+- **User App**: End-user interface for application features (e.g., browsing content, user profiles).
+- **Back-end API**: Handles API requests from both apps, connecting to MongoDB for data operations.
+
+#### **Troubleshooting**
+- **MongoDB Issues**: Verify `MONGO_URI` in the back-end `.env`. Ensure MongoDB is running or your Atlas cluster is accessible.
+- **Port Conflicts**: If ports (`3000`, `5173`) are in use, React/Express will suggest alternatives, or update the `.env` file.
+- **API Errors**: Check back-end logs for errors and confirm `VITE_BACKEND_URL` matches the back-end URL.
+
+#### **Notes**
+- Start the back-end server before the front-end apps.
+- Ensure all `.env` files are correctly configured.
+- For production, secure the API with authentication (e.g., Firebase or JWT) and deploy to a cloud platform.
+
+For more details, visit: [https://github.com/AhmedNaeemQ/Web-Project](https://github.com/AhmedNaeemQ/Web-Project)
