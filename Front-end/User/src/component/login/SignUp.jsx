@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import Banner from "../common/banner/Banner";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -126,10 +127,13 @@ const SignUp = () => {
               <input
                 type="submit"
                 name="submit"
-                value="Registration"
-                class="btn-primary"
+                value="Sign up"
+                class="btn btn-warning"
               />
             </form>
+            <Link className="text-decoration-none text-black" to="/login">
+              Already have an account? <span className=" text-decoration-underline text-primary">Log in</span>
+            </Link>
           </div>
         </div>
       </section>

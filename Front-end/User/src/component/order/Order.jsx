@@ -142,12 +142,12 @@ function Order() {
               {isEmpty ? (
                 <>
                 <tr>
-                  <td colSpan="6">
+                  <td colSpan="8">
                     Your Cart is Empty.
                   </td>
                 </tr>
                   <tr>
-                  <td colSpan="6">
+                  <td colSpan="8">
                     <Link to="/foods/" className="btn btn-warning">
                       Browse Cuisines
                     </Link>

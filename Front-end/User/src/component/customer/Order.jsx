@@ -10,6 +10,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import Profile from "./Profile";
 import Rating from "../common/rating/Rating";
+import Banner from "../common/banner/Banner";
 
 const Order = () => {
   const { id } = useParams();
@@ -18,13 +19,13 @@ const Order = () => {
   const [items, setitems] = useState([]);
   const [deliveryManID, setDeliveryManID] = useState("");
   useEffect(() => {
-    const fatchOrder = async () => {
+    const fetchOrder = async () => {
       const { data } = await axios.get(`http://localhost:1000/api/admin/orders/${id}`);
       setOrder(data);
       setitems(data.items);
       setDeliveryManID(data.delivery_man_id);
     };
-    fatchOrder();
+    fetchOrder();
   }, []);
 
   // GET DELIVERY MAN DETAILS
@@ -55,7 +56,7 @@ const Order = () => {
           .then((response) => {
             Swal.fire({
               icon: "success",
-              text: "Order Celceled.",
+              text: "Order Canceled.",
               showConfirmButton: false,
               timer: 500,
             });
@@ -65,7 +66,7 @@ const Order = () => {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Order deleted field!",
+              text: "Order deletion failed!",
             });
           });
       }
@@ -93,7 +94,7 @@ const Order = () => {
         },
       })
       .then((response) => {
-        if (response.data.message === "Successfully reviewed.") {
+        if (response.data.message === "Delivery reviewed successfully.") {
           Swal.fire({
             icon: "success",
             text: response.data.message,
@@ -128,7 +129,7 @@ const Order = () => {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Something Broken.",
+          text: "Something went wrong.",
         });
       });
   };
@@ -164,7 +165,7 @@ const Order = () => {
               },
             })
             .then((response) => {
-              if (response.data.message === "Successfully reviewed.") {
+              if (response.data.message === "Review added succesfully.") {
                 Swal.fire({
                   icon: "success",
                   text: response.data.message,
@@ -191,14 +192,14 @@ const Order = () => {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Something wrong.",
+                text: "Something went wrong.",
               });
             });
         } else {
           Swal.fire({
             icon: "error",
             title: "Oops...",
-            text: "Rating required!",
+            text: "Rating is required!",
           });
         }
       }
@@ -250,7 +251,7 @@ const Order = () => {
               });
             Swal.fire({
               icon: "warning",
-              text: "Plese, Give a review for Delivery Man and Foods!",
+              text: "Please leave a review!",
             });
           })
           .catch((error) => {
@@ -269,11 +270,11 @@ const Order = () => {
   } else {
     return (
       <>
-        <PageHeader title="Dashboard" />
+        <Banner title="Dashboard" subtitle="Order Details"/>
         <section className="dashboard">
           <div className="container padding">
             <Profile />
-            <div className="dashboard-content">
+            <div className="container dashboard-content">
               <div className="order order-details">
                 <div className="order-items">
                   <h3 className="text-center">Order Details</h3>
@@ -284,7 +285,7 @@ const Order = () => {
                       <th>Title</th>
                       <th>Price</th>
                       <th>Qty</th>
-                      <th>Total_price</th>
+                      <th>Total Price</th>
                     </tr>
                     {items.length === 0 ? (
                       <tr>
@@ -365,29 +366,31 @@ const Order = () => {
                           {order.exp_time === "0" ? "NaN" : order.exp_time}
                         </li>
                       </ul>
+                      <div className="d-flex gap-2 justify-content-end ">
+                      {order.status === "Ordered" ? (
+                        <Link
+                          onClick={() => deleteHandler()}
+                          className="btn btn-secondary"
+                        >
+                          Cancel
+                        </Link>
+                      ) : (
+                        <Link className="btn btn-secondary">Cancel</Link>
+                      )}
                       {!order.status ||
                       order.status === "Ordered" ||
                       order.status === "Delivered" ||
                       order.status === "Cancelled" ? (
-                        <Link className="btn-primary disableLink">ACCEPT</Link>
+                        <Link className="btn btn-warning">Accept</Link>
                       ) : (
                         <Link
                           onClick={() => acceptHandler()}
-                          className="btn-primary"
+                          className="btn btn-primary"
                         >
-                          ACCEPT
+                          Accept
                         </Link>
                       )}{" "}
-                      {order.status === "Ordered" ? (
-                        <Link
-                          onClick={() => deleteHandler()}
-                          className="btn-danger"
-                        >
-                          CANCEL
-                        </Link>
-                      ) : (
-                        <Link className="btn-danger disableLink">CANCEL</Link>
-                      )}
+                      </div>
                     </div>
                     {order.delivery_man_id !== "NaN" && (
                       <div className="order-summury">
@@ -422,12 +425,6 @@ const Order = () => {
                             <b>Email: </b>
                             <a href={"mailto:" + deliveryMan.email}>
                               {deliveryMan.email}
-                            </a>
-                          </li>
-                          <li>
-                            <b>Police Emergency: </b>
-                            <a href="tel:999" className="btn-delv">
-                              Click For Call
                             </a>
                           </li>
                         </ul>
@@ -471,7 +468,7 @@ const Order = () => {
                           </p>
                         )}
 
-                        <h5>Review for Foods</h5>
+                        <h5 className="mt-5">Order Review</h5>
                         <table>
                           <tr>
                             <th>Thumb</th>

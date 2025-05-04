@@ -62,6 +62,7 @@ const Login = () => {
   return (
     <>
       <Banner title="Login" subtitle="Login"/>
+
       <section className="login">
         <div className="container">
           <div className="login-form text-center">
@@ -90,10 +91,12 @@ const Login = () => {
                     type="submit"
                     name="submit"
                     value="Login"
-                    class="btn-primary"
+                    class="btn btn-warning"
                   />
                 </form>
-                <Link to="/registration">Create Account</Link>
+                <Link className="text-decoration-none text-black" to="/register">
+                  Don’t have an account? <span className="text-decoration-underline text-primary">Create one</span>
+                </Link>
               </div>
             )}
           </div>
