@@ -20,7 +20,7 @@ const ChangePassword = () => {
   const id = Cookies.get("customer");
   useEffect(() => {
     const fatchCustomer = async () => {
-      const { data } = await axios.get(`/api/admin/customers/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/customers/${id}`);
       setThumb(data.thumb);
       setEmail(data.email);
     };
@@ -37,7 +37,7 @@ const ChangePassword = () => {
         thumb: currentThumb,
       };
       axios
-        .put(`/api/admin/customers/${id}?cthumb=${currentThumb}`, updateData, {
+        .put(`http://localhost:3000/api/customers/${id}?cthumb=${currentThumb}`, updateData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

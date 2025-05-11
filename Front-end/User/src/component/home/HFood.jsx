@@ -17,7 +17,7 @@ const HFood = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:1000/api/admin/foods')
+      .get('http://localhost:3000/api/foods')
       .then(({ data }) =>
         setFoods(data.filter(f => f.featured.toLowerCase() === 'on'))
       )

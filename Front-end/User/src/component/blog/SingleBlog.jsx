@@ -10,7 +10,7 @@ const SingleBlog = () => {
   const [blog, setBlog] = useState({});
   useEffect(() => {
     const fetchBlog = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/blogs/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/blogs/${id}`);
       setBlog(data);
     };
     fetchBlog();

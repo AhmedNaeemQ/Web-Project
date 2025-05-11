@@ -19,7 +19,7 @@ const ChangeDetails = () => {
   const id = Cookies.get("customer");
   useEffect(() => {
     const fetchCustomer = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/customers/${id}`);
       setName(data.name);
       setPhone(data.phone);
       setAddress(data.address);
@@ -37,7 +37,7 @@ const ChangeDetails = () => {
       thumb: currentThumb,
     };
     axios
-      .put(`/api/admin/customers/${id}?cthumb=${currentThumb}`, updateData, {
+      .put(`http://localhost:3000/api/customers/${id}?cthumb=${currentThumb}`, updateData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

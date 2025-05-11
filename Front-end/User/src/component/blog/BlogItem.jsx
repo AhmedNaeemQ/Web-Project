@@ -11,7 +11,7 @@ const BlogItem = () => {
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
     const fetchBlogs = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/blogs`);
+      const { data } = await axios.get(`http://localhost:3000/api/blogs`);
       setBlogs(data);
     };
     fetchBlogs();

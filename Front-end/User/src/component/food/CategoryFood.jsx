@@ -15,14 +15,14 @@ const CategoryFood = () => {
   const [foods, setFoods] = useState([]);
   useEffect(() => {
     const fetchFoods = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/foods`);
+      const { data } = await axios.get(`http://localhost:3000/api/foods`);
       const categoryFoods = data.filter((curData) => {
         return curData.category.toLowerCase() === title.toLowerCase();
       });
       setFoods(categoryFoods);
     };
     fetchFoods();
-  }, [title, foods]);
+  }, [title]);
 
   // PAGINATION
   const [itemOffset, setItemOffset] = useState(0);
@@ -91,7 +91,7 @@ const CategoryFood = () => {
               >
                 <div className="ratio ratio-4x3 overflow-hidden">
                   <img
-                    src={`/foods/${item.thumb}`}
+                    src={`http://localhost:3000/uploads/foods/${item.thumb}`}
                     alt={item.title}
                     className="img-fluid"
                     style={{

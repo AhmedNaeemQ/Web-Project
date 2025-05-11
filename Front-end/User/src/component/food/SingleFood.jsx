@@ -17,7 +17,7 @@ const SingleFood = () => {
   const [reviews, setReviews] = useState([]);
   useEffect(() => {
     const fetchFood = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/foods/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/foods/${id}`);
       setFood(data);
       setReviews(data.reviews.reverse());
     };
@@ -56,7 +56,7 @@ const SingleFood = () => {
   const [recomFoods, setRecomFoods] = useState([]);
   useEffect(() => {
     const fetchRecomFood = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/foods/recommended`);
+      const { data } = await axios.get(`http://localhost:3000/api/foods/recommended`);
       setRecomFoods(data);
     };
     fetchRecomFood();

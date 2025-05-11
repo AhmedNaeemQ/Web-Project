@@ -18,7 +18,7 @@ const Dashboard = () => {
   const customer_id = Cookies.get("customer");
   useEffect(() => {
     const fatchOrders = async () => {
-      const { data } = await axios.get(`/api/admin/orders`);
+      const { data } = await axios.get(`http://localhost:3000/api/orders`);
       const fatchCustomerOrders = data.filter((curData) => {
         return curData.customer_id === customer_id;
       });
@@ -56,7 +56,7 @@ const Dashboard = () => {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:1000/api/admin/orders/${id}`).catch((error) => {
+        axios.delete(`http://localhost:3000/api/orders/${id}`).catch((error) => {
           Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -82,7 +82,7 @@ const Dashboard = () => {
           status: "Delivered",
         };
         axios
-          .put(`http://localhost:1000/api/admin/orders/${id}`, updateData, {
+          .put(`http://localhost:3000/api/orders/${id}`, updateData, {
             headers: {
               "Content-Type": "application/json",
             },

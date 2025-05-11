@@ -20,7 +20,7 @@ const Order = () => {
   const [deliveryManID, setDeliveryManID] = useState("");
   useEffect(() => {
     const fetchOrder = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/orders/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/orders/${id}`);
       setOrder(data);
       setitems(data.items);
       setDeliveryManID(data.delivery_man_id);
@@ -33,7 +33,7 @@ const Order = () => {
   useEffect(() => {
     const fetchDeliveryMan = async () => {
       const { data } = await axios.get(
-        `http://localhost:1000/api/admin/delivery-men/${deliveryManID}`
+        `http://localhost:3000/api/delivery-men/${deliveryManID}`
       );
       setDeliveryMan(data);
     };
@@ -52,7 +52,7 @@ const Order = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:1000/api/admin/orders/${id}`)
+          .delete(`http://localhost:3000/api/orders/${id}`)
           .then((response) => {
             Swal.fire({
               icon: "success",
@@ -88,7 +88,7 @@ const Order = () => {
       deliveryManID,
     };
     axios
-      .post(`http://localhost:1000/api/admin/delivery-men/${id}/review`, data, {
+      .post(`http://localhost:3000/api//delivery-men/${id}/review`, data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -105,7 +105,7 @@ const Order = () => {
             deliveryManReview: "Yes",
           };
           axios
-            .put(`http://localhost:1000/api/admin/orders/${id}`, updateData, {
+            .put(`http://localhost:3000/api/orders/${id}`, updateData, {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -159,7 +159,7 @@ const Order = () => {
             customer_id,
           };
           axios
-            .post(`http://localhost:1000/api/admin/foods/${foodID}/review`, data, {
+            .post(`http://localhost:3000/api/foods/${foodID}/review`, data, {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -175,7 +175,7 @@ const Order = () => {
                 let foodData = {
                   food_id: foodID,
                 };
-                axios.put(`http://localhost:1000/api/admin/orders/${id}/review/`, foodData, {
+                axios.put(`http://localhost:3000/api/orders/${id}/review/`, foodData, {
                   headers: {
                     "Content-Type": "application/json",
                   },
@@ -221,7 +221,7 @@ const Order = () => {
           status: "Delivered",
         };
         axios
-          .put(`http://localhost:1000/api/admin/orders/${id}`, updateData, {
+          .put(`http://localhost:3000/api/orders/${id}`, updateData, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -234,7 +234,7 @@ const Order = () => {
             };
             axios
               .put(
-                `http://localhost:1000/api/admin/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
+                `http://localhost:3000/api/delivery-men/${deliveryManID}?cthumb=${deliveryMan.thumb}`,
                 updateManData,
                 {
                   headers: {

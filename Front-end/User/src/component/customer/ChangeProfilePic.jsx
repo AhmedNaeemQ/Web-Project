@@ -16,7 +16,7 @@ const ProfilePicChange = () => {
   const id = Cookies.get("customer");
   useEffect(() => {
     const fatchCustomer = async () => {
-      const { data } = await axios.get(`/api/admin/customers/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/customers/${id}`);
       setThumb(data.thumb);
     };
     fatchCustomer();
@@ -28,7 +28,7 @@ const ProfilePicChange = () => {
       thumb: document.querySelector("#thumb").files[0],
     };
     axios
-      .put(`http://localhost:1000/api/admin/customers/${id}?cthumb=${currentThumb}`, updateData, {
+      .put(`http://localhost:3000/api/customers/${id}?cthumb=${currentThumb}`, updateData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -60,7 +60,7 @@ function Order() {
   const id = Cookies.get("customer");
   useEffect(() => {
     const fetchCustomer = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/customers/${id}`);
       setPhone(data.phone);
       setEmail(data.email);
       setAddress(data.address);
@@ -90,7 +90,7 @@ function Order() {
           total_price: cartTotal + deliveryCost,
         };
         axios
-          .post(`/api/admin/orders`, data, {
+          .post(`http://localhost:3000/api/orders`, data, {
             headers: {
               "Content-Type": "application/json",
             },

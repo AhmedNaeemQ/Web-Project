@@ -10,7 +10,7 @@ const Food = () => {
   const [foods, setFoods] = useState([]);
   useEffect(() => {
     const fetchFoods = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/foods?q=${query}`);
+      const { data } = await axios.get(`http://localhost:3000/api/foods?q=${query}`);
       setFoods(data);
     };
     fetchFoods();

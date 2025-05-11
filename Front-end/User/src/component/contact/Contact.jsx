@@ -24,7 +24,7 @@ const Contact = () => {
       message,
     };
     axios
-      .post(`http://localhost:1000/api/admin/messages`, data, {
+      .post(`http://localhost:3000/api/feedback`, data, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -46,7 +46,7 @@ const Header = () => {
   useEffect(() => {
     if (customerId) {
       axios
-        .get(`/api/admin/customers/${customerId}`)
+        .get(`http://localhost:3000/api/customers/${customerId}`)
         .then(({ data }) => setCustomer(data))
         .catch(console.error);
     }

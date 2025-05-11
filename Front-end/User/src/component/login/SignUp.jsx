@@ -26,7 +26,7 @@ const SignUp = () => {
         address,
       };
       axios
-        .post(`http://localhost:1000/api/admin/customers`, data, {
+        .post(`http://localhost:3000/api/customers`, data, {
           headers: {
             "Content-Type": "application/json",
           },

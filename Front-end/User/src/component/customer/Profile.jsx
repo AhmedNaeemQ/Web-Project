@@ -9,7 +9,7 @@ const Profile = () => {
   const [customer, setCustomer] = useState({});
   useEffect(() => {
     const fetchCustomer = async () => {
-      const { data } = await axios.get(`http://localhost:1000/api/admin/customers/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/customers/${id}`);
       setCustomer(data);
     };
     fetchCustomer();
@@ -33,7 +33,7 @@ const Profile = () => {
           style={{ width: '120px', height: '120px' }}
         >
           <img
-            src={`/customers/${customer.thumb}`}
+            src={`http://localhost:3000/uploads/customers/${customer.thumb}`}
             alt={customer.name}
             className="w-100 h-100"
             style={{ objectFit: 'cover' }}

@@ -13,7 +13,7 @@ const Categories = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:1000/api/admin/categories')
+      .get('http://localhost:3000/api/categories')
       .then(({ data }) => setCategories(data))
       .catch(console.error);
   }, []);

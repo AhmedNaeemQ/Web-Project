@@ -29,7 +29,7 @@ const HBlog = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:1000/api/admin/blogs")
+      .get("http://localhost:3000/api/blogs")
       .then(({ data }) =>
         setBlogs(data.filter(b => b.featured.toLowerCase() === "on"))
       )
