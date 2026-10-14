@@ -1,0 +1,9 @@
+install: npm install --no-audit --no-fund && npm run install:all
+test: npm test
+lint: npm run lint
+build: npm run build
+plansDir: plans
+protectedBranches: [main]
+protectedPaths: [Back-end/.env, Front-end/Admin/.env, Back-end/uploads/**]
+deploy:
+  production: { branch: main, requiresApproval: true }

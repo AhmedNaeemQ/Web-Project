@@ -1,0 +1,14 @@
+{
+  "name": "web-project",
+  "private": true,
+  "description": "Food ordering platform: Express API + customer site (CRA) + admin dashboard (Vite). Root scripts fan out to the three packages.",
+  "scripts": {
+    "install:all": "npm --prefix Back-end install --no-audit --no-fund && npm --prefix Front-end/User install --no-audit --no-fund --legacy-peer-deps && npm --prefix Front-end/Admin install --no-audit --no-fund",
+    "test": "npm --prefix Back-end test && cross-env-shell CI=true npm --prefix Front-end/User test -- --watchAll=false",
+    "test:backend": "npm --prefix Back-end test",
+    "test:user": "cross-env-shell CI=true npm --prefix Front-end/User test -- --watchAll=false",
+    "lint": "npm --prefix Front-end/Admin run lint",
+    "build": "cross-env-shell CI=false npm --prefix Front-end/User run build && npm --prefix Front-end/Admin run build"
+  },
+  "devDependencies": { "cross-env": "^7.0.3" }
+}
